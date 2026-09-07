@@ -1,17 +1,9 @@
-# NON-RUNNABLE EXAMPLE ONLY. This file intentionally has no [Unit] or [Service]
-# section. Root must create and review an actual unit later.
-[ExampleUnitDoNotInstall]
-[Unit]
-Description=Plane operator approval broker (template only)
+# NON-RUNNABLE DOCUMENTATION ONLY. This file intentionally has no systemd
+# section and cannot be loaded as a unit. Root must create and review an actual
+# unit later, behind a separately gated deployment artifact.
 
-[Service]
-ExecStart=/usr/local/bin/plane-mcp-karval operator-broker
-User=plane-broker
-NoNewPrivileges=yes
-PrivateTmp=yes
-ProtectSystem=strict
-ProtectHome=yes
-ReadWritePaths=/var/lib/plane-mcp-karval
-
-# Request and control transports are intentionally deployment-owned and are
-# not created by this repository. Do not enable without a security review.
+# Intended controls for that future review:
+# - protected request and operator-control sockets kept separate;
+# - a dedicated unprivileged service account and restrictive filesystem policy;
+# - no repository-provided credentials, auto-approval, or provider endpoints;
+# - explicit root approval before any unit is authored or installed.

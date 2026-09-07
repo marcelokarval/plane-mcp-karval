@@ -1,7 +1,9 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from threading import Thread
+from pathlib import Path
+from threading import Event, Thread
+from typing import Callable
 
 import pytest
 import hashlib
@@ -13,6 +15,9 @@ from plane_mcp_karval.operator_broker import (
     BrokerError,
     BrokerState,
     AttestationVerifier,
+    BrokerMetadata,
+    JsonStateStore,
+    MemoryStateStore,
     OperatorBroker,
     Provider as BrokerProvider,
 )
@@ -44,16 +49,13 @@ class Provider:
         self.calls.append("read")
         return self.updated_at
 
-    def execute(self, binding: BrokerBinding) -> str:
-        del binding
-        self.calls.append("execute")
-        return "ok"
-
     def conditional_execute(self, binding: BrokerBinding, expected_updated_at: str) -> str:
         self.calls.append("read")
         if expected_updated_at != self.updated_at:
             raise RuntimeError("version conflict")
-        return self.execute(binding)
+        del binding
+        self.calls.append("execute")
+        return "ok"
 
     def verify_readback(self, binding: BrokerBinding, result: str) -> bool:
         del binding, result
@@ -81,11 +83,17 @@ def binding(**changes: str) -> BrokerBinding:
 
 
 def broker(
-    clock: Clock | None = None,
+    clock: Callable[[], float] | None = None,
     signer: AttestationVerifier | None = None,
     provider: BrokerProvider | None = None,
 ):
-    return OperatorBroker(clock=clock or Clock(), signer=signer or Signer(), provider=provider or Provider())
+    return OperatorBroker(
+        clock=clock or Clock(),
+        signer=signer or Signer(),
+        provider=provider or Provider(),
+        metadata=BrokerMetadata("provider-test", "tenant-test", "policy-test", "session-test", "boot-test"),
+        store=MemoryStateStore(),
+    )
 
 
 def test_prepare_confirm_execute_requires_explicit_operator_attestation():
@@ -219,6 +227,8 @@ def test_request_id_and_nonce_collisions_are_rejected():
         provider=Provider(),
         request_id_factory=lambda: "request-collision-1234",
         nonce_factory=lambda: "nonce-collision-1234",
+        metadata=BrokerMetadata("provider-test", "tenant-test", "policy-test", "session-test", "boot-test"),
+        store=MemoryStateStore(),
     )
     b.prepare(binding())
     with pytest.raises(BrokerError):
@@ -229,6 +239,8 @@ def test_request_id_and_nonce_collisions_are_rejected():
         provider=Provider(),
         request_id_factory=lambda: "request-unique-1234",
         nonce_factory=lambda: "nonce-collision-1234",
+        metadata=BrokerMetadata("provider-test", "tenant-test", "policy-test", "session-test", "boot-test"),
+        store=MemoryStateStore(),
     )
     b.prepare(binding())
     with pytest.raises(BrokerError):
@@ -236,13 +248,26 @@ def test_request_id_and_nonce_collisions_are_rejected():
 
 
 def test_two_confirmed_requests_for_one_target_cannot_both_execute():
-    provider = Provider()
+    class BlockingProvider(Provider):
+        started = Event()
+        release = Event()
+
+        def conditional_execute(self, binding: BrokerBinding, expected_updated_at: str) -> str:
+            self.started.set()
+            self.release.wait()
+            return super().conditional_execute(binding, expected_updated_at)
+
+    provider = BlockingProvider()
     b = broker(provider=provider)
     first = confirmed(b, b.prepare(binding()))
     second = confirmed(b, b.prepare(binding(idempotency="idem-b")))
-    b.execute(first.request_id)
+    worker = Thread(target=lambda: b.execute(first.request_id))
+    worker.start()
+    provider.started.wait()
     with pytest.raises(BrokerError):
         b.execute(second.request_id)
+    provider.release.set()
+    worker.join()
     assert provider.calls.count("execute") == 1
 
 
@@ -267,3 +292,94 @@ def test_test_only_verifier_binds_full_protocol_expiry_and_binding_payload():
     b.confirm(request.request_id, request.nonce, attestation)
     with pytest.raises(BrokerError):
         b.confirm(request.request_id, request.nonce, attestation)
+
+
+def test_terminal_state_is_on_request_and_verified_target_is_released():
+    b = broker()
+    first = confirmed(b, b.prepare(binding()))
+    assert b.execute(first.request_id).state is BrokerState.COMPLETED
+    assert b.request(first.request_id).state is BrokerState.COMPLETED
+    second = confirmed(b, b.prepare(binding(idempotency="idem-next")))
+    assert b.execute(second.request_id).state is BrokerState.COMPLETED
+
+
+def test_unknown_quarantines_target_and_blocks_later_request():
+    b = broker(provider=MutatesThenRaises())
+    first = confirmed(b, b.prepare(binding()))
+    assert b.execute(first.request_id).state is BrokerState.UNKNOWN
+    second = confirmed(b, b.prepare(binding(idempotency="idem-next")))
+    with pytest.raises(BrokerError):
+        b.execute(second.request_id)
+
+
+def test_clock_rejects_nan_and_regression_and_rechecks_after_read():
+    import math
+
+    with pytest.raises(BrokerError):
+        broker(clock=lambda: math.nan)
+    clock = Clock()
+    b = broker(clock=clock)
+    request = confirmed(b, b.prepare(binding()))
+    clock.value = 99
+    with pytest.raises(BrokerError):
+        b.execute(request.request_id)
+
+    class ExpiringProvider(Provider):
+        def current_updated_at(self, binding: BrokerBinding) -> str:
+            result = super().current_updated_at(binding)
+            clock.value += 61
+            return result
+
+    clock = Clock()
+    provider = ExpiringProvider()
+    b = broker(clock=clock, provider=provider)
+    request = confirmed(b, b.prepare(binding()))
+    assert b.execute(request.request_id).state is BrokerState.EXPIRED
+    assert "execute" not in provider.calls
+
+
+def test_json_store_restart_retains_quarantine(tmp_path: Path):
+    path = tmp_path / "broker-state.json"
+    store = JsonStateStore(path)
+    b = OperatorBroker(
+        clock=Clock(), signer=Signer(), provider=MutatesThenRaises(),
+        metadata=BrokerMetadata("provider-test", "tenant-test", "policy-test", "session-test", "boot-test"),
+        store=store,
+    )
+    request = confirmed(b, b.prepare(binding()))
+    assert b.execute(request.request_id).state is BrokerState.UNKNOWN
+    store.close()
+    restarted = OperatorBroker(
+        clock=Clock(), signer=Signer(), provider=Provider(),
+        metadata=BrokerMetadata("provider-test", "tenant-test", "policy-test", "session-test", "boot-test"),
+        store=JsonStateStore(path),
+    )
+    assert restarted.request(request.request_id).state is BrokerState.UNKNOWN
+    second = confirmed(restarted, restarted.prepare(binding(idempotency="idem-restart")))
+    with pytest.raises(BrokerError):
+        restarted.execute(second.request_id)
+
+
+def test_metadata_is_required_and_store_lock_is_singleton(tmp_path: Path):
+    with pytest.raises(BrokerError):
+        OperatorBroker(
+            clock=Clock(), signer=Signer(), provider=Provider(),
+            metadata=BrokerMetadata("default", "tenant", "policy", "session", "boot"),
+            store=MemoryStateStore(),
+        )
+    path = tmp_path / "locked.json"
+    first = JsonStateStore(path)
+    with pytest.raises(BrokerError):
+        JsonStateStore(path)
+    first.close()
+
+
+def test_terminal_receipts_do_not_consume_pending_capacity_and_are_prunable():
+    b = broker()
+    b.MAX_PENDING = 1
+    b.MAX_NONCES = 1
+    first = confirmed(b, b.prepare(binding()))
+    b.execute(first.request_id)
+    second = confirmed(b, b.prepare(binding(idempotency="idem-next")))
+    b.execute(second.request_id)
+    assert b.request(first.request_id).state is BrokerState.COMPLETED
