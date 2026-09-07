@@ -8,10 +8,12 @@ separate protected channels and provide an external operator attestation.
 from __future__ import annotations
 
 import hashlib
+import fcntl
 import json
 import math
 import os
 import secrets
+import stat
 import tempfile
 from dataclasses import asdict, dataclass, replace
 from enum import Enum
@@ -189,31 +191,44 @@ class ProductionStateStore:
         self.authenticator = config.authenticator
         if not self.filename or Path(self.filename).name != self.filename or self.filename in {".", ".."}:
             raise BrokerError("unsafe state filename")
+        try:
+            self._root_fd = os.open(self.root, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW)
+        except OSError as error:
+            raise BrokerError("trusted state root missing") from error
         self._check_root()
         self.path = self.root / self.filename
         self._lock_path = self.root / (self.filename + ".lock")
         try:
-            self._lock_fd = os.open(self._lock_path, os.O_CREAT | os.O_EXCL | os.O_WRONLY, 0o600)
+            self._lock_fd = os.open(self._lock_path, os.O_CREAT | os.O_RDWR | os.O_NOFOLLOW, 0o600)
+            fcntl.flock(self._lock_fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
         except OSError as error:
             raise BrokerError("state store already locked") from error
+        lock_info = os.fstat(self._lock_fd)
+        if not stat.S_ISREG(lock_info.st_mode) or lock_info.st_uid != os.getuid() or lock_info.st_mode & 0o077:
+            raise BrokerError("unsafe state lock")
 
     def _check_root(self) -> None:
         try:
             info = os.lstat(self.root)
         except OSError as error:
             raise BrokerError("trusted state root missing") from error
-        if not os.path.isdir(self.root) or os.path.islink(self.root) or info.st_uid != os.getuid() or info.st_mode & 0o022:
+        if not stat.S_ISDIR(info.st_mode) or info.st_uid != os.getuid() or info.st_mode & 0o022:
             raise BrokerError("unsafe state root")
 
     def load(self) -> dict[str, object]:
         try:
-            info = os.lstat(self.path)
-        except FileNotFoundError as error:
+            fd = os.open(self.filename, os.O_RDONLY | os.O_NOFOLLOW, dir_fd=self._root_fd)
+            info = os.fstat(fd)
+        except OSError as error:
             raise BrokerError("state store missing") from error
-        if os.path.islink(self.path) or not os.path.isfile(self.path) or info.st_uid != os.getuid() or info.st_mode & 0o077 or info.st_size > self.MAX_BYTES:
+        if not stat.S_ISREG(info.st_mode) or info.st_uid != os.getuid() or info.st_mode & 0o077 or info.st_size > self.MAX_BYTES:
+            os.close(fd)
             raise BrokerError("unsafe state file")
         try:
-            raw = self.path.read_bytes()
+            with os.fdopen(fd, "rb") as handle:
+                raw = handle.read(self.MAX_BYTES + 1)
+            if len(raw) > self.MAX_BYTES:
+                raise BrokerError("state file too large")
             envelope = json.loads(raw)
         except (OSError, ValueError) as error:
             raise BrokerError("state store unavailable") from error
@@ -221,7 +236,8 @@ class ProductionStateStore:
             raise BrokerError("invalid state envelope")
         if envelope["schema_version"] != self.SCHEMA_VERSION or not isinstance(envelope["metadata"], dict) or not isinstance(envelope["payload"], dict) or not isinstance(envelope["integrity"], str):
             raise BrokerError("invalid state envelope")
-        payload = self._canonical(envelope["payload"])
+        unsigned = {"schema_version": envelope["schema_version"], "metadata": envelope["metadata"], "payload": envelope["payload"]}
+        payload = self._canonical(unsigned)
         if not self.authenticator.verify(payload, envelope["integrity"]):
             raise BrokerError("state integrity failure")
         if envelope["payload"].get("schema_version") != self.SCHEMA_VERSION or envelope["metadata"] != asdict(self.metadata) or envelope["payload"].get("metadata") != envelope["metadata"]:
@@ -232,7 +248,8 @@ class ProductionStateStore:
         metadata = state.get("metadata")
         if not isinstance(metadata, dict) or metadata != asdict(self.metadata) or state.get("schema_version") != self.SCHEMA_VERSION:
             raise BrokerError("invalid state metadata")
-        payload = self._canonical(state)
+        unsigned = {"schema_version": self.SCHEMA_VERSION, "metadata": metadata, "payload": state}
+        payload = self._canonical(unsigned)
         envelope = {
             "schema_version": self.SCHEMA_VERSION,
             "metadata": metadata,
@@ -256,11 +273,20 @@ class ProductionStateStore:
                 os.unlink(temporary)
 
     def close(self) -> None:
+        fcntl.flock(self._lock_fd, fcntl.LOCK_UN)
         os.close(self._lock_fd)
+        os.close(self._root_fd)
+
+    @classmethod
+    def bootstrap(cls, config: TrustedStoreConfig, state: dict[str, object]) -> None:
+        """Offline create-once bootstrap; normal startup never creates state."""
+        store = cls(config)
         try:
-            self._lock_path.unlink()
-        except FileNotFoundError:
-            pass
+            if os.path.lexists(store.path):
+                raise BrokerError("state already bootstrapped")
+            store.save(state)
+        finally:
+            store.close()
 
     @staticmethod
     def _canonical(value: dict[str, object]) -> bytes:
@@ -289,12 +315,13 @@ class ControlInterface(Protocol):
     def confirm(self, request_id: str, nonce: str, attestation: str) -> None: ...
 
 
-class OperatorBroker:
-    """In-memory broker core; persistence/transport belongs to deployment code."""
+class _BrokerCore:
+    """Shared broker state machine; only factories are production entry points."""
 
     TTL_SECONDS = 60.0
     MAX_PENDING = 1024
     MAX_NONCES = 2048
+    MAX_TOMBSTONES = 2048
     MAX_IDENTIFIER = 256
     ATTESTATION_MAX = 4096
 
@@ -323,6 +350,7 @@ class OperatorBroker:
         self._requests: dict[str, PreparedRequest] = {}
         self._receipts: dict[str, BrokerReceipt] = {}
         self._idempotency: dict[str, tuple[str, str]] = {}
+        self._tombstones: dict[str, str] = {}
         self._nonces: dict[str, float] = {}
         self._inflight: set[tuple[str, ...]] = set()
         self._quarantine: set[tuple[str, ...]] = set()
@@ -355,6 +383,8 @@ class OperatorBroker:
                 if existing_digest != binding.digest():
                     raise BrokerError("idempotency binding conflict")
                 return self._requests[existing_id]
+            if binding.idempotency in self._tombstones:
+                raise BrokerError("idempotency replay tombstone")
             pending = sum(
                 request.state in {
                     BrokerState.PREPARED,
@@ -498,6 +528,9 @@ class OperatorBroker:
             if request.state in {BrokerState.COMPLETED, BrokerState.DRIFTED, BrokerState.EXPIRED}
         ]
         for request in terminal[: max(0, len(terminal) - self.MAX_PENDING)]:
+            if len(self._tombstones) >= self.MAX_TOMBSTONES:
+                raise BrokerError("tombstone capacity exhausted")
+            self._tombstones[request.binding.idempotency] = request.binding.digest()
             self._requests.pop(request.request_id, None)
             self._receipts.pop(request.request_id, None)
             self._idempotency.pop(request.binding.idempotency, None)
@@ -536,6 +569,7 @@ class OperatorBroker:
                     for request_id, receipt in self._receipts.items()
                 },
                 "idempotency": self._idempotency,
+                "tombstones": self._tombstones,
                 "nonces": sorted(self._nonces),
                 "schema_version": 1,
                 "metadata": asdict(self._owned),
@@ -547,7 +581,7 @@ class OperatorBroker:
     def _restore(self, state: dict[str, object]) -> None:
         if not state:
             return
-        required = {"schema_version", "metadata", "requests", "receipts", "idempotency", "nonces", "inflight", "quarantine"}
+        required = {"schema_version", "metadata", "requests", "receipts", "idempotency", "tombstones", "nonces", "inflight", "quarantine"}
         stored_metadata = state.get("metadata")
         current_metadata = asdict(self._owned)
         boot_changed = isinstance(stored_metadata, dict) and stored_metadata != current_metadata and all(
@@ -558,6 +592,13 @@ class OperatorBroker:
             raise BrokerError("invalid persisted state")
         for request_id, raw in dict(state.get("requests", {})).items():
             item = dict(raw)
+            if set(item) != {"request_id", "nonce", "binding", "expires_at", "state", "authorization"}:
+                raise BrokerError("invalid persisted request")
+            if not isinstance(request_id, str) or not isinstance(item["request_id"], str) or request_id != item["request_id"] or not isinstance(item["nonce"], str) or len(item["nonce"]) > self.MAX_IDENTIFIER or not isinstance(item["binding"], dict) or set(item["binding"]) != set(BrokerBinding.__dataclass_fields__) or not isinstance(item["expires_at"], (int, float)) or not math.isfinite(item["expires_at"]):
+                raise BrokerError("invalid persisted request")
+            binding = BrokerBinding(**item["binding"])
+            original_state = BrokerState(item["state"])
+            original_request = PreparedRequest(item["request_id"], item["nonce"], binding, float(item["expires_at"]), original_state)
             authorization = item.get("authorization")
             if item["state"] == BrokerState.CONFIRMED.value and (
                 not isinstance(authorization, list) or len(authorization) != 2 or not all(isinstance(value, str) for value in authorization)
@@ -569,7 +610,9 @@ class OperatorBroker:
                     raise BrokerError("confirmed authorization invalid")
             elif authorization is not None:
                 raise BrokerError("unexpected persisted authorization")
-            restored_state = BrokerState(item["state"])
+            if authorization is not None and (len(authorization[0]) > self.ATTESTATION_MAX or not secrets.compare_digest(authorization[0], self._attestation_payload(original_request))):
+                raise BrokerError("persisted authorization binding mismatch")
+            restored_state = original_state
             authorization_value = tuple(authorization) if authorization else None
             if boot_changed and restored_state in {BrokerState.PREPARED, BrokerState.CONFIRMED}:
                 restored_state = BrokerState.EXPIRED
@@ -578,7 +621,7 @@ class OperatorBroker:
                 restored_state = BrokerState.UNKNOWN
             self._requests[request_id] = PreparedRequest(
                 request_id=item["request_id"], nonce=item["nonce"],
-                binding=BrokerBinding(**dict(item["binding"])),
+                binding=binding,
                 expires_at=float(item["expires_at"]), state=restored_state,
                 authorization=authorization_value,
             )
@@ -590,6 +633,7 @@ class OperatorBroker:
         self._idempotency = {
             key: (value[0], value[1]) for key, value in dict(state.get("idempotency", {})).items()
         }
+        self._tombstones = {key: value for key, value in dict(state.get("tombstones", {})).items()}
         self._nonces = {
             nonce: float(index) for index, nonce in enumerate(state.get("nonces", []))
         }
@@ -630,7 +674,7 @@ class OperatorBroker:
     @staticmethod
     def _validate_metadata(metadata: BrokerMetadata) -> None:
         if not isinstance(metadata, BrokerMetadata) or any(
-            not isinstance(value, str) or not value or len(value) > OperatorBroker.MAX_IDENTIFIER
+            not isinstance(value, str) or not value or len(value) > _BrokerCore.MAX_IDENTIFIER
             or value.lower() in {"default", "placeholder", "changeme", "example"}
             for value in asdict(metadata).values()
         ):
@@ -672,7 +716,7 @@ class OperatorBroker:
 
     @staticmethod
     def _opaque(value: str) -> str:
-        if not isinstance(value, str) or not 16 <= len(value) <= OperatorBroker.MAX_IDENTIFIER or not value.isascii():
+        if not isinstance(value, str) or not 16 <= len(value) <= _BrokerCore.MAX_IDENTIFIER or not value.isascii():
             raise BrokerError("broker identifier generation failed")
         return value
 
@@ -685,3 +729,36 @@ class OperatorBroker:
             raise BrokerError("invalid binding")
         if binding.policy != "comment-v1" or binding.target_state != binding.expected_state:
             raise BrokerError("generic state mutation denied")
+
+
+OperatorBroker = _BrokerCore  # test ergonomics; production callers use factories below.
+
+
+def create_production_broker(
+    config: TrustedStoreConfig,
+    verifier: AttestationVerifier,
+    provider: Provider,
+    clock: Callable[[], float],
+) -> _BrokerCore:
+    """Construct the production broker with its trusted store; no store injection."""
+    store = ProductionStateStore(config)
+    return _BrokerCore(clock=clock, signer=verifier, provider=provider, metadata=config.metadata, store=store)
+
+
+def create_test_broker(
+    *,
+    metadata: BrokerMetadata,
+    verifier: AttestationVerifier,
+    provider: Provider,
+    clock: Callable[[], float],
+    store: MemoryStateStore | JsonStateStore,
+    request_id_factory: Callable[[], str] | None = None,
+    nonce_factory: Callable[[], str] | None = None,
+) -> _BrokerCore:
+    """Explicit test-only construction with deterministic isolated stores."""
+    if not isinstance(store, (MemoryStateStore, JsonStateStore)):
+        raise BrokerError("test store required")
+    return _BrokerCore(
+        clock=clock, signer=verifier, provider=provider, metadata=metadata, store=store,
+        request_id_factory=request_id_factory, nonce_factory=nonce_factory,
+    )

@@ -21,6 +21,8 @@ from plane_mcp_karval.operator_broker import (
     OperatorBroker,
     ProductionStateStore,
     TrustedStoreConfig,
+    create_production_broker,
+    create_test_broker,
     Provider as BrokerProvider,
 )
 
@@ -444,3 +446,34 @@ def test_boot_identity_invalidates_prepared_but_preserves_unknown_evidence(tmp_p
     store.close()
     restarted = OperatorBroker(clock=Clock(), signer=Signer(), provider=Provider(), metadata=replace(metadata, broker_boot="boot-two"), store=JsonStateStore(path))
     assert restarted.request(prepared.request_id).state is BrokerState.EXPIRED
+
+
+def test_factories_select_store_boundary_and_production_bootstrap_once(tmp_path: Path):
+    metadata = BrokerMetadata("provider-test", "tenant-test", "comment-v1", "session-test", "boot-test")
+    test_broker = create_test_broker(metadata=metadata, verifier=Signer(), provider=Provider(), clock=Clock(), store=MemoryStateStore())
+    assert test_broker.prepare(binding()).state is BrokerState.PREPARED
+    root = tmp_path / "trusted"
+    root.mkdir(); root.chmod(0o700)
+    config = TrustedStoreConfig(root, "state.json", metadata, TestStateAuthenticator())
+    initial = {"schema_version": 1, "metadata": asdict(metadata), "requests": {}, "receipts": {}, "idempotency": {}, "tombstones": {}, "nonces": [], "inflight": [], "quarantine": []}
+    ProductionStateStore.bootstrap(config, initial)
+    with pytest.raises(BrokerError):
+        ProductionStateStore.bootstrap(config, initial)
+    production = create_production_broker(config, Signer(), Provider(), Clock())
+    assert production.prepare(binding()).state is BrokerState.PREPARED
+    production._store.close()
+
+
+def test_restored_authorization_payload_substitution_fails_constant_time_binding(tmp_path: Path):
+    path = tmp_path / "substitution.json"
+    store = JsonStateStore(path)
+    first = OperatorBroker(clock=Clock(), signer=Signer(), provider=Provider(), metadata=BrokerMetadata("provider-test", "tenant-test", "comment-v1", "session-test", "boot-test"), store=store)
+    request = confirmed(first, first.prepare(binding()))
+    store.close()
+    tampered = JsonStateStore(path)
+    state = tampered.load()
+    state["requests"][request.request_id]["authorization"][0] = "forged-payload"
+    tampered.save(state)
+    tampered.close()
+    with pytest.raises(BrokerError):
+        OperatorBroker(clock=Clock(), signer=Signer(), provider=Provider(), metadata=BrokerMetadata("provider-test", "tenant-test", "comment-v1", "session-test", "boot-test"), store=JsonStateStore(path))
