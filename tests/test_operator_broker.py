@@ -514,3 +514,11 @@ def test_compacted_terminal_retains_restart_replay_tombstone(tmp_path: Path):
 
 def test_unrestricted_public_operator_broker_constructor_is_removed():
     assert not hasattr(broker_module, "OperatorBroker")
+
+
+def test_documented_production_api_exports_only_factory():
+    import plane_mcp_karval.operator_broker_api as api
+
+    assert api.__all__ == ("create_production_broker",)
+    assert not hasattr(api, "create_test_broker")
+    assert not hasattr(api, "MemoryStateStore")

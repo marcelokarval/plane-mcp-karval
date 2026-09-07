@@ -195,23 +195,30 @@ class ProductionStateStore:
             self._root_fd = os.open(self.root, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW)
         except OSError as error:
             raise BrokerError("trusted state root missing") from error
-        self._check_root()
+        try:
+            self._check_root()
+        except Exception:
+            os.close(self._root_fd)
+            raise
         self.path = self.root / self.filename
         self._lock_name = self.filename + ".lock"
+        self._lock_fd = -1
         try:
             self._lock_fd = os.open(self._lock_name, os.O_CREAT | os.O_RDWR | os.O_NOFOLLOW, 0o600, dir_fd=self._root_fd)
             fcntl.flock(self._lock_fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
-        except OSError as error:
+            lock_info = os.fstat(self._lock_fd)
+            if not stat.S_ISREG(lock_info.st_mode) or lock_info.st_nlink != 1 or lock_info.st_uid != os.getuid() or lock_info.st_mode & 0o077:
+                raise BrokerError("unsafe state lock")
+        except Exception as error:
+            if self._lock_fd >= 0:
+                os.close(self._lock_fd)
+            os.close(self._root_fd)
+            if isinstance(error, BrokerError):
+                raise
             raise BrokerError("state store already locked") from error
-        lock_info = os.fstat(self._lock_fd)
-        if not stat.S_ISREG(lock_info.st_mode) or lock_info.st_nlink != 1 or lock_info.st_uid != os.getuid() or lock_info.st_mode & 0o077:
-            raise BrokerError("unsafe state lock")
 
     def _check_root(self) -> None:
-        try:
-            info = os.lstat(self.root)
-        except OSError as error:
-            raise BrokerError("trusted state root missing") from error
+        info = os.fstat(self._root_fd)
         if not stat.S_ISDIR(info.st_mode) or info.st_nlink < 2 or info.st_uid != os.getuid() or info.st_mode & 0o022:
             raise BrokerError("unsafe state root")
 
@@ -242,7 +249,7 @@ class ProductionStateStore:
             raise BrokerError("state integrity failure")
         trusted = asdict(self.metadata)
         stored = envelope["metadata"]
-        stable_match = isinstance(stored, dict) and all(stored.get(key) == trusted[key] for key in trusted if key != "broker_boot")
+        stable_match = isinstance(stored, dict) and set(stored) == set(trusted) and all(stored.get(key) == trusted[key] for key in trusted if key != "broker_boot")
         if envelope["payload"].get("schema_version") != self.SCHEMA_VERSION or not stable_match or envelope["payload"].get("metadata") != envelope["metadata"]:
             raise BrokerError("state metadata failure")
         return envelope["payload"]
@@ -312,8 +319,6 @@ class ProductionStateStore:
             raise BrokerError("bootstrap must be canonical empty state")
         store = cls(config)
         try:
-            if os.path.lexists(store.path):
-                raise BrokerError("state already bootstrapped")
             store.save(state, exclusive=True)
         finally:
             store.close()
@@ -625,7 +630,7 @@ class _BrokerCore:
             stored_metadata.get(key) == current_metadata[key]
             for key in current_metadata if key != "broker_boot"
         )
-        if set(state) != required or state.get("schema_version") != 1 or (stored_metadata != current_metadata and not boot_changed):
+        if set(state) != required or state.get("schema_version") != 1 or not isinstance(stored_metadata, dict) or set(stored_metadata) != set(current_metadata) or (stored_metadata != current_metadata and not boot_changed):
             raise BrokerError("invalid persisted state")
         for request_id, raw in dict(state.get("requests", {})).items():
             item = dict(raw)
@@ -635,8 +640,9 @@ class _BrokerCore:
                 raise BrokerError("invalid persisted request")
             binding = BrokerBinding(**item["binding"])
             self._validate_binding(binding)
+            terminal_history = item["state"] in {state.value for state in (BrokerState.COMPLETED, BrokerState.DRIFTED, BrokerState.UNKNOWN, BrokerState.APPLIED_UNVERIFIED, BrokerState.EXPIRED)}
             if any(getattr(binding, key) != stored_metadata[key] for key in ("provider", "tenant", "policy", "session", "broker_boot")):
-                if not (boot_changed and binding.broker_boot == stored_metadata["broker_boot"] and all(getattr(binding, key) == stored_metadata[key] for key in ("provider", "tenant", "policy", "session"))):
+                if not ((boot_changed or terminal_history) and binding.broker_boot != current_metadata["broker_boot"] and all(getattr(binding, key) == stored_metadata[key] for key in ("provider", "tenant", "policy", "session"))):
                     raise BrokerError("persisted binding metadata mismatch")
             original_state = BrokerState(item["state"])
             original_request = PreparedRequest(item["request_id"], item["nonce"], binding, float(item["expires_at"]), original_state)
