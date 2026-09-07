@@ -18,13 +18,13 @@ from plane_mcp_karval.operator_broker import (
     BrokerMetadata,
     JsonStateStore,
     MemoryStateStore,
-    OperatorBroker,
     ProductionStateStore,
     TrustedStoreConfig,
     create_production_broker,
     create_test_broker,
     Provider as BrokerProvider,
 )
+import plane_mcp_karval.operator_broker as broker_module
 
 
 @dataclass
@@ -98,6 +98,21 @@ def broker(
         metadata=BrokerMetadata("provider-test", "tenant-test", "comment-v1", "session-test", "boot-test"),
         store=MemoryStateStore(),
     )
+
+
+def make_test_broker(*, clock, signer, provider, metadata, store, request_id_factory=None, nonce_factory=None):
+    return create_test_broker(
+        metadata=metadata,
+        verifier=signer,
+        provider=provider,
+        clock=clock,
+        store=store,
+        request_id_factory=request_id_factory,
+        nonce_factory=nonce_factory,
+    )
+
+
+OperatorBroker = make_test_broker
 
 
 def test_prepare_confirm_execute_requires_explicit_operator_attestation():
@@ -477,3 +492,25 @@ def test_restored_authorization_payload_substitution_fails_constant_time_binding
     tampered.close()
     with pytest.raises(BrokerError):
         OperatorBroker(clock=Clock(), signer=Signer(), provider=Provider(), metadata=BrokerMetadata("provider-test", "tenant-test", "comment-v1", "session-test", "boot-test"), store=JsonStateStore(path))
+
+
+def test_compacted_terminal_retains_restart_replay_tombstone(tmp_path: Path):
+    path = tmp_path / "tombstone.json"
+    store = JsonStateStore(path)
+    b = broker()
+    # Swap in an isolated durable test store through the explicit test factory.
+    b = create_test_broker(metadata=BrokerMetadata("provider-test", "tenant-test", "comment-v1", "session-test", "boot-test"), verifier=Signer(), provider=Provider(), clock=Clock(), store=store)
+    b.MAX_PENDING = 1
+    first = confirmed(b, b.prepare(binding(idempotency="idem-one")))
+    b.execute(first.request_id)
+    second = confirmed(b, b.prepare(binding(idempotency="idem-two")))
+    b.execute(second.request_id)
+    b.prepare(binding(idempotency="idem-three"))
+    store.close()
+    restarted = create_test_broker(metadata=BrokerMetadata("provider-test", "tenant-test", "comment-v1", "session-test", "boot-test"), verifier=Signer(), provider=Provider(), clock=Clock(), store=JsonStateStore(path))
+    with pytest.raises(BrokerError):
+        restarted.prepare(binding(idempotency="idem-one"))
+
+
+def test_unrestricted_public_operator_broker_constructor_is_removed():
+    assert not hasattr(broker_module, "OperatorBroker")

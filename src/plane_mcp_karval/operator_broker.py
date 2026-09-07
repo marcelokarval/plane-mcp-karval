@@ -197,14 +197,14 @@ class ProductionStateStore:
             raise BrokerError("trusted state root missing") from error
         self._check_root()
         self.path = self.root / self.filename
-        self._lock_path = self.root / (self.filename + ".lock")
+        self._lock_name = self.filename + ".lock"
         try:
-            self._lock_fd = os.open(self._lock_path, os.O_CREAT | os.O_RDWR | os.O_NOFOLLOW, 0o600)
+            self._lock_fd = os.open(self._lock_name, os.O_CREAT | os.O_RDWR | os.O_NOFOLLOW, 0o600, dir_fd=self._root_fd)
             fcntl.flock(self._lock_fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
         except OSError as error:
             raise BrokerError("state store already locked") from error
         lock_info = os.fstat(self._lock_fd)
-        if not stat.S_ISREG(lock_info.st_mode) or lock_info.st_uid != os.getuid() or lock_info.st_mode & 0o077:
+        if not stat.S_ISREG(lock_info.st_mode) or lock_info.st_nlink != 1 or lock_info.st_uid != os.getuid() or lock_info.st_mode & 0o077:
             raise BrokerError("unsafe state lock")
 
     def _check_root(self) -> None:
@@ -212,7 +212,7 @@ class ProductionStateStore:
             info = os.lstat(self.root)
         except OSError as error:
             raise BrokerError("trusted state root missing") from error
-        if not stat.S_ISDIR(info.st_mode) or info.st_uid != os.getuid() or info.st_mode & 0o022:
+        if not stat.S_ISDIR(info.st_mode) or info.st_nlink < 2 or info.st_uid != os.getuid() or info.st_mode & 0o022:
             raise BrokerError("unsafe state root")
 
     def load(self) -> dict[str, object]:
@@ -221,7 +221,7 @@ class ProductionStateStore:
             info = os.fstat(fd)
         except OSError as error:
             raise BrokerError("state store missing") from error
-        if not stat.S_ISREG(info.st_mode) or info.st_uid != os.getuid() or info.st_mode & 0o077 or info.st_size > self.MAX_BYTES:
+        if not stat.S_ISREG(info.st_mode) or info.st_nlink != 1 or info.st_uid != os.getuid() or info.st_mode & 0o077 or info.st_size > self.MAX_BYTES:
             os.close(fd)
             raise BrokerError("unsafe state file")
         try:
@@ -240,11 +240,14 @@ class ProductionStateStore:
         payload = self._canonical(unsigned)
         if not self.authenticator.verify(payload, envelope["integrity"]):
             raise BrokerError("state integrity failure")
-        if envelope["payload"].get("schema_version") != self.SCHEMA_VERSION or envelope["metadata"] != asdict(self.metadata) or envelope["payload"].get("metadata") != envelope["metadata"]:
+        trusted = asdict(self.metadata)
+        stored = envelope["metadata"]
+        stable_match = isinstance(stored, dict) and all(stored.get(key) == trusted[key] for key in trusted if key != "broker_boot")
+        if envelope["payload"].get("schema_version") != self.SCHEMA_VERSION or not stable_match or envelope["payload"].get("metadata") != envelope["metadata"]:
             raise BrokerError("state metadata failure")
         return envelope["payload"]
 
-    def save(self, state: dict[str, object]) -> None:
+    def save(self, state: dict[str, object], *, exclusive: bool = False) -> None:
         metadata = state.get("metadata")
         if not isinstance(metadata, dict) or metadata != asdict(self.metadata) or state.get("schema_version") != self.SCHEMA_VERSION:
             raise BrokerError("invalid state metadata")
@@ -257,20 +260,39 @@ class ProductionStateStore:
             "integrity": self.authenticator.authenticate(payload),
         }
         encoded = json.dumps(envelope, sort_keys=True, separators=(",", ":")).encode()
-        fd, temporary = tempfile.mkstemp(prefix=self.filename + ".", dir=self.root)
+        if len(encoded) > self.MAX_BYTES:
+            raise BrokerError("state exceeds size limit")
+        if exclusive:
+            try:
+                fd = os.open(self.filename, os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW, 0o600, dir_fd=self._root_fd)
+                info = os.fstat(fd)
+                if not stat.S_ISREG(info.st_mode) or info.st_nlink != 1 or info.st_uid != os.getuid() or info.st_mode & 0o077:
+                    raise BrokerError("unsafe bootstrap file")
+                with os.fdopen(fd, "wb") as handle:
+                    handle.write(encoded); handle.flush(); os.fsync(handle.fileno())
+                os.fsync(self._root_fd)
+                return
+            except FileExistsError as error:
+                raise BrokerError("state already bootstrapped") from error
+        temporary_name = f".{self.filename}.{secrets.token_urlsafe(12)}.tmp"
         try:
+            fd = os.open(temporary_name, os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW, 0o600, dir_fd=self._root_fd)
+        except OSError as error:
+            raise BrokerError("temporary state creation failed") from error
+        try:
+            temporary_info = os.fstat(fd)
+            if not stat.S_ISREG(temporary_info.st_mode) or temporary_info.st_nlink != 1 or temporary_info.st_uid != os.getuid():
+                raise BrokerError("unsafe temporary state file")
             os.fchmod(fd, 0o600)
             with os.fdopen(fd, "wb") as handle:
                 handle.write(encoded); handle.flush(); os.fsync(handle.fileno())
-            os.replace(temporary, self.path)
-            directory_fd = os.open(self.root, os.O_RDONLY)
-            try:
-                os.fsync(directory_fd)
-            finally:
-                os.close(directory_fd)
+            os.replace(temporary_name, self.filename, src_dir_fd=self._root_fd, dst_dir_fd=self._root_fd)
+            os.fsync(self._root_fd)
         finally:
-            if os.path.exists(temporary):
-                os.unlink(temporary)
+            try:
+                os.unlink(temporary_name, dir_fd=self._root_fd)
+            except FileNotFoundError:
+                pass
 
     def close(self) -> None:
         fcntl.flock(self._lock_fd, fcntl.LOCK_UN)
@@ -280,11 +302,19 @@ class ProductionStateStore:
     @classmethod
     def bootstrap(cls, config: TrustedStoreConfig, state: dict[str, object]) -> None:
         """Offline create-once bootstrap; normal startup never creates state."""
+        expected = {
+            "schema_version": cls.SCHEMA_VERSION,
+            "metadata": asdict(config.metadata),
+            "requests": {}, "receipts": {}, "idempotency": {}, "tombstones": {},
+            "nonces": [], "inflight": [], "quarantine": [],
+        }
+        if state != expected:
+            raise BrokerError("bootstrap must be canonical empty state")
         store = cls(config)
         try:
             if os.path.lexists(store.path):
                 raise BrokerError("state already bootstrapped")
-            store.save(state)
+            store.save(state, exclusive=True)
         finally:
             store.close()
 
@@ -315,6 +345,10 @@ class ControlInterface(Protocol):
     def confirm(self, request_id: str, nonce: str, attestation: str) -> None: ...
 
 
+class _BrokerCapability:
+    pass
+
+
 class _BrokerCore:
     """Shared broker state machine; only factories are production entry points."""
 
@@ -333,9 +367,12 @@ class _BrokerCore:
         provider: Provider,
         metadata: BrokerMetadata,
         store: StateStore,
+        capability: object,
         request_id_factory: Callable[[], str] | None = None,
         nonce_factory: Callable[[], str] | None = None,
     ) -> None:
+        if not isinstance(capability, _BrokerCapability):
+            raise BrokerError("private broker capability required")
         self._clock = clock
         self._signer = signer
         self._provider = provider
@@ -597,6 +634,10 @@ class _BrokerCore:
             if not isinstance(request_id, str) or not isinstance(item["request_id"], str) or request_id != item["request_id"] or not isinstance(item["nonce"], str) or len(item["nonce"]) > self.MAX_IDENTIFIER or not isinstance(item["binding"], dict) or set(item["binding"]) != set(BrokerBinding.__dataclass_fields__) or not isinstance(item["expires_at"], (int, float)) or not math.isfinite(item["expires_at"]):
                 raise BrokerError("invalid persisted request")
             binding = BrokerBinding(**item["binding"])
+            self._validate_binding(binding)
+            if any(getattr(binding, key) != stored_metadata[key] for key in ("provider", "tenant", "policy", "session", "broker_boot")):
+                if not (boot_changed and binding.broker_boot == stored_metadata["broker_boot"] and all(getattr(binding, key) == stored_metadata[key] for key in ("provider", "tenant", "policy", "session"))):
+                    raise BrokerError("persisted binding metadata mismatch")
             original_state = BrokerState(item["state"])
             original_request = PreparedRequest(item["request_id"], item["nonce"], binding, float(item["expires_at"]), original_state)
             authorization = item.get("authorization")
@@ -731,9 +772,6 @@ class _BrokerCore:
             raise BrokerError("generic state mutation denied")
 
 
-OperatorBroker = _BrokerCore  # test ergonomics; production callers use factories below.
-
-
 def create_production_broker(
     config: TrustedStoreConfig,
     verifier: AttestationVerifier,
@@ -742,7 +780,11 @@ def create_production_broker(
 ) -> _BrokerCore:
     """Construct the production broker with its trusted store; no store injection."""
     store = ProductionStateStore(config)
-    return _BrokerCore(clock=clock, signer=verifier, provider=provider, metadata=config.metadata, store=store)
+    try:
+        return _BrokerCore(clock=clock, signer=verifier, provider=provider, metadata=config.metadata, store=store, capability=_BrokerCapability())
+    except Exception:
+        store.close()
+        raise
 
 
 def create_test_broker(
@@ -758,7 +800,11 @@ def create_test_broker(
     """Explicit test-only construction with deterministic isolated stores."""
     if not isinstance(store, (MemoryStateStore, JsonStateStore)):
         raise BrokerError("test store required")
-    return _BrokerCore(
-        clock=clock, signer=verifier, provider=provider, metadata=metadata, store=store,
-        request_id_factory=request_id_factory, nonce_factory=nonce_factory,
-    )
+    try:
+        return _BrokerCore(
+            clock=clock, signer=verifier, provider=provider, metadata=metadata, store=store, capability=_BrokerCapability(),
+            request_id_factory=request_id_factory, nonce_factory=nonce_factory,
+        )
+    except Exception:
+        store.close()
+        raise
