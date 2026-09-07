@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import asdict, dataclass, replace
 from pathlib import Path
 from threading import Event, Thread
 from typing import Callable
@@ -19,6 +19,8 @@ from plane_mcp_karval.operator_broker import (
     JsonStateStore,
     MemoryStateStore,
     OperatorBroker,
+    ProductionStateStore,
+    TrustedStoreConfig,
     Provider as BrokerProvider,
 )
 
@@ -91,7 +93,7 @@ def broker(
         clock=clock or Clock(),
         signer=signer or Signer(),
         provider=provider or Provider(),
-        metadata=BrokerMetadata("provider-test", "tenant-test", "policy-test", "session-test", "boot-test"),
+        metadata=BrokerMetadata("provider-test", "tenant-test", "comment-v1", "session-test", "boot-test"),
         store=MemoryStateStore(),
     )
 
@@ -227,7 +229,7 @@ def test_request_id_and_nonce_collisions_are_rejected():
         provider=Provider(),
         request_id_factory=lambda: "request-collision-1234",
         nonce_factory=lambda: "nonce-collision-1234",
-        metadata=BrokerMetadata("provider-test", "tenant-test", "policy-test", "session-test", "boot-test"),
+        metadata=BrokerMetadata("provider-test", "tenant-test", "comment-v1", "session-test", "boot-test"),
         store=MemoryStateStore(),
     )
     b.prepare(binding())
@@ -239,7 +241,7 @@ def test_request_id_and_nonce_collisions_are_rejected():
         provider=Provider(),
         request_id_factory=lambda: "request-unique-1234",
         nonce_factory=lambda: "nonce-collision-1234",
-        metadata=BrokerMetadata("provider-test", "tenant-test", "policy-test", "session-test", "boot-test"),
+        metadata=BrokerMetadata("provider-test", "tenant-test", "comment-v1", "session-test", "boot-test"),
         store=MemoryStateStore(),
     )
     b.prepare(binding())
@@ -343,7 +345,7 @@ def test_json_store_restart_retains_quarantine(tmp_path: Path):
     store = JsonStateStore(path)
     b = OperatorBroker(
         clock=Clock(), signer=Signer(), provider=MutatesThenRaises(),
-        metadata=BrokerMetadata("provider-test", "tenant-test", "policy-test", "session-test", "boot-test"),
+        metadata=BrokerMetadata("provider-test", "tenant-test", "comment-v1", "session-test", "boot-test"),
         store=store,
     )
     request = confirmed(b, b.prepare(binding()))
@@ -351,7 +353,7 @@ def test_json_store_restart_retains_quarantine(tmp_path: Path):
     store.close()
     restarted = OperatorBroker(
         clock=Clock(), signer=Signer(), provider=Provider(),
-        metadata=BrokerMetadata("provider-test", "tenant-test", "policy-test", "session-test", "boot-test"),
+        metadata=BrokerMetadata("provider-test", "tenant-test", "comment-v1", "session-test", "boot-test"),
         store=JsonStateStore(path),
     )
     assert restarted.request(request.request_id).state is BrokerState.UNKNOWN
@@ -383,3 +385,62 @@ def test_terminal_receipts_do_not_consume_pending_capacity_and_are_prunable():
     second = confirmed(b, b.prepare(binding(idempotency="idem-next")))
     b.execute(second.request_id)
     assert b.request(first.request_id).state is BrokerState.COMPLETED
+
+
+class TestStateAuthenticator:
+    def authenticate(self, payload: bytes) -> str:
+        return hashlib.sha256(b"test-only" + payload).hexdigest()
+
+    def verify(self, payload: bytes, tag: str) -> bool:
+        return hmac.compare_digest(self.authenticate(payload), tag)
+
+
+def test_production_store_requires_existing_trusted_root_and_authenticator(tmp_path: Path):
+    missing = tmp_path / "not-created"
+    with pytest.raises(BrokerError):
+        ProductionStateStore(TrustedStoreConfig(missing, "state.json", BrokerMetadata("provider-test", "tenant-test", "comment-v1", "session-test", "boot-test"), TestStateAuthenticator()))
+    root = tmp_path / "root"
+    root.mkdir()
+    root.chmod(0o700)
+    with pytest.raises(BrokerError):
+        ProductionStateStore(TrustedStoreConfig(root, "state.json", BrokerMetadata("provider-test", "tenant-test", "comment-v1", "session-test", "boot-test"), None))
+
+
+def test_production_store_rejects_missing_or_tampered_state(tmp_path: Path):
+    root = tmp_path / "root"
+    root.mkdir()
+    root.chmod(0o700)
+    config = TrustedStoreConfig(root, "state.json", BrokerMetadata("provider-test", "tenant-test", "comment-v1", "session-test", "boot-test"), TestStateAuthenticator())
+    store = ProductionStateStore(config)
+    with pytest.raises(BrokerError):
+        store.load()
+    store.close()
+    (root / "state.json").write_text("{}", encoding="utf-8")
+    with pytest.raises(BrokerError):
+        ProductionStateStore(config).load()
+
+
+def test_hostile_restored_confirmed_state_requires_valid_persisted_authorization(tmp_path: Path):
+    path = tmp_path / "state.json"
+    store = JsonStateStore(path)
+    state = {
+        "schema_version": 1,
+        "metadata": {"provider": "provider-test", "tenant": "tenant-test", "policy": "comment-v1", "session": "session-test", "broker_boot": "boot-test"},
+        "requests": {"request-1234567890123456": {"request_id": "request-1234567890123456", "nonce": "nonce-1234567890123456", "binding": asdict(binding()), "expires_at": 200.0, "state": "CONFIRMED", "authorization": None}},
+        "receipts": {}, "idempotency": {}, "nonces": ["nonce-1234567890123456"], "inflight": [], "quarantine": [],
+    }
+    store.save(state)
+    store.close()
+    with pytest.raises(BrokerError):
+        OperatorBroker(clock=Clock(), signer=Signer(), provider=Provider(), metadata=BrokerMetadata("provider-test", "tenant-test", "comment-v1", "session-test", "boot-test"), store=JsonStateStore(path))
+
+
+def test_boot_identity_invalidates_prepared_but_preserves_unknown_evidence(tmp_path: Path):
+    path = tmp_path / "boot-state.json"
+    metadata = BrokerMetadata("provider-test", "tenant-test", "comment-v1", "session-test", "boot-one")
+    store = JsonStateStore(path)
+    broker_one = OperatorBroker(clock=Clock(), signer=Signer(), provider=MutatesThenRaises(), metadata=metadata, store=store)
+    prepared = broker_one.prepare(binding())
+    store.close()
+    restarted = OperatorBroker(clock=Clock(), signer=Signer(), provider=Provider(), metadata=replace(metadata, broker_boot="boot-two"), store=JsonStateStore(path))
+    assert restarted.request(prepared.request_id).state is BrokerState.EXPIRED
