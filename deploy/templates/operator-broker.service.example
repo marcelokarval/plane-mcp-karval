@@ -1,5 +1,5 @@
-# NON-RUNNABLE DOCUMENTATION ONLY. This file intentionally has no systemd
-# section and cannot be loaded as a unit. Root must create and review an actual
+# NON-RUNNABLE DOCUMENTATION ONLY. This file intentionally has no systemd unit
+# sections and cannot be loaded as a unit. Root must create and review an actual
 # unit later, behind a separately gated deployment artifact.
 
 # Intended controls for that future review:
