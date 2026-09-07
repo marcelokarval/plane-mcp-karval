@@ -1,0 +1,16 @@
+# Non-active deployment template. Root must review paths, users, sandboxing,
+# protected request/control sockets, and credentials before installing.
+[Unit]
+Description=Plane operator approval broker (template only)
+
+[Service]
+ExecStart=/usr/local/bin/plane-mcp-karval operator-broker
+User=plane-broker
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectSystem=strict
+ProtectHome=yes
+ReadWritePaths=/var/lib/plane-mcp-karval
+
+# Request and control transports are intentionally deployment-owned and are
+# not created by this repository. Do not enable without a security review.
