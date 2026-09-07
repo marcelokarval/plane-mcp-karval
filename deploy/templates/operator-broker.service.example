@@ -1,5 +1,6 @@
-# Non-active deployment template. Root must review paths, users, sandboxing,
-# protected request/control sockets, and credentials before installing.
+# NON-RUNNABLE EXAMPLE ONLY. This file intentionally has no [Unit] or [Service]
+# section. Root must create and review an actual unit later.
+[ExampleUnitDoNotInstall]
 [Unit]
 Description=Plane operator approval broker (template only)
 
