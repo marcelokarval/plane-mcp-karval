@@ -1,0 +1,48 @@
+{
+  "contract_version": 1,
+  "registry_version": "1.0.0",
+  "presentation_contract_version": 2,
+  "owner": "plane-governance",
+  "authority": "tipo:* and qualifier are semantic; vector icons are presentation only",
+  "compatibility": {
+    "persisted_title_format": "unicode-v1",
+    "presentation_layer": "semantic-icon-presentation-v2",
+    "dual_read": ["unicode-v1", "semantic-icon-id-v1"],
+    "title_token_migration_authorized": false
+  },
+  "presentation": {
+    "family": "Tabler Icons",
+    "style": "outline-monochrome",
+    "stroke_width": 1.75,
+    "size_px": [18, 20],
+    "color": "currentColor",
+    "semantic_color_for_types": false,
+    "visible_text_or_aria_label_required": true,
+    "text_is_authority": true
+  },
+  "icons": [
+    {"semantic_icon_id":"type.feature","kind":"type","machine_value":"tipo:feature","unicode_token_v1":"✨","tabler_icon":"IconSparkles","label_pt_br":"Funcionalidade","description_pt_br":"Nova capacidade ou descoberta.","fallback_text":"Funcionalidade"},
+    {"semantic_icon_id":"type.bug","kind":"type","machine_value":"tipo:bug","unicode_token_v1":"🐛","tabler_icon":"IconBug","label_pt_br":"Defeito","description_pt_br":"Falha de comportamento que exige correção.","fallback_text":"Defeito"},
+    {"semantic_icon_id":"type.hardening","kind":"type","machine_value":"tipo:hardening","unicode_token_v1":"🛡️","tabler_icon":"IconShieldCheck","label_pt_br":"Hardening","description_pt_br":"Proteção, robustez e evidência operacional.","fallback_text":"Hardening"},
+    {"semantic_icon_id":"type.melhoria","kind":"type","machine_value":"tipo:melhoria","unicode_token_v1":"🔧","tabler_icon":"IconTool","label_pt_br":"Melhoria","description_pt_br":"Ajuste incremental sem criar taxonomia de estado.","fallback_text":"Melhoria"},
+    {"semantic_icon_id":"type.tech-debt","kind":"type","machine_value":"tipo:tech-debt","unicode_token_v1":"🧹","tabler_icon":"IconBroom","label_pt_br":"Dívida técnica","description_pt_br":"Limpeza de dívida técnica preservada.","fallback_text":"Dívida técnica"},
+    {"semantic_icon_id":"type.spike","kind":"type","machine_value":"tipo:spike","unicode_token_v1":"🔬","tabler_icon":"IconMicroscope","label_pt_br":"Investigação","description_pt_br":"Hipótese ou investigação técnica delimitada.","fallback_text":"Investigação"},
+    {"semantic_icon_id":"type.ops","kind":"type","machine_value":"tipo:ops","unicode_token_v1":"⚙️","tabler_icon":"IconSettings","label_pt_br":"Operações","description_pt_br":"Operação, configuração ou manutenção.","fallback_text":"Operações"},
+    {"semantic_icon_id":"type.docs","kind":"type","machine_value":"tipo:docs","unicode_token_v1":"📝","tabler_icon":"IconFileText","label_pt_br":"Documentação","description_pt_br":"Documentação; não representa resumo de intake.","fallback_text":"Documentação"},
+    {"semantic_icon_id":"structural.umbrella","kind":"qualifier","machine_value":"umbrella","unicode_token_v1":"🧭","tabler_icon":"IconCompass","label_pt_br":"Umbrella","description_pt_br":"Direção ou governança estrutural, sem provar parentage.","fallback_text":"Umbrella"},
+    {"semantic_icon_id":"structural.canary","kind":"qualifier","machine_value":"canary","unicode_token_v1":"🧪","tabler_icon":"IconFlask2","label_pt_br":"Canário","description_pt_br":"Experimento controlado ou canário.","fallback_text":"Canário"},
+    {"semantic_icon_id":"ui.intake-summary","kind":"ui","machine_value":"intake-summary","unicode_token_v1":null,"tabler_icon":"IconClipboardList","label_pt_br":"Resumo pré-registro","description_pt_br":"Resumo ou checklist de intake.","fallback_text":"Resumo pré-registro"},
+    {"semantic_icon_id":"ui.proposed-change","kind":"ui","machine_value":"proposed-change","unicode_token_v1":null,"tabler_icon":"IconArrowsExchange","label_pt_br":"Alteração proposta","description_pt_br":"Comparação antes e depois.","fallback_text":"Alteração proposta"},
+    {"semantic_icon_id":"ui.registration-verified","kind":"ui","machine_value":"registration-verified","unicode_token_v1":null,"tabler_icon":"IconCircleCheck","label_pt_br":"Cadastro verificado","description_pt_br":"Mutação e readback verificados.","fallback_text":"Cadastro verificado"},
+    {"semantic_icon_id":"ui.registration-unverified","kind":"ui","machine_value":"registration-unverified","unicode_token_v1":null,"tabler_icon":"IconAlertTriangle","label_pt_br":"Cadastro não confirmado","description_pt_br":"Cadastro bloqueado ou sem readback.","fallback_text":"Cadastro não confirmado"},
+    {"semantic_icon_id":"lifecycle.start","kind":"lifecycle","machine_value":"START","unicode_token_v1":null,"tabler_icon":"IconPlayerPlay","label_pt_br":"Início","description_pt_br":"Início explícito da execução.","fallback_text":"START"},
+    {"semantic_icon_id":"lifecycle.progress","kind":"lifecycle","machine_value":"PROGRESS","unicode_token_v1":null,"tabler_icon":"IconActivityHeartbeat","label_pt_br":"Progresso","description_pt_br":"Atividade e evidência, sem percentual inventado.","fallback_text":"PROGRESS"},
+    {"semantic_icon_id":"lifecycle.blocked","kind":"lifecycle","machine_value":"BLOCKED","unicode_token_v1":null,"tabler_icon":"IconBarrierBlock","label_pt_br":"Bloqueado","description_pt_br":"Bloqueio operacional com condição de desbloqueio.","fallback_text":"BLOCKED"},
+    {"semantic_icon_id":"lifecycle.review","kind":"lifecycle","machine_value":"REVIEW","unicode_token_v1":null,"tabler_icon":"IconChecklist","label_pt_br":"Revisão","description_pt_br":"Revisão e QA baseados em evidência.","fallback_text":"REVIEW"},
+    {"semantic_icon_id":"lifecycle.finish","kind":"lifecycle","machine_value":"FINISH","unicode_token_v1":null,"tabler_icon":"IconRosetteDiscountCheck","label_pt_br":"Fechamento","description_pt_br":"Fechamento validado após todos os gates.","fallback_text":"FINISH"},
+    {"semantic_icon_id":"compliance.pass","kind":"compliance","machine_value":"PASS","unicode_token_v1":null,"tabler_icon":"IconCircleCheck","label_pt_br":"Conforme","description_pt_br":"Resultado em conformidade.","fallback_text":"PASS"},
+    {"semantic_icon_id":"compliance.adjust","kind":"compliance","machine_value":"ADJUST","unicode_token_v1":null,"tabler_icon":"IconAdjustments","label_pt_br":"Ajustar","description_pt_br":"Correção determinística disponível.","fallback_text":"ADJUST"},
+    {"semantic_icon_id":"compliance.blocked","kind":"compliance","machine_value":"BLOCKED","unicode_token_v1":null,"tabler_icon":"IconBarrierBlock","label_pt_br":"Bloqueado","description_pt_br":"Não conformidade que impede avanço.","fallback_text":"BLOCKED"},
+    {"semantic_icon_id":"compliance.legacy","kind":"compliance","machine_value":"LEGACY","unicode_token_v1":null,"tabler_icon":"IconHistory","label_pt_br":"Legado","description_pt_br":"Não conformidade histórica preservada.","fallback_text":"LEGACY"}
+  ]
+}

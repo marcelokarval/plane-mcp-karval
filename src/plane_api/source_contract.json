@@ -1,0 +1,2613 @@
+{
+  "computed_counts": {
+    "policy": {
+      "allow": 134,
+      "deny": 0
+    },
+    "strategy": {
+      "detail_state": 5,
+      "membership_state": 77,
+      "provider_ack": 52
+    },
+    "sum": 134,
+    "terminal": {
+      "provider_acknowledged": 52,
+      "verified": 51,
+      "verified_absence": 31
+    }
+  },
+  "contract_version": 2,
+  "counts": {
+    "http_operations": 223,
+    "mutations": 134,
+    "operations": 225
+  },
+  "kind": "copied_registry_provenance_contract",
+  "mutation_contracts": [
+    {
+      "action": "assets__create_user_asset_upload",
+      "contract_sha256": "b74ad0bcc7e4f76343d3964edbb4936e49a78e5284c08241de1ffc1e3ecef7dd"
+    },
+    {
+      "action": "assets__create_workspace_asset_upload",
+      "contract_sha256": "180342bade94218c9d50a23b72ef186ee3f314dd857071f690dc182ec22867b8"
+    },
+    {
+      "action": "assets__delete_user_asset",
+      "contract_sha256": "a0414542ada212d2ed13f4a89470a0b5503aaf9db57020eee55beb86bd354849"
+    },
+    {
+      "action": "assets__update_user_asset",
+      "contract_sha256": "8e59329846fa2f62b6a725c5e86f56410137840f71b28addbf07f7fee366355f"
+    },
+    {
+      "action": "assets__update_workspace_asset",
+      "contract_sha256": "c0318a39c6493e412ad571cd352fb090e914140cc59d598337b88cab20f2073e"
+    },
+    {
+      "action": "customer__add_customer",
+      "contract_sha256": "913219f0cd30dce8522fd83de5214adc533583e991d142d692441d3aafc7a7f5"
+    },
+    {
+      "action": "customer__add_customer_property",
+      "contract_sha256": "dd96240d7b3e9c6f6742550d4ef6ca3739625396be457e9e3c0d6b08c62ecf2c"
+    },
+    {
+      "action": "customer__add_customer_request",
+      "contract_sha256": "3c65a5b955999a33d5b2096f3afe6233643dcb9648e6b89f733177e9c55a16f5"
+    },
+    {
+      "action": "customer__delete_customer",
+      "contract_sha256": "aac70f894094636bf88532e606b3ab02b9c912861549e970d7ac77ab6c164413"
+    },
+    {
+      "action": "customer__delete_customer_property",
+      "contract_sha256": "3ab8e264d49408d3e9eae6380403d445a25648074a4879c0bf5a4ffe90bae3ee"
+    },
+    {
+      "action": "customer__delete_customer_request",
+      "contract_sha256": "b0ef0411a0a5ae6736d53fa33ed571d8a4f3eac254505622e0e8c4135c3e3c3e"
+    },
+    {
+      "action": "customer__link_work_items_to_customer",
+      "contract_sha256": "6d629c9b67f1fb1c69469b01fb482abbe78548e747a1c62fb8200bd1ac378dd3"
+    },
+    {
+      "action": "customer__unlink_work_item_from_customer",
+      "contract_sha256": "032a21849cafa924c75dfa6662b4919aaf7bac94e645c92f508998cb862c9d29"
+    },
+    {
+      "action": "customer__update_customer_detail",
+      "contract_sha256": "d7004437635c46fbc5c696ecc6386d71ff4a40920b929114074748032831f6c1"
+    },
+    {
+      "action": "customer__update_customer_property_detail",
+      "contract_sha256": "cb07cc56bb115291c86ef177d8bf14351796628ef405c2056583e06d64afa720"
+    },
+    {
+      "action": "customer__update_customer_property_value",
+      "contract_sha256": "87ff5a5c98d147d951ba9394990ac9dc8cac7811a4d90509b7fa280de4f5acc6"
+    },
+    {
+      "action": "customer__update_customer_request_detail",
+      "contract_sha256": "ce6aa0aa103430d0b7118eae5f51c16e2ad2cc32bedbe0dadcf8e4038e5dce25"
+    },
+    {
+      "action": "cycle__add_cycle",
+      "contract_sha256": "51c375ecdf4ac2113a0b5fe8c6984caec9286181df972d864ca120583a5e220c"
+    },
+    {
+      "action": "cycle__add_cycle_work_items",
+      "contract_sha256": "23f9a36bb52fbe9231b176057a6994650abd51d56f86732fd3ab49ea4c0ba644"
+    },
+    {
+      "action": "cycle__archive_cycle",
+      "contract_sha256": "5621978656938fc3786756bbc2b5ad73f14247285422c4577093421de72d0a68"
+    },
+    {
+      "action": "cycle__delete_cycle",
+      "contract_sha256": "6cc8336a71c8709bbabb9d748ef0d620a5852c9ed79a17225ce6b67369f499a8"
+    },
+    {
+      "action": "cycle__remove_cycle_work_item",
+      "contract_sha256": "a7e4941b637f8634823e69a5cb1948ae3390bc06cdafab83c506736016d9d23f"
+    },
+    {
+      "action": "cycle__transfer_cycle_work_items",
+      "contract_sha256": "c0eda5d8fb7901bdf25e4d0ca9f45d75f7f1552037f619f2c19dcc976b5d038f"
+    },
+    {
+      "action": "cycle__unarchive_cycle",
+      "contract_sha256": "8f43c4db5fa7db0b7a0d46e8cdbbdadf24ebc48a7f8d9f333c708891503b0f44"
+    },
+    {
+      "action": "cycle__update_cycle_detail",
+      "contract_sha256": "293113bb4e927fefd7e81f5a4dda85fca2cf6bf96d62400890e96ea82c9eecd9"
+    },
+    {
+      "action": "epics__add_epic_work_items",
+      "contract_sha256": "3d30098a9a464009d3f0a4952e7cd0cadba95d204469336e932d310b00919947"
+    },
+    {
+      "action": "epics__create_epic",
+      "contract_sha256": "d1cb0a368b9dd7f8028149c5818a35b1bcbc18f2deda7e328690e1eb8b89657e"
+    },
+    {
+      "action": "epics__delete_epic",
+      "contract_sha256": "0d0de5708fc2a96ca0efb60853c41c4b37393a7627a0a65c0cff7ab5546a29b3"
+    },
+    {
+      "action": "epics__update_epic",
+      "contract_sha256": "d436712367c151812802d77e1d2bb9030bf3d6bcbfd91b53b8d4a686e740034c"
+    },
+    {
+      "action": "estimate__add_estimate",
+      "contract_sha256": "f12707cd5487844ef45b5010e084f846b1070cd0be11c6c788f00b7e7b963b09"
+    },
+    {
+      "action": "estimate__add_estimate_points",
+      "contract_sha256": "52ce3225a3531ad56fbb3ee674d42dce82c7cd272763c9a7492e6d6bcdfe5d85"
+    },
+    {
+      "action": "estimate__delete_estimate",
+      "contract_sha256": "7879a309698abdea74b851a71b119d354650fc4ab675878e8f8f07529fa4648e"
+    },
+    {
+      "action": "estimate__delete_estimate_point",
+      "contract_sha256": "50dda191722716e3d9f800de05b1d62d624f7745b954e5c3a0e5637b08a9079a"
+    },
+    {
+      "action": "estimate__update_estimate",
+      "contract_sha256": "78959c47672fe38a89d89754bf954f7315501fb4c9486e6cd0c8cff69e64ebb2"
+    },
+    {
+      "action": "estimate__update_estimate_point",
+      "contract_sha256": "5c5b4870d7f30417c88758b9ede1bc2d5d52648b73bd2f952242901931bd52c7"
+    },
+    {
+      "action": "idp_group_sync__create_project_mapping",
+      "contract_sha256": "64e174f250d30d1b8d8d53a0f8bfbf78b1eda6a41de102c009d4ca2b34092508"
+    },
+    {
+      "action": "idp_group_sync__create_workspace_mapping",
+      "contract_sha256": "374969c311bbdaf8281297b2890f3ef42b987620b3c9139fd9bbfd4b572cc795"
+    },
+    {
+      "action": "idp_group_sync__delete_project_mapping",
+      "contract_sha256": "100b96bf0822022aa09b3e3915ea962063575f9cab98ac8f3d02caed1f9d4615"
+    },
+    {
+      "action": "idp_group_sync__delete_workspace_mapping",
+      "contract_sha256": "1198ba9755122bc2abee4e1dc0fec34e02a84a601d09d35fe16473c9fea7e4aa"
+    },
+    {
+      "action": "idp_group_sync__update_group_sync_config",
+      "contract_sha256": "98255b5c10c511af6a72b70a2be5c84e2e8f4790bc02f5d3571614447695c55a"
+    },
+    {
+      "action": "idp_group_sync__update_project_mapping",
+      "contract_sha256": "6ee241a1291e4b776c4a6f1ba71051e12889bd39436cc3702f1d8915196bb32d"
+    },
+    {
+      "action": "idp_group_sync__update_workspace_mapping",
+      "contract_sha256": "214b564d67a7a64e26062044ea04b816e4b0b6448e762d8050aef89f85d40e84"
+    },
+    {
+      "action": "initiative__add_epics_to_initiative",
+      "contract_sha256": "f2f5325694d9242a03fe5f396eba32808533c248cc8656abe5b3cf02ee38e25f"
+    },
+    {
+      "action": "initiative__add_initiative",
+      "contract_sha256": "170421f13eaa8ebe2d1c48be4aa9acf7711f0674ea156e8e21656999b672a378"
+    },
+    {
+      "action": "initiative__add_initiative_label",
+      "contract_sha256": "66d3ec9fa1db47995fd468208f34d0a404f86de4294364fee8878d26f3279a63"
+    },
+    {
+      "action": "initiative__add_labels_to_initiative",
+      "contract_sha256": "aedef79b2130886cb33aa8f61d9ee6f454454bc0d132e344831758963cb715c3"
+    },
+    {
+      "action": "initiative__add_projects_to_initiative",
+      "contract_sha256": "aa98078602848c142bc7cbe2b45903670f3e18aef3913a6086e29bdb7197f15c"
+    },
+    {
+      "action": "initiative__delete_initiative",
+      "contract_sha256": "8131c20fcbbe1efb8d35430f4b735cd7a40845b788f1ca2a4be38d50194164e9"
+    },
+    {
+      "action": "initiative__delete_initiative_label",
+      "contract_sha256": "b6be7543ed76eaba6015c84a1a23f9200277b50786163a0fa597a8e888d2b0cd"
+    },
+    {
+      "action": "initiative__remove_epics_from_initiative",
+      "contract_sha256": "86152cf970e3000d448566a17cd9f4429ca027c897011ac7ba5a1329b4c13524"
+    },
+    {
+      "action": "initiative__remove_labels_from_initiative",
+      "contract_sha256": "35d1cd6824849c706f04ab6388639eb24b22aa7bc9f23d28d129039b850bb9fd"
+    },
+    {
+      "action": "initiative__remove_projects_from_initiative",
+      "contract_sha256": "f5b7d8f91ff87991b73077a7906a199df0a453aee781eabac6fa5ae9ed5fc843"
+    },
+    {
+      "action": "initiative__update_initiative_detail",
+      "contract_sha256": "d1d43ad56eb80919d7790ae3fb87862463be2e0294293427f2fd43662974544b"
+    },
+    {
+      "action": "initiative__update_initiative_label_detail",
+      "contract_sha256": "50e2d5731bd7cafa0cd5754cf6112ac306999ef0fc3fd67fef491f4d3abbc2c5"
+    },
+    {
+      "action": "intake_issue__add_intake_issue",
+      "contract_sha256": "3901151890ccc0ae8fe69b5198a6750fdaf43caefb6a3f4d5546e754ec90d526"
+    },
+    {
+      "action": "intake_issue__delete_intake_issue",
+      "contract_sha256": "de503708aa2c002c8985e3f065f9563cc5734d790e274d086e48bd335227db4e"
+    },
+    {
+      "action": "intake_issue__update_intake_issue_detail",
+      "contract_sha256": "2bd71c7824275a21efe0768abc9e5cb002e5db36787697d68b09ec4bd1e223fb"
+    },
+    {
+      "action": "issue__add_issue",
+      "contract_sha256": "8be0d11d3a0e6d804483dcb871c7dc22d3495198496436ec3f6a26a908c0f607"
+    },
+    {
+      "action": "issue__advanced_search_work_items",
+      "contract_sha256": "cb1f8f64536a2be3b1df6849118635283e1b160ee52a4981161475ebb9076271"
+    },
+    {
+      "action": "issue__delete_issue",
+      "contract_sha256": "6a44b83299b8e40789e74184c61cab882a0c5d7033e8db04cb37e49df2772c32"
+    },
+    {
+      "action": "issue__update_issue_detail",
+      "contract_sha256": "7edbc7f50e57db2f3ceaa0848f3ded34f05a4706508c7f43a48de1eab8074dd9"
+    },
+    {
+      "action": "issue_attachments__complete_upload",
+      "contract_sha256": "495d6424a1be51f65351b591b1c6118cd5ce6e36b21c7a6feabd972a682b8edc"
+    },
+    {
+      "action": "issue_attachments__delete_attachment",
+      "contract_sha256": "25d1234738837b21b54de142d5a003641f2688b286508124eb5a71962635e9c4"
+    },
+    {
+      "action": "issue_attachments__get_upload_credentials",
+      "contract_sha256": "30e84157539489ba71c8c413f00e75e9d10f9cb3ac314b31523453a7fbe4553b"
+    },
+    {
+      "action": "issue_attachments__update_attachment",
+      "contract_sha256": "e27927701648b9efa50583838264e553075639736d07077e44ea844636926c5f"
+    },
+    {
+      "action": "issue_comment__add_issue_comment",
+      "contract_sha256": "7f9882d69ff4bdc5b094b6ccf00551184c0ad8d8d9f0445261ec272f5ed36989"
+    },
+    {
+      "action": "issue_comment__delete_issue_comment",
+      "contract_sha256": "dab5076c1e98a46b97517fb1d6f5db247ce6b613a13be661ee7051720397b4ab"
+    },
+    {
+      "action": "issue_comment__update_issue_comment_detail",
+      "contract_sha256": "daa0714306a3a09e369765a4d195274f6dfad9eacdb47432ee286ce143864eac"
+    },
+    {
+      "action": "label__add_label",
+      "contract_sha256": "0ceaf1c0691d1e0cfe4c41f9a73239c795b4bc4c0dd7a4b6b75a07a33a5d018c"
+    },
+    {
+      "action": "label__delete_label",
+      "contract_sha256": "9c76cd2a7c525d46b16de958bc5b8105112fe6780587e50bf13a5d47d72132d4"
+    },
+    {
+      "action": "label__update_label_detail",
+      "contract_sha256": "eefc58609b7dde00fba9e6a48cfea964fcaa046362304c8d35fa28fc38012ffc"
+    },
+    {
+      "action": "link__add_link",
+      "contract_sha256": "3f7428ae2e909eb8bf68d0083758e4a2171114e5a3a87e15f7860213acdcbf3e"
+    },
+    {
+      "action": "link__delete_link",
+      "contract_sha256": "47989c68275cbf75f80f7f50ab0b2ba89dea7aa144a66361c28a89c91d101f9d"
+    },
+    {
+      "action": "link__update_link_detail",
+      "contract_sha256": "c6a1166435ff236f36699729f9d837db37c0b2fd8af1daa24321f5981aee2055"
+    },
+    {
+      "action": "members__add_project_member",
+      "contract_sha256": "78d406b377fd9cf6a1278d2ee58f2bd121171ee9f9bf9bed4a320fcce0a053c6"
+    },
+    {
+      "action": "members__delete_project_member",
+      "contract_sha256": "d87b223a40dae904cdfe2dcc3c8228afbd17f329622824a5794600b331bc2b79"
+    },
+    {
+      "action": "members__remove_workspace_member",
+      "contract_sha256": "a4be80063fcc093d362abc6c1b79f9df3973548911febc6178ea9a430815584a"
+    },
+    {
+      "action": "members__update_project_member",
+      "contract_sha256": "d2b2b28ba8f47c88128a21c8881ae448cbe04f7e9f80fedc1fea92888b4f10f1"
+    },
+    {
+      "action": "milestones__add_milestone",
+      "contract_sha256": "dd814e04f8aab8b28400a53a100c088649bd28f6290b492e6f0ab472245143f1"
+    },
+    {
+      "action": "milestones__delete_milestone",
+      "contract_sha256": "bd3df560c4a32e768682d01d23f42eb38fc8ca2fd563516407e720a9ca0d69a1"
+    },
+    {
+      "action": "milestones__update_milestone_detail",
+      "contract_sha256": "c1368fd28f783f9c68c26f448c51312aff62727bb55e97a63b3c4aa744e687ff"
+    },
+    {
+      "action": "module__add_module",
+      "contract_sha256": "2e98450560317430897e6b0887e48a70e9f5f3657b81eec9e098dd2cd75815cb"
+    },
+    {
+      "action": "module__add_module_work_items",
+      "contract_sha256": "d83ad18dc055065d0c15d4564d5e1fc7afd034bf83f250b6a817f8f4da8c3428"
+    },
+    {
+      "action": "module__archive_module",
+      "contract_sha256": "f6ef4d93f3489a691efe2b9ca226900c0da87fca16b9f924fb6bb67b2e9d565f"
+    },
+    {
+      "action": "module__delete_module",
+      "contract_sha256": "feca63e40ddbdf08b644cdbd7ab83f24243cead6af83c7ba780abae7bdc3f047"
+    },
+    {
+      "action": "module__remove_module_work_item",
+      "contract_sha256": "613d362ea044ad4db7de33aa3405ca2b9bf8e88444c3cc36b2a0247679eb7163"
+    },
+    {
+      "action": "module__unarchive_module",
+      "contract_sha256": "039cad68d353a3187471fe883e9ffcd182f1cc0d9052369ab8a2b9aad9e83036"
+    },
+    {
+      "action": "module__update_module_detail",
+      "contract_sha256": "64d7e88a5faa0619cd1efb6245a0842b4f111fb110b98e406694b330a2b9d79b"
+    },
+    {
+      "action": "options__add_dropdown_options",
+      "contract_sha256": "dd76d876e4034644958f4b2ffa15a1631e090c0effea65d81286b2c46e57b9a8"
+    },
+    {
+      "action": "options__delete_dropdown_options",
+      "contract_sha256": "d13b4d84494f079af53ad795dd28a0db7e0dc3e41f9853cd78befa780a1e8257"
+    },
+    {
+      "action": "options__update_dropdown_options",
+      "contract_sha256": "3b32c035e5740a5d47190bfd072a71798a5f268a38451ab34ea742bae95608d3"
+    },
+    {
+      "action": "page__add_project_page",
+      "contract_sha256": "6e93cda64b0da8625a1e4b81b68c96c4886e89aee851f79e20c8d7fc4caf7bd6"
+    },
+    {
+      "action": "page__add_workspace_page",
+      "contract_sha256": "cc2abfb22dcaaca709779277bf2588478463f122a97edf6a9ee02dea476dc21d"
+    },
+    {
+      "action": "project__add_project",
+      "contract_sha256": "7a6187d79beb15c532d45ae6aa990dcf4c60abe1a1da1cc1bb12ca567c1e95f6"
+    },
+    {
+      "action": "project__archive_project",
+      "contract_sha256": "860676c142ade66ac10e51f31783b22ba8802160308920aff3361fe9e7f5dbb4"
+    },
+    {
+      "action": "project__create_project_with_template",
+      "contract_sha256": "a8260e41d834e5e24d9e44e31dfa27305e9199985aad55c8e4bb8a01e967827a"
+    },
+    {
+      "action": "project__delete_project",
+      "contract_sha256": "0989c243360593dade742348add6e21407069848345811a91455b07d730d71c7"
+    },
+    {
+      "action": "project__unarchive_project",
+      "contract_sha256": "9ba15b1389298e9ebc2a3705750d48325aadc4fe600c98e46f4d1cb16252f5a3"
+    },
+    {
+      "action": "project__update_project_detail",
+      "contract_sha256": "bca5275130ec805744723a3d0e78be8142b3d1bd54d6ae9eff0edc246cc9f22c"
+    },
+    {
+      "action": "project_features__update_project_features",
+      "contract_sha256": "b95587b20bfc87a1eef44e35b0ddb82f502ae45b44c032da8ed3aaf3b36219ed"
+    },
+    {
+      "action": "project_labels__add_project_label",
+      "contract_sha256": "7ac88510dc7d7c3762ebc48eed550b4041aba884f14c8ec8965dab1137dbf95d"
+    },
+    {
+      "action": "project_labels__delete_project_label",
+      "contract_sha256": "05eb030fa832692f647ff28c59b993747e7889258811da81fc002ea854a19004"
+    },
+    {
+      "action": "project_labels__update_project_label_detail",
+      "contract_sha256": "ccb678d0800bda824292318df1a0773cc6c94b31155429105c8fa4de28d23cd7"
+    },
+    {
+      "action": "properties__add_property",
+      "contract_sha256": "5255a4cc97ab9ab27f21ab7e9d051bb17b77ae77e1e2a00bafc5b8e8185a4ab2"
+    },
+    {
+      "action": "properties__delete_property",
+      "contract_sha256": "c1b5f3463e3a0c2a918c40ea8340c748264e304de576a689a27d588e1fbaec55"
+    },
+    {
+      "action": "properties__update_property",
+      "contract_sha256": "019b0926267a253539edeaeae64e52a9b7596a8a61296983b83ba1055aa10cfa"
+    },
+    {
+      "action": "state__add_state",
+      "contract_sha256": "c5a3613e5f1fb4d4cca48fcb171e16c105f6e065c5e2642e9fe5b5038168b449"
+    },
+    {
+      "action": "state__delete_state",
+      "contract_sha256": "233a00d3b337a1f217d2b564bb1d4c69dd696f2b24ed73a9c7e371b8b05e3d8e"
+    },
+    {
+      "action": "state__update_state_detail",
+      "contract_sha256": "855f7b9ecf9bc987b34a4e44e615d9dcfd10aa127e9a5372e8e3c4d6a48ef6f7"
+    },
+    {
+      "action": "sticky__add_sticky",
+      "contract_sha256": "1adbb1734e781139d0d57b588e4480dc2216f15f708dee14a2076a5edb6f3123"
+    },
+    {
+      "action": "sticky__delete_sticky",
+      "contract_sha256": "5d158528d71295ac6788d0bff2d1e48d40596a57bab70e99bb701fcad33cae8e"
+    },
+    {
+      "action": "sticky__update_sticky_detail",
+      "contract_sha256": "5af34dd10de570d4b874e8d49fdf04a19e57ebf5ed9ee61197819fa3a56be015"
+    },
+    {
+      "action": "teamspace__add_projects_to_teamspace",
+      "contract_sha256": "cd0f909c2ce19de4976cb6e74e19968baa13a1f6242f42a4257c035fae508f06"
+    },
+    {
+      "action": "teamspace__add_teamspace",
+      "contract_sha256": "fcba5197c4d32f8479722df552b2c8fffecbc022ef1628cb3d16c0c187d1ea91"
+    },
+    {
+      "action": "teamspace__add_teamspace_members",
+      "contract_sha256": "f75da72a397f1b7d26c0122e6edeec813d6c69dbe76f7f84576756023c18b7c7"
+    },
+    {
+      "action": "teamspace__delete_teamspace",
+      "contract_sha256": "06a89e84f940865e8ea3e1ba8ea872d299140a5e2a3ebd962fa34fc58f68da11"
+    },
+    {
+      "action": "teamspace__remove_projects_from_teamspace",
+      "contract_sha256": "6b2d6c927a49384a9c327f540f6b542c64019af71033e8c317fc11b294d662f3"
+    },
+    {
+      "action": "teamspace__remove_teamspace_members",
+      "contract_sha256": "78a70297f7b4521e176441c20df905094f2e3f67edd23bcb002cc1492264e50e"
+    },
+    {
+      "action": "teamspace__update_teamspace_detail",
+      "contract_sha256": "3c876518ebd2095c8c40265248b5b415f64ddf3c566f381268e2b51f9131e32e"
+    },
+    {
+      "action": "types__add_issue_type",
+      "contract_sha256": "dd0ff6549a96d1f5d4987c97d16ce548d75964f52cdfdbd56030f765e5a5f885"
+    },
+    {
+      "action": "types__delete_issue_type",
+      "contract_sha256": "46e9b2e3e4439ba016efb67d5c0e4f2e17e380158054f80ce56b39799c95e3fa"
+    },
+    {
+      "action": "types__update_issue_types",
+      "contract_sha256": "203e12739461a37d620edeaaab5cd99f9bafd6106b09626a0293bd61850acbc7"
+    },
+    {
+      "action": "values__add_property_values",
+      "contract_sha256": "a8a49e9002ffabb5af2d97d808f6bc4fcb55a91b23103a7415b52e5f376e6857"
+    },
+    {
+      "action": "values__delete_property_value",
+      "contract_sha256": "9827d5cb38f9f397418d9c0db0035a5d1bf7aa3ee4a1e2551206322abfad23d0"
+    },
+    {
+      "action": "values__update_property_value",
+      "contract_sha256": "f592da2e39bb6f7b8d8cce7c7e7a792c80f0fe42f38a95a392688f8bf8b53976"
+    },
+    {
+      "action": "work_item_pages__add_work_item_page",
+      "contract_sha256": "7f20fc1b177000f48200027801008a415c16127acc8a50799fa7eba88d6a7cac"
+    },
+    {
+      "action": "work_item_pages__delete_work_item_page",
+      "contract_sha256": "8ad919d3efd14190c80186892cc6571ec5ab5f95da58f2b6f6302e30d2e9234c"
+    },
+    {
+      "action": "worklogs__create_worklog",
+      "contract_sha256": "6be124afd90f0e7918fb79d83fa5ed831b4657bd9a6449d741b3247994bd0029"
+    },
+    {
+      "action": "worklogs__delete_worklog",
+      "contract_sha256": "c6ab645eb562b77b5bbd8ba327c1757a9a48e0ce415ee26f559b0cc3854d70a7"
+    },
+    {
+      "action": "worklogs__update_worklog",
+      "contract_sha256": "74e54004734cdc1efb8c845f81548c3d45ccb568afb3fccb279d986f7e39e1ca"
+    },
+    {
+      "action": "workspace_features__update_workspace_features",
+      "contract_sha256": "c0dc94ad3db68738555c6d5355ac35a62f5f7b10ef0b4b18a8f6f6ecbcd31d55"
+    },
+    {
+      "action": "workspace_invitations__add_workspace_invitation",
+      "contract_sha256": "235a93e60ed4c648b062ff0c145b6c71b66fe65101281c999d36e2ce149a760d"
+    },
+    {
+      "action": "workspace_invitations__delete_workspace_invitation",
+      "contract_sha256": "44931691adb6877bdc698628c07961b186be5c135a536f7b065193a0b085e5ba"
+    },
+    {
+      "action": "workspace_invitations__update_workspace_invitation",
+      "contract_sha256": "efd79ae99b9c2e885141bf6b89c7dc26f7c0cbafaf30348daee174a75e3deccd"
+    }
+  ],
+  "operations": [
+    {
+      "action": "assets__delete_user_asset",
+      "docs_path": "/api-reference/assets/delete-user-asset",
+      "method": "DELETE",
+      "mutation": true,
+      "operation_sha256": "1ffbeb42fe5ff003ff43a18397cd38da4951d97ad84203892dd1ae54ac3582ad",
+      "path": "/api/v1/assets/user-assets/{asset_id}/",
+      "schema_hash": "385462b0797637a6e0f7e019f4ed4f1778024f918fce949f3a9a88d1842000e8"
+    },
+    {
+      "action": "epics__delete_epic",
+      "docs_path": "/api-reference/epics/delete-epic",
+      "method": "DELETE",
+      "mutation": true,
+      "operation_sha256": "c2d0d708a8c15b77926fbd7ee298c46fe88bb43e022f9d86a9d0b9fe3fbee839",
+      "path": "/api/v1/workspaces/{slug}/projects/{project_id}/epics/{epic_id}/",
+      "schema_hash": "3be11b11f711512fa7a691cbcc1eb28ccf7bd356481d237250f9dbe95b6afea3"
+    },
+    {
+      "action": "customer__delete_customer_property",
+      "docs_path": "/api-reference/customer/delete-customer-property",
+      "method": "DELETE",
+      "mutation": true,
+      "operation_sha256": "ea82d06fab3ec5515aa0f0f46409158ad0d91ae096da419206cd893734ff7cc5",
+      "path": "/api/v1/workspaces/{workspace_slug}/customer-properties/{property_id}/",
+      "schema_hash": "d8769ef4ca13dc4cfba1873c7c6763f1ec2a3c56af281aa6d42f7e8d2103d1c1"
+    },
+    {
+      "action": "customer__unlink_work_item_from_customer",
+      "docs_path": "/api-reference/customer/unlink-work-item-from-customer",
+      "method": "DELETE",
+      "mutation": true,
+      "operation_sha256": "c08c7e7f46d2b6ba9fdcbb128ef5eaafebad16ac94dbadc822efeeb05e46471c",
+      "path": "/api/v1/workspaces/{workspace_slug}/customers/{customer_id}/issues/{work_item_id}/",
+      "schema_hash": "3b7e198bdec9de6b090d4058c71da37f810b6b075e7e0ee837e6e64b4f629913"
+    },
+    {
+      "action": "customer__delete_customer_request",
+      "docs_path": "/api-reference/customer/delete-customer-request",
+      "method": "DELETE",
+      "mutation": true,
+      "operation_sha256": "42b23d147fb49eba95f679eecaa7ed1d7dea8e0c93dd5a78cdb0c0dbe495e07f",
+      "path": "/api/v1/workspaces/{workspace_slug}/customers/{customer_id}/requests/{resource_id}/",
+      "schema_hash": "49bff9db477cdc2cd3ff18def58af49fe02423d532dc48f90f48b9f47a5f5f59"
+    },
+    {
+      "action": "customer__delete_customer",
+      "docs_path": "/api-reference/customer/delete-customer",
+      "method": "DELETE",
+      "mutation": true,
+      "operation_sha256": "61dbc2f7c1708848c91eceea2cb1d2a6b2329537d5f7ed9bde107cf01850d651",
+      "path": "/api/v1/workspaces/{workspace_slug}/customers/{resource_id}/",
+      "schema_hash": "5fed44ca0f9077e87aa259a32b9acd7f99439edb5bafa518e57c35fa101c9d6c"
+    },
+    {
+      "action": "idp_group_sync__delete_project_mapping",
+      "docs_path": "/api-reference/idp-group-sync/delete-project-mapping",
+      "method": "DELETE",
+      "mutation": true,
+      "operation_sha256": "f35b9c4579211519567f42b592a84e1995be49778d9f7aaeeb88805d658408c8",
+      "path": "/api/v1/workspaces/{workspace_slug}/group-sync/project-mappings/{mapping_id}/",
+      "schema_hash": "be2fa624858b0416124e20fe5f64a4f2ac7d9db18ccdba6eb3fa74a74ba4c2c0"
+    },
+    {
+      "action": "idp_group_sync__delete_workspace_mapping",
+      "docs_path": "/api-reference/idp-group-sync/delete-workspace-mapping",
+      "method": "DELETE",
+      "mutation": true,
+      "operation_sha256": "e9aaf9b0828185f898925c71b17dc003fd20293ac39f1cca62ff8115b2bde884",
+      "path": "/api/v1/workspaces/{workspace_slug}/group-sync/workspace-mappings/{mapping_id}/",
+      "schema_hash": "a7a40aa8741e061206548d602670059c9206642857c97e39ae56dcad851a2871"
+    },
+    {
+      "action": "initiative__delete_initiative_label",
+      "docs_path": "/api-reference/initiative/delete-initiative-label",
+      "method": "DELETE",
+      "mutation": true,
+      "operation_sha256": "dfd0a9eb6e7b0a5e865d93114cffd9eb88ba5e233fe9957e87f097932f2127fd",
+      "path": "/api/v1/workspaces/{workspace_slug}/initiatives/labels/{label_id}/",
+      "schema_hash": "3ba6ad2c2b921dfd816b6f1940a844b68552ecee0dcb14c71de605f3b25fe5f4"
+    },
+    {
+      "action": "initiative__delete_initiative",
+      "docs_path": "/api-reference/initiative/delete-initiative",
+      "method": "DELETE",
+      "mutation": true,
+      "operation_sha256": "c0dfd7107da3346334a9713964e6260c7ed751b7033b88b45fa154b6da894a8c",
+      "path": "/api/v1/workspaces/{workspace_slug}/initiatives/{initiative_id}/",
+      "schema_hash": "add79f571e7362c1b89ed401eb1e0229d98662a689ce2260820a0f5002fb5553"
+    },
+    {
+      "action": "initiative__remove_epics_from_initiative",
+      "docs_path": "/api-reference/initiative/remove-epics-from-initiative",
+      "method": "DELETE",
+      "mutation": true,
+      "operation_sha256": "d02fd6f5f87122302975f13692d45feca5f4dccf69fd9ce37c3fd25c61c86611",
+      "path": "/api/v1/workspaces/{workspace_slug}/initiatives/{initiative_id}/epics/",
+      "schema_hash": "71ac58a0bbf6529075330de3887e9f19fa1c68c65c313dc9c0f390c62e5ac196"
+    },
+    {
+      "action": "initiative__remove_labels_from_initiative",
+      "docs_path": "/api-reference/initiative/remove-labels-from-initiative",
+      "method": "DELETE",
+      "mutation": true,
+      "operation_sha256": "14c86339bf7dfe72d559b81a7d8ad816e17684169b99307b6dbebe22b7c8740c",
+      "path": "/api/v1/workspaces/{workspace_slug}/initiatives/{initiative_id}/labels/",
+      "schema_hash": "e7e2b0c6a1bc122b2beed234bebffa1bb8ab6aa120dc35320522e9a792671ba9"
+    },
+    {
+      "action": "initiative__remove_projects_from_initiative",
+      "docs_path": "/api-reference/initiative/remove-projects-from-initiative",
+      "method": "DELETE",
+      "mutation": true,
+      "operation_sha256": "a097efbebceac8037e75014555920194ec799ac3cb1bf994cb985d2b3e792c86",
+      "path": "/api/v1/workspaces/{workspace_slug}/initiatives/{initiative_id}/projects/",
+      "schema_hash": "9fb23ba14afdff5e0cda920c4168a9dbd31acd24745e987b2dea583686abffee"
+    },
+    {
+      "action": "workspace_invitations__delete_workspace_invitation",
+      "docs_path": "/api-reference/workspace-invitations/delete-workspace-invitation",
+      "method": "DELETE",
+      "mutation": true,
+      "operation_sha256": "cc195465a1651b9653ba9030e0e04eaea466915749f4b9b50a694f53f6cbecd5",
+      "path": "/api/v1/workspaces/{workspace_slug}/invitations/{invitation_id}/",
+      "schema_hash": "6190228f1feae835fc93030f9059f0a319722e772c7937db91e5aa2b764e29a7"
+    },
+    {
+      "action": "project_labels__delete_project_label",
+      "docs_path": "/api-reference/project-labels/delete-project-label",
+      "method": "DELETE",
+      "mutation": true,
+      "operation_sha256": "5382f1486c1c9ac2beafc5d3297367c6f1d30a5bea3675518b6e519f8543a50f",
+      "path": "/api/v1/workspaces/{workspace_slug}/project-labels/{label_id}/",
+      "schema_hash": "0ea741630f4e6e0dd34d825792f08c47c0179bfcc8f1bc5e645d0f056c8668ef"
+    },
+    {
+      "action": "project__unarchive_project",
+      "docs_path": "/api-reference/project/unarchive-project",
+      "method": "DELETE",
+      "mutation": true,
+      "operation_sha256": "6601e0d04fc7085571952cc5fb9073a236f8e6093d4f007c8b30dfa73cb22d2c",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/archive/",
+      "schema_hash": "aebd5b848daf8ae085411e6b495e07ab20bfe16e86ffb34c7e336b95bb5aa956"
+    },
+    {
+      "action": "cycle__unarchive_cycle",
+      "docs_path": "/api-reference/cycle/unarchive-cycle",
+      "method": "DELETE",
+      "mutation": true,
+      "operation_sha256": "b4691bd57244766bcc6134ea4623a3135b60e6b0d1feeb3453b2865fad848624",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/archived-cycles/{cycle_id}/unarchive/",
+      "schema_hash": "87fc90b00864e9f7de45b85925493ec47b0fecfea57e421a0ae2580fb1c49879"
+    },
+    {
+      "action": "module__unarchive_module",
+      "docs_path": "/api-reference/module/unarchive-module",
+      "method": "DELETE",
+      "mutation": true,
+      "operation_sha256": "2641ebe548be0b7f20281d911f0ff6352a5b15d2638488313468b0bd4a700828",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/archived-modules/{resource_id}/unarchive/",
+      "schema_hash": "d9a0d6c808cd1cf7ad97c8598369f8131a2db68d74380120e91a01c8be456c45"
+    },
+    {
+      "action": "cycle__remove_cycle_work_item",
+      "docs_path": "/api-reference/cycle/remove-cycle-work-item",
+      "method": "DELETE",
+      "mutation": true,
+      "operation_sha256": "4a9b0c4288e88f00caafdda67b91cb2571a773b5577efb42e6d2b92b4a8d4205",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/cycles/{cycle_id}/cycle-issues/{work_item_id}/",
+      "schema_hash": "ab75a85730b4e1bea8e73980e77906c19a4e54917206df17af0b3f6e84046c46"
+    },
+    {
+      "action": "cycle__delete_cycle",
+      "docs_path": "/api-reference/cycle/delete-cycle",
+      "method": "DELETE",
+      "mutation": true,
+      "operation_sha256": "4b90f1323860f79202791b5ed0af6c368017038a247a903c771c1acdd1727ee8",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/cycles/{resource_id}/",
+      "schema_hash": "7350e8870f569fb7ef8275e75a6624d7efbbac950bc440b1dc1160c556116517"
+    },
+    {
+      "action": "estimate__delete_estimate",
+      "docs_path": "/api-reference/estimate/delete-estimate",
+      "method": "DELETE",
+      "mutation": true,
+      "operation_sha256": "89a9b7586a6b4389c523ef43febf6c6752fbb803e107895df07e38abb62613da",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/estimates/",
+      "schema_hash": "d041b42c8a6f87dda7d31d45d515627686eb6911bab5b43105656d62fb6a2680"
+    },
+    {
+      "action": "estimate__delete_estimate_point",
+      "docs_path": "/api-reference/estimate/delete-estimate-point",
+      "method": "DELETE",
+      "mutation": true,
+      "operation_sha256": "338cc9dd4a8999631e1ae2de4fde4829ac2b7a3b77fa2cf3404449c71e5ff99f",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/estimates/{estimate_id}/estimate-points/{estimate_point_id}/",
+      "schema_hash": "faca68a37a0293c16c9c13cf21398e03ae447513d29ce8b318b442661d17c1de"
+    },
+    {
+      "action": "intake_issue__delete_intake_issue",
+      "docs_path": "/api-reference/intake-issue/delete-intake-issue",
+      "method": "DELETE",
+      "mutation": true,
+      "operation_sha256": "e20476083419bf7d5359705ceea85c3dd8f063b64f350cce8a725463aa1f6760",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/intake-issues/{work_item_id}/",
+      "schema_hash": "2d271c0626ee6782ec8c960551c46f63da327ddb389f640508d85f74197753fc"
+    },
+    {
+      "action": "label__delete_label",
+      "docs_path": "/api-reference/label/delete-label",
+      "method": "DELETE",
+      "mutation": true,
+      "operation_sha256": "d08596d841ae7239949c70a89dcb138702372f5f2b239b0115868148a442b4e9",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/labels/{label_id}/",
+      "schema_hash": "bddad03a5d1fb81ea732b2ac218b683cec8942bab268537063a3a97de6bcaf43"
+    },
+    {
+      "action": "milestones__delete_milestone",
+      "docs_path": "/api-reference/milestones/delete-milestone",
+      "method": "DELETE",
+      "mutation": true,
+      "operation_sha256": "e60b6507e595e1611b983a9fd4ff87419e607abf4c5a08c6489af6949a7014ef",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/milestones/{milestone_id}/",
+      "schema_hash": "48534b5b3e27ca4c87e521766c47e2562d53935ccf534c5546953866c9e88c74"
+    },
+    {
+      "action": "module__remove_module_work_item",
+      "docs_path": "/api-reference/module/remove-module-work-item",
+      "method": "DELETE",
+      "mutation": true,
+      "operation_sha256": "82774dc094b9efc2de20cb3fc0d04efe26cb2504e4c45c158320bacada1237b1",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/modules/{module_id}/module-issues/{work_item_id}/",
+      "schema_hash": "a35b531745a0524501cbc8e7cda13efec979a9858d17f3788cc11d823dcc314b"
+    },
+    {
+      "action": "module__delete_module",
+      "docs_path": "/api-reference/module/delete-module",
+      "method": "DELETE",
+      "mutation": true,
+      "operation_sha256": "12e1101a5335b9afa6499524b03b525fba6fcd9e132bf1a73379d8c9315a38c8",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/modules/{resource_id}/",
+      "schema_hash": "f5d5317412230f615523a2d144b019bdb9fc2a54ed832fdc568793afc0cb1903"
+    },
+    {
+      "action": "members__delete_project_member",
+      "docs_path": "/api-reference/members/delete-project-member",
+      "method": "DELETE",
+      "mutation": true,
+      "operation_sha256": "032bc11c4c62a59a64d43062783036ed0f37d75dd33782707f29d23ae0a8d784",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/project-members/{member_id}/",
+      "schema_hash": "e138181069dc2dce212ffebd89d9dedf6d9f3ce2931d31a6acc11d5d5bc889a7"
+    },
+    {
+      "action": "state__delete_state",
+      "docs_path": "/api-reference/state/delete-state",
+      "method": "DELETE",
+      "mutation": true,
+      "operation_sha256": "dd9cb39ffb0b6907f6d82ae61846b56b9d66c96dd3a8f35a1768c08369231763",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/states/{state_id}/",
+      "schema_hash": "81f18816f0bbc32b8f4d2bfb4b87d84bdbb3fde67a93be7bf519f5e678526bac"
+    },
+    {
+      "action": "options__delete_dropdown_options",
+      "docs_path": "/api-reference/issue-types/options/delete-dropdown-options",
+      "method": "DELETE",
+      "mutation": true,
+      "operation_sha256": "eb7a4c5b5749eee3f6b62663aced823b074399fa6eb887a0b8c70bfad79ba834",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/work-item-properties/{property_id}/options/{option_id}/",
+      "schema_hash": "bd565981cda39769f734a314674486178f0ec8f4847cac77dacfaee14b37ca98"
+    },
+    {
+      "action": "types__delete_issue_type",
+      "docs_path": "/api-reference/issue-types/types/delete-issue-type",
+      "method": "DELETE",
+      "mutation": true,
+      "operation_sha256": "0e84058accb47dfbe000e2bbc9d89b59fff9f017126c622093dba71b85a63c33",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/work-item-types/{type_id}/",
+      "schema_hash": "1f542aebf44840eb9a80c4bcde059beea92eb498d3e5c78391920c6a983d91f2"
+    },
+    {
+      "action": "properties__delete_property",
+      "docs_path": "/api-reference/issue-types/properties/delete-property",
+      "method": "DELETE",
+      "mutation": true,
+      "operation_sha256": "f584d6394041f48fa072131e532a13f50525d520a785245045d60c0ea8c69d0c",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/work-item-types/{type_id}/work-item-properties/{property_id}/",
+      "schema_hash": "658ae6cc2849ad650ba163304cb42a1219aecbe833be2e1d314f2ca4c8a8fc3f"
+    },
+    {
+      "action": "issue__delete_issue",
+      "docs_path": "/api-reference/issue/delete-issue",
+      "method": "DELETE",
+      "mutation": true,
+      "operation_sha256": "27e86918ca5ab45e7914ae96804e2a54d1bddcec5a4e6a5b7261ee793951c742",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/work-items/{resource_id}/",
+      "schema_hash": "ab2923aff96824413f7b20d9484ef193b36a1a3c69d1a6effaa996278ef5b0bb"
+    },
+    {
+      "action": "issue_attachments__delete_attachment",
+      "docs_path": "/api-reference/issue-attachments/delete-attachment",
+      "method": "DELETE",
+      "mutation": true,
+      "operation_sha256": "43bb2b79529fe455a3ffb95d71831817131b8891bcb67226e8819b448141f7bd",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/work-items/{work_item_id}/attachments/{resource_id}/",
+      "schema_hash": "3beddc8f77b222a8b04cf7b44b7b68bc8ab8ae958b5f8a08e2bd173b48fe7ac1"
+    },
+    {
+      "action": "issue_comment__delete_issue_comment",
+      "docs_path": "/api-reference/issue-comment/delete-issue-comment",
+      "method": "DELETE",
+      "mutation": true,
+      "operation_sha256": "21a5204eb01ca456b2f55bf7178ed993ea27ae238dd0ea0f3d7a62d0363eaded",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/work-items/{work_item_id}/comments/{resource_id}/",
+      "schema_hash": "2cb1b417211d936b80d1af36e571304d716fc53ab539136d58696125ef615fdf"
+    },
+    {
+      "action": "link__delete_link",
+      "docs_path": "/api-reference/link/delete-link",
+      "method": "DELETE",
+      "mutation": true,
+      "operation_sha256": "8ce722034bb2517594b8ec4dcd646c32d60be6c36dd7c47387dded53f57840dd",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/work-items/{work_item_id}/links/{resource_id}/",
+      "schema_hash": "8fe684d11d860ed48aec416652bb043359865d58ad18401ec9cfa60a6b33c4ef"
+    },
+    {
+      "action": "work_item_pages__delete_work_item_page",
+      "docs_path": "/api-reference/work-item-pages/delete-work-item-page",
+      "method": "DELETE",
+      "mutation": true,
+      "operation_sha256": "964d833267535ffe8df8c651cb217850526af27058adcd6494ae3f6b03267300",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/work-items/{work_item_id}/pages/{page_id}/",
+      "schema_hash": "7f44784c53268acb3206478d12f43d02d100e956c1af099fc6854d886dcec4ff"
+    },
+    {
+      "action": "values__delete_property_value",
+      "docs_path": "/api-reference/issue-types/values/delete-property-value",
+      "method": "DELETE",
+      "mutation": true,
+      "operation_sha256": "eced2fa54cbb9e250db3b3bae859658be64308d6dc53bc14a3f9c34d2cecbcf8",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/work-items/{work_item_id}/work-item-properties/{property_id}/values/",
+      "schema_hash": "71b89a3df46720ebea1ab8219a43c93ef19d4358af96e981dae71b8632b88294"
+    },
+    {
+      "action": "worklogs__delete_worklog",
+      "docs_path": "/api-reference/worklogs/delete-worklog",
+      "method": "DELETE",
+      "mutation": true,
+      "operation_sha256": "1b938af3b76e998b51014bc1d784571a0912321e5ecd27de0b9123393bafbd5d",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/work-items/{work_item_id}/worklogs/{worklog_id}/",
+      "schema_hash": "923f3e321a51b04d852d7fb73938f98a38d5d024e09ad3b841d46e172ea70196"
+    },
+    {
+      "action": "project__delete_project",
+      "docs_path": "/api-reference/project/delete-project",
+      "method": "DELETE",
+      "mutation": true,
+      "operation_sha256": "0bc66ae5846c670eccec0754e9c7fa5aebe7ba86de9597f632c633326981df14",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/{resource_id}/",
+      "schema_hash": "6bcc4a65939bfa279f89e4f5922cb022880d81e836f730c0900685332876cee3"
+    },
+    {
+      "action": "sticky__delete_sticky",
+      "docs_path": "/api-reference/sticky/delete-sticky",
+      "method": "DELETE",
+      "mutation": true,
+      "operation_sha256": "f16e66c44611433763c3dcbbd48adacfd776fa9968f9c83842b5a002ccb2588c",
+      "path": "/api/v1/workspaces/{workspace_slug}/stickies/{resource_id}/",
+      "schema_hash": "c6d684f9d4b5dd9bae6926ee24d84ed139f47b91efa54e6e93762ce9952197f7"
+    },
+    {
+      "action": "teamspace__delete_teamspace",
+      "docs_path": "/api-reference/teamspace/delete-teamspace",
+      "method": "DELETE",
+      "mutation": true,
+      "operation_sha256": "2598941096a596350659ea1eac32d6517013579e7a8e012dc72085d9ae777d35",
+      "path": "/api/v1/workspaces/{workspace_slug}/teamspaces/{resource_id}/",
+      "schema_hash": "701bfa77a40fa10b515bf46a0d664646217635d73f1528dfefb67a6f107a0e93"
+    },
+    {
+      "action": "teamspace__remove_teamspace_members",
+      "docs_path": "/api-reference/teamspace/remove-teamspace-members",
+      "method": "DELETE",
+      "mutation": true,
+      "operation_sha256": "ac251f6c2b93dfce8c8b29a1a4995e1ccb0214f862c9f328c195c7256cb22b1c",
+      "path": "/api/v1/workspaces/{workspace_slug}/teamspaces/{teamspace_id}/members/",
+      "schema_hash": "482cbbfe8ba03ff3a0cbfb013af160ae66105fa5e6673c88aa9fa5c575ee794b"
+    },
+    {
+      "action": "teamspace__remove_projects_from_teamspace",
+      "docs_path": "/api-reference/teamspace/remove-projects-from-teamspace",
+      "method": "DELETE",
+      "mutation": true,
+      "operation_sha256": "298c72c42f1b1730fdc7d572178a58109a76145270ada54a313eb4cad781b3fe",
+      "path": "/api/v1/workspaces/{workspace_slug}/teamspaces/{teamspace_id}/projects/",
+      "schema_hash": "556cabf4d1b021d90176ff356a2c3babe6efd5bb16657a3a03f2c6db4a756ea1"
+    },
+    {
+      "action": "user__get_current_user",
+      "docs_path": "/api-reference/user/get-current-user",
+      "method": "GET",
+      "mutation": false,
+      "operation_sha256": "40d926ec50e3ba5598116d33e619d254cf36c857b4fa3ce2cf5247969b5aee35",
+      "path": "/api/v1/users/me/",
+      "schema_hash": "09d75332968c4a64c01969a6196a73f45c7c1ceb99a7adf74288f484d7be3e76"
+    },
+    {
+      "action": "epics__list_epic_work_items",
+      "docs_path": "/api-reference/epics/list-epic-work-items",
+      "method": "GET",
+      "mutation": false,
+      "operation_sha256": "68516fc6386f620a3bc3722afcbd80d5e758a359401a32b0dec304757bbb4fed",
+      "path": "/api/v1/workspaces/{slug}/projects/{project_id}/epics/{epic_id}/issues/",
+      "schema_hash": "9a36857108b8cfad78afc9be6c0a071e51ef5e692f461242b183ab24740e6f9c"
+    },
+    {
+      "action": "assets__get_workspace_asset",
+      "docs_path": "/api-reference/assets/get-workspace-asset",
+      "method": "GET",
+      "mutation": false,
+      "operation_sha256": "11e7a493eed2df1361b1976066abe246a5bf512eaef00e5231ccbcb12e4106f4",
+      "path": "/api/v1/workspaces/{workspace_slug}/assets/{asset_id}/",
+      "schema_hash": "8d2904e8886565d8e096a59a231b4b3fc36c64a7a3c88ec9fde0fcb5a42cd1c4"
+    },
+    {
+      "action": "customer__list_customer_properties",
+      "docs_path": "/api-reference/customer/list-customer-properties",
+      "method": "GET",
+      "mutation": false,
+      "operation_sha256": "51ba40ffa79269c1e69a74ff5091ab48452bd8a4caaf18b2ba25ec7034277320",
+      "path": "/api/v1/workspaces/{workspace_slug}/customer-properties/",
+      "schema_hash": "2d100bc63e0361d945c3c1991c6ddfe30285643d70801e1f6318845bc865253e"
+    },
+    {
+      "action": "customer__get_customer_property_detail",
+      "docs_path": "/api-reference/customer/get-customer-property-detail",
+      "method": "GET",
+      "mutation": false,
+      "operation_sha256": "27363b4902e0554eff3a4ce5e4cb3d9993d627467b540e81cd84e66d154f9539",
+      "path": "/api/v1/workspaces/{workspace_slug}/customer-properties/{property_id}/",
+      "schema_hash": "3b1e19fb7605def7b728dd2626f30d6e060d21277274a095c593edbbb04f8b71"
+    },
+    {
+      "action": "customer__list_customers",
+      "docs_path": "/api-reference/customer/list-customers",
+      "method": "GET",
+      "mutation": false,
+      "operation_sha256": "9b8a8b1fbf9824be5c2e2c518b6268be35c78f7af131e1e0c6fab242a56cff47",
+      "path": "/api/v1/workspaces/{workspace_slug}/customers/",
+      "schema_hash": "c561dad5baaec12e1f4c4c5aa85effb02746adced7171f4a460f706a9f54e74a"
+    },
+    {
+      "action": "customer__list_customer_work_items",
+      "docs_path": "/api-reference/customer/list-customer-work-items",
+      "method": "GET",
+      "mutation": false,
+      "operation_sha256": "33500fd80c3fd6dc5f4887242731a9623d6f698d3cade5ac8f6be6db63c4b467",
+      "path": "/api/v1/workspaces/{workspace_slug}/customers/{customer_id}/issues/",
+      "schema_hash": "f5d70010a22c874bdffc4d5f8fa634173b25db5f3f04cbff28c5dfc80943006e"
+    },
+    {
+      "action": "customer__list_customer_property_values",
+      "docs_path": "/api-reference/customer/list-customer-property-values",
+      "method": "GET",
+      "mutation": false,
+      "operation_sha256": "67e2813f13d6176bcf07ed25b687d6bb1d6f97547e4c0bfae1e52a2f4b98ff7d",
+      "path": "/api/v1/workspaces/{workspace_slug}/customers/{customer_id}/property-values/",
+      "schema_hash": "8fc7125d55bd4ffbbb9d75a41e117d1a204ebb74256fd54def71a55b310734c8"
+    },
+    {
+      "action": "customer__get_customer_property_value",
+      "docs_path": "/api-reference/customer/get-customer-property-value",
+      "method": "GET",
+      "mutation": false,
+      "operation_sha256": "15fa303da22903707a3ad2a03c07fe37c55ba50d3c58b441c5f5cb0ca59a9632",
+      "path": "/api/v1/workspaces/{workspace_slug}/customers/{customer_id}/property-values/{property_id}/",
+      "schema_hash": "9dbbf8a372a473454d0b5f96d0ac63301c48f51c73879626f75a51dd59933b40"
+    },
+    {
+      "action": "customer__list_customer_requests",
+      "docs_path": "/api-reference/customer/list-customer-requests",
+      "method": "GET",
+      "mutation": false,
+      "operation_sha256": "40f4f2916ad0251e3d8c185a06f4bc162aa063045ea92171b85f6612c25ee463",
+      "path": "/api/v1/workspaces/{workspace_slug}/customers/{customer_id}/requests/",
+      "schema_hash": "2acb28dfd9324c0b249880bf7312c0674ff34998ae987926ad9488396949f961"
+    },
+    {
+      "action": "customer__get_customer_request_detail",
+      "docs_path": "/api-reference/customer/get-customer-request-detail",
+      "method": "GET",
+      "mutation": false,
+      "operation_sha256": "e0a2844b0344c003ab94f198be4aa09d15cea7eb46bf94c2b96935bd496b9327",
+      "path": "/api/v1/workspaces/{workspace_slug}/customers/{customer_id}/requests/{resource_id}/",
+      "schema_hash": "9e03cb562ef8c3a6e19f555bd08b3a053ec1a85738c9509987668aba374eab6a"
+    },
+    {
+      "action": "customer__get_customer_detail",
+      "docs_path": "/api-reference/customer/get-customer-detail",
+      "method": "GET",
+      "mutation": false,
+      "operation_sha256": "e08d4beb59b8ddd465a19ef172526c4b118aeb5e788ececd57a2ca430543ca9d",
+      "path": "/api/v1/workspaces/{workspace_slug}/customers/{resource_id}/",
+      "schema_hash": "544fb9636bf0a1b20e8ea65ad6554b81c726025f0897192eac625084e4aff419"
+    },
+    {
+      "action": "workspace_features__get_workspace_features",
+      "docs_path": "/api-reference/workspace-features/get-workspace-features",
+      "method": "GET",
+      "mutation": false,
+      "operation_sha256": "69614ca7a2e4ca8fb915d7da1cfd64746957afe6b8ff0258c1432ea2d7fdc402",
+      "path": "/api/v1/workspaces/{workspace_slug}/features/",
+      "schema_hash": "faaf9fa7fc6fccf399c2b48b33f51adedcf2ead5d535b6bb0dd7e7ae4c3d95c6"
+    },
+    {
+      "action": "idp_group_sync__get_group_sync_config",
+      "docs_path": "/api-reference/idp-group-sync/get-group-sync-config",
+      "method": "GET",
+      "mutation": false,
+      "operation_sha256": "8d17a4f30dabed8ad060b07750c214faaee70d9c42935e605a2bb65504b54fdc",
+      "path": "/api/v1/workspaces/{workspace_slug}/group-sync/config/",
+      "schema_hash": "3232d7019d5270de2595c0259e11ca0089fd01d7e56f13f01d43cdbf792d50f6"
+    },
+    {
+      "action": "idp_group_sync__list_project_mappings",
+      "docs_path": "/api-reference/idp-group-sync/list-project-mappings",
+      "method": "GET",
+      "mutation": false,
+      "operation_sha256": "6b8f972f5f1ab6f4bee04253c7b0c96c81778a696eac29d0f6cee84fd63ddbec",
+      "path": "/api/v1/workspaces/{workspace_slug}/group-sync/project-mappings/",
+      "schema_hash": "df99f5e4ffd95fed6eef96b0525af298df1300dd5e7024838804422dcc6a9f4f"
+    },
+    {
+      "action": "idp_group_sync__get_project_mapping",
+      "docs_path": "/api-reference/idp-group-sync/get-project-mapping",
+      "method": "GET",
+      "mutation": false,
+      "operation_sha256": "10b16a2ff2db65b969487d2974403b5c012ecbae89df519523d0aa0918b39586",
+      "path": "/api/v1/workspaces/{workspace_slug}/group-sync/project-mappings/{mapping_id}/",
+      "schema_hash": "0d22c7700d3c8bdc6ad674e7c319933175ccba26b60b553c81decc0dce0f7b8b"
+    },
+    {
+      "action": "idp_group_sync__list_workspace_mappings",
+      "docs_path": "/api-reference/idp-group-sync/list-workspace-mappings",
+      "method": "GET",
+      "mutation": false,
+      "operation_sha256": "7c88236a051755b4448ee7f031c977e096645e016888e784da6ef254bcbfafef",
+      "path": "/api/v1/workspaces/{workspace_slug}/group-sync/workspace-mappings/",
+      "schema_hash": "3c435183b774ee15404c0ead04692910a00d0cfa1a6cd1ad33d52ec553eb3446"
+    },
+    {
+      "action": "idp_group_sync__get_workspace_mapping",
+      "docs_path": "/api-reference/idp-group-sync/get-workspace-mapping",
+      "method": "GET",
+      "mutation": false,
+      "operation_sha256": "780864da0edfcd44102cd892e4d0f1cbabe2b169c3da2fcb81c8767417aaed69",
+      "path": "/api/v1/workspaces/{workspace_slug}/group-sync/workspace-mappings/{mapping_id}/",
+      "schema_hash": "7c81945bd0f7d8a018857fb72d6adfab16b16977f0dee2c73927b2eeeec1acf8"
+    },
+    {
+      "action": "initiative__list_initiatives",
+      "docs_path": "/api-reference/initiative/list-initiatives",
+      "method": "GET",
+      "mutation": false,
+      "operation_sha256": "66224151e7f4992deb50317a5b65de19ea44ac6bdcd9638873c331cd02d5ab5a",
+      "path": "/api/v1/workspaces/{workspace_slug}/initiatives/",
+      "schema_hash": "109ac34aab18053285b7ec64ae4e6ce948249963ff211b5c8a04f54cae0ce65c"
+    },
+    {
+      "action": "initiative__list_initiative_labels",
+      "docs_path": "/api-reference/initiative/list-initiative-labels",
+      "method": "GET",
+      "mutation": false,
+      "operation_sha256": "d3187f8217ab53cf778ad62517b858c184c7725a1b25e806799609932f22c3bf",
+      "path": "/api/v1/workspaces/{workspace_slug}/initiatives/labels/",
+      "schema_hash": "7f4c5cf47c71b672c5f299733fed309d540e32499f4087133427148df1c4e492"
+    },
+    {
+      "action": "initiative__get_initiative_label_detail",
+      "docs_path": "/api-reference/initiative/get-initiative-label-detail",
+      "method": "GET",
+      "mutation": false,
+      "operation_sha256": "158fa77f148726a7510629c547317f2ff17f76b03cddd4ae9a80fa9277a8d60b",
+      "path": "/api/v1/workspaces/{workspace_slug}/initiatives/labels/{label_id}/",
+      "schema_hash": "e82d6b3ce0c0268771a421ed4ac438e9e10b6a23818a5ad4fe001e7f4b9356c7"
+    },
+    {
+      "action": "initiative__get_initiative_detail",
+      "docs_path": "/api-reference/initiative/get-initiative-detail",
+      "method": "GET",
+      "mutation": false,
+      "operation_sha256": "24d16e53a276a5f728909f117ed1022dcae36a54703108598f109e044b5d582b",
+      "path": "/api/v1/workspaces/{workspace_slug}/initiatives/{initiative_id}/",
+      "schema_hash": "43fe9b68e1dc072683e7fb2dc625024d543a6fbc5d2cdf8928df66f432140d59"
+    },
+    {
+      "action": "initiative__list_initiative_epics",
+      "docs_path": "/api-reference/initiative/list-initiative-epics",
+      "method": "GET",
+      "mutation": false,
+      "operation_sha256": "1aaf06844897fa941df2f58f76160f0595a7aa765d87b3acc76df66a9b7a13b0",
+      "path": "/api/v1/workspaces/{workspace_slug}/initiatives/{initiative_id}/epics/",
+      "schema_hash": "5bde27b040a8173b7c0768ecc523546c07d158918bf28ba92d96da8fde0cf2b7"
+    },
+    {
+      "action": "initiative__list_initiative_labels_for_initiative",
+      "docs_path": "/api-reference/initiative/list-initiative-labels-for-initiative",
+      "method": "GET",
+      "mutation": false,
+      "operation_sha256": "43a0f37ee03d42d52e4cceb9f1b39d0934396da9bd33f700553031d367b83b6e",
+      "path": "/api/v1/workspaces/{workspace_slug}/initiatives/{initiative_id}/labels/",
+      "schema_hash": "4b688837dc72ffa32002088299d783eb8c3212e7f740867033430947e7305d3f"
+    },
+    {
+      "action": "initiative__list_initiative_projects",
+      "docs_path": "/api-reference/initiative/list-initiative-projects",
+      "method": "GET",
+      "mutation": false,
+      "operation_sha256": "2818c8388feb6e351acdb863025bb9f564673b88052c1273b7bec47300e7e77a",
+      "path": "/api/v1/workspaces/{workspace_slug}/initiatives/{initiative_id}/projects/",
+      "schema_hash": "5aace80f232c9003d27869cd4b2325a17c6d17b3e47793b927f0f36e345160f1"
+    },
+    {
+      "action": "workspace_invitations__list_workspace_invitations",
+      "docs_path": "/api-reference/workspace-invitations/list-workspace-invitations",
+      "method": "GET",
+      "mutation": false,
+      "operation_sha256": "4cc030fa7a6fb9574b1c4b79f829c1a8dc601e58b982e137e53e665f763b47fc",
+      "path": "/api/v1/workspaces/{workspace_slug}/invitations/",
+      "schema_hash": "507e091e6b9cca182c11382d30239cbf7ac8df708fb6e68971bca27c8c767f35"
+    },
+    {
+      "action": "workspace_invitations__get_workspace_invitation_detail",
+      "docs_path": "/api-reference/workspace-invitations/get-workspace-invitation-detail",
+      "method": "GET",
+      "mutation": false,
+      "operation_sha256": "44043db62facd1b4d925ce7e6dd496c6ec21096c93efd3aea030095e03c3d85b",
+      "path": "/api/v1/workspaces/{workspace_slug}/invitations/{invitation_id}/",
+      "schema_hash": "67baada5b72d7b09775a799419f4688875d28315972d6b52c4c7500d7629f580"
+    },
+    {
+      "action": "members__get_workspace_members",
+      "docs_path": "/api-reference/members/get-workspace-members",
+      "method": "GET",
+      "mutation": false,
+      "operation_sha256": "2d370f0e6276782d89b29f32b6927993a778084f1c93c413abd0cba037f07497",
+      "path": "/api/v1/workspaces/{workspace_slug}/members/",
+      "schema_hash": "a0154e7b173c8d061e19deed75c60c13dba0028173542fca21209659116a7fc7"
+    },
+    {
+      "action": "page__list_workspace_pages",
+      "docs_path": "/api-reference/page/list-workspace-pages",
+      "method": "GET",
+      "mutation": false,
+      "operation_sha256": "0b281cb6555c6c329c366889ef7630b7ad73e0650cfcc7c3ce427b7f74ddce85",
+      "path": "/api/v1/workspaces/{workspace_slug}/pages/",
+      "schema_hash": "3c2f4b0da43485879eb50d9d57c2e416bf8d3f631ab1567a23a9b71f3274ad89"
+    },
+    {
+      "action": "page__get_workspace_page",
+      "docs_path": "/api-reference/page/get-workspace-page",
+      "method": "GET",
+      "mutation": false,
+      "operation_sha256": "f4a26cfe5b2e1a3a5018bf0eb3fd1c0e9240ce24c9043a2c586528f66b84c29a",
+      "path": "/api/v1/workspaces/{workspace_slug}/pages/{page_id}/",
+      "schema_hash": "2b29958174d0c018ed0d8ece34896ad26ef3de89edf2321702f77f2e88557d04"
+    },
+    {
+      "action": "project_labels__list_project_labels",
+      "docs_path": "/api-reference/project-labels/list-project-labels",
+      "method": "GET",
+      "mutation": false,
+      "operation_sha256": "739b2b9acbcba633d984014b895f95531dc231846e63d0e2102483a54143b58a",
+      "path": "/api/v1/workspaces/{workspace_slug}/project-labels/",
+      "schema_hash": "3257868b3868ab870aa621454de8bb2535d9c83cf197b9fd1f60ad2ee7550186"
+    },
+    {
+      "action": "project_labels__get_project_label_detail",
+      "docs_path": "/api-reference/project-labels/get-project-label-detail",
+      "method": "GET",
+      "mutation": false,
+      "operation_sha256": "92a73be4c9cf5bae9ddd48191d8da2e889f70388e79fbd9e29e91611491ba1c0",
+      "path": "/api/v1/workspaces/{workspace_slug}/project-labels/{label_id}/",
+      "schema_hash": "2065b569ca3a8dd51003b192fe84bb1ccf82d491070ddccab77cc911c61ce592"
+    },
+    {
+      "action": "project__list_projects",
+      "docs_path": "/api-reference/project/list-projects",
+      "method": "GET",
+      "mutation": false,
+      "operation_sha256": "011f4e2c5f7188cdb4fc4d83f8a8d4eee1ac33918db644cd961b0d3221b3833f",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/",
+      "schema_hash": "86db28c5a753463379a65264bbe1adc8534ce4583d3b958350623585e3c32721"
+    },
+    {
+      "action": "cycle__list_archived_cycles",
+      "docs_path": "/api-reference/cycle/list-archived-cycles",
+      "method": "GET",
+      "mutation": false,
+      "operation_sha256": "6567315f94f37662d828b73653ddf74832e35c4c9264018c891e1db5f43d3224",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/archived-cycles/",
+      "schema_hash": "6d6488343978e27ab6868c63545013e0c616ef8c93d2c721454cc5fdc4b078fc"
+    },
+    {
+      "action": "module__list_archived_modules",
+      "docs_path": "/api-reference/module/list-archived-modules",
+      "method": "GET",
+      "mutation": false,
+      "operation_sha256": "a1c516bd8849e972a37dfd1d4d2c5b70d4b826e69305bd818156cdb9f233be70",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/archived-modules/",
+      "schema_hash": "0633592585149cb6d7d98311918572a81bafe6255be60406932f672cd5557d27"
+    },
+    {
+      "action": "cycle__list_cycles",
+      "docs_path": "/api-reference/cycle/list-cycles",
+      "method": "GET",
+      "mutation": false,
+      "operation_sha256": "ae1f5e5b589477cfd34cb8207b549dcc73778bc7652e1305ead380d8e652fafb",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/cycles/",
+      "schema_hash": "0604e2c5cf19b4284f2f856f18fd3efd2378a603e897b50a73823669f3df8c2c"
+    },
+    {
+      "action": "cycle__list_cycle_work_items",
+      "docs_path": "/api-reference/cycle/list-cycle-work-items",
+      "method": "GET",
+      "mutation": false,
+      "operation_sha256": "dd17b606ba2d382f68ae362b8e649c384277c1bb3b128c75d3c05f013cf21586",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/cycles/{cycle_id}/cycle-issues/",
+      "schema_hash": "af954bdc754e6046d03192ecf98408de22530d8d273652084e1be703f3db0482"
+    },
+    {
+      "action": "cycle__get_cycle_detail",
+      "docs_path": "/api-reference/cycle/get-cycle-detail",
+      "method": "GET",
+      "mutation": false,
+      "operation_sha256": "4f0130df69f9f2d51f99365ed0fb0a9af6ea965585cf65d463190e4021ba3c8d",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/cycles/{resource_id}/",
+      "schema_hash": "6130fa283b3679f70be8c02936ca8afeabd749f4257a7ed7aa048db0ad0317fe"
+    },
+    {
+      "action": "epics__list_epics",
+      "docs_path": "/api-reference/epics/list-epics",
+      "method": "GET",
+      "mutation": false,
+      "operation_sha256": "095f6d8f693aabe565660242932503bf4a49a8042828ffa85bc33f6531bf62f8",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/epics/",
+      "schema_hash": "21a31fdb4f6c290820f2f40bc1fbb5fda75560e5f9ecf702662885380915ada1"
+    },
+    {
+      "action": "epics__get_epic_detail",
+      "docs_path": "/api-reference/epics/get-epic-detail",
+      "method": "GET",
+      "mutation": false,
+      "operation_sha256": "e9be76bc06e943aeb31415eea0004eb77e67f9d0f627deab09d93ce704861a68",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/epics/{resource_id}/",
+      "schema_hash": "0e11fdb21a3f78f2a1ea580a5c40a8ad3bac48214d4e7ad782ed2a41a23e7063"
+    },
+    {
+      "action": "estimate__get_estimate",
+      "docs_path": "/api-reference/estimate/get-estimate",
+      "method": "GET",
+      "mutation": false,
+      "operation_sha256": "c753c7788b2c7b35b287a59085533c1c203f27352a958b59ea4024b218749347",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/estimates/",
+      "schema_hash": "2f9625d20e4f4bbd44545c1c91c7070a206f17377962d69bb731725f17bef3be"
+    },
+    {
+      "action": "estimate__list_estimate_points",
+      "docs_path": "/api-reference/estimate/list-estimate-points",
+      "method": "GET",
+      "mutation": false,
+      "operation_sha256": "632711cebf28cd701c341468cadfaa32c1f36f1a1efeb9ed6eb33e44c4bdf654",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/estimates/{estimate_id}/estimate-points/",
+      "schema_hash": "31f41b20e046848a27ffc4e8fccf660aa0fd6545f3547eee2742892af75316a8"
+    },
+    {
+      "action": "project_features__get_project_features",
+      "docs_path": "/api-reference/project-features/get-project-features",
+      "method": "GET",
+      "mutation": false,
+      "operation_sha256": "9af22b1c55d530e0ae1a4c038044b906ce77976e7cec3aecb5d91cc2e1266e9e",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/features/",
+      "schema_hash": "6e7b9185ebf6cfc5141e0ac3a7fb2e39c2b34ffb83f5f710bad69a90f389b51b"
+    },
+    {
+      "action": "intake_issue__list_intake_issues",
+      "docs_path": "/api-reference/intake-issue/list-intake-issues",
+      "method": "GET",
+      "mutation": false,
+      "operation_sha256": "ebeab6000cdc44b16f2f3166c4eb1456cf79ba361d1a3bba9150ebc6f7f3e10a",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/intake-issues/",
+      "schema_hash": "1c5544833832293852d9ff215750d7492465f2854a2a64e0e1d38054c4c69d36"
+    },
+    {
+      "action": "intake_issue__get_intake_issue_detail",
+      "docs_path": "/api-reference/intake-issue/get-intake-issue-detail",
+      "method": "GET",
+      "mutation": false,
+      "operation_sha256": "b56b4a8eda7c0f63bc65ae1838a838356fbb544c08f0698a55d7a2535681b6cc",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/intake-issues/{work_item_id}/",
+      "schema_hash": "1513eaacfbf00911dea9f1de3c30fa6f6f2abeff0c67a705762b2db0aab87c4c"
+    },
+    {
+      "action": "label__list_labels",
+      "docs_path": "/api-reference/label/list-labels",
+      "method": "GET",
+      "mutation": false,
+      "operation_sha256": "74c08ec75326ddfdc14b3c831be6a0730cae5939ce3fde90b6ee984f23138daa",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/labels/",
+      "schema_hash": "f77f0de1113ef71893340f715e667b0cb578da00c7b6c4e39e7e3a42bb753afe"
+    },
+    {
+      "action": "label__get_label_detail",
+      "docs_path": "/api-reference/label/get-label-detail",
+      "method": "GET",
+      "mutation": false,
+      "operation_sha256": "26d528afef2719b3d4ddebdbf2c5070b5103b062b1c261028203c2bf98759b1f",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/labels/{label_id}/",
+      "schema_hash": "345b469707d5ce5ecf2f1f5de4c382c1dc6716eb8df860c3630041641b22b960"
+    },
+    {
+      "action": "milestones__list_milestones",
+      "docs_path": "/api-reference/milestones/list-milestones",
+      "method": "GET",
+      "mutation": false,
+      "operation_sha256": "274c2887985d99783118d7cd5ab9bb6cf5f462548fe41c273f8a0ebb38010f0e",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/milestones/",
+      "schema_hash": "f56197c501369394eb72f2dc8f13cd7d242269064eba8113858adfc189f3e938"
+    },
+    {
+      "action": "milestones__get_milestone_detail",
+      "docs_path": "/api-reference/milestones/get-milestone-detail",
+      "method": "GET",
+      "mutation": false,
+      "operation_sha256": "df71b4874b56bf0ff3c443a5e4f39872ef7199077bbaaff0addac227378bade5",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/milestones/{milestone_id}/",
+      "schema_hash": "7956408efcf7e7a149309e66c89e3cd8f7e34b599cb7040b26ad9705cb40ff62"
+    },
+    {
+      "action": "milestones__list_milestone_work_items",
+      "docs_path": "/api-reference/milestones/list-milestone-work-items",
+      "method": "GET",
+      "mutation": false,
+      "operation_sha256": "d194a07fd3733df2985dfe27cfca6f499b3f6677a84ae09ecf36558558b25c09",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/milestones/{milestone_id}/work-items/",
+      "schema_hash": "4229228393be1aee02772923498365e2ed5de31ea8b233ffdb38d213fa8c52d3"
+    },
+    {
+      "action": "module__list_modules",
+      "docs_path": "/api-reference/module/list-modules",
+      "method": "GET",
+      "mutation": false,
+      "operation_sha256": "fa485e8972fcc102ce21a9de3ba2e56c52666089960915b9e965aace68dea6fa",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/modules/",
+      "schema_hash": "ba6c0c6bfcc8c413707b9d88a8503da1ea978bdca677081f2bb78de0b7b9c330"
+    },
+    {
+      "action": "module__list_module_work_items",
+      "docs_path": "/api-reference/module/list-module-work-items",
+      "method": "GET",
+      "mutation": false,
+      "operation_sha256": "268e84b815ca28e9cb05e95d5c841f89e6ba89f858d7d85d584102df6d0ed708",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/modules/{module_id}/module-issues/",
+      "schema_hash": "410b8444e6d0e42001952357404f233c35092afa0fc042ffa8a03db03fc37513"
+    },
+    {
+      "action": "module__get_module_detail",
+      "docs_path": "/api-reference/module/get-module-detail",
+      "method": "GET",
+      "mutation": false,
+      "operation_sha256": "b4523ba1e6f906b33fba26cb506ba96b855d7e61f77f44153fc771d0d6671a55",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/modules/{resource_id}/",
+      "schema_hash": "9df75a95cab4841d4f7ba37033e32151060cecc548ee100ee929b69cf56bdb75"
+    },
+    {
+      "action": "page__list_project_pages",
+      "docs_path": "/api-reference/page/list-project-pages",
+      "method": "GET",
+      "mutation": false,
+      "operation_sha256": "0a86963a173a4be5ccb4bafdcc60106100a1112e6bd198d5ceac8e0ae5eb2653",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/pages/",
+      "schema_hash": "c1c6b204aaa5dfe32d222de3838220d0d6300a0a30a163163832186b04507655"
+    },
+    {
+      "action": "page__get_project_page",
+      "docs_path": "/api-reference/page/get-project-page",
+      "method": "GET",
+      "mutation": false,
+      "operation_sha256": "2de40fff44cc1b728ab6a6aa1229ffd894a8dcad7912b3e483e9c925817e335b",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/pages/{page_id}/",
+      "schema_hash": "a09648b861b591799fb534a12156a7a9c48c4e00d4e2db7cab6a1fe267b42906"
+    },
+    {
+      "action": "members__get_project_members",
+      "docs_path": "/api-reference/members/get-project-members",
+      "method": "GET",
+      "mutation": false,
+      "operation_sha256": "6861f72eee38ac144894fe95902dde8c346ebd3e92fedf75ed4c5590b0b60923",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/project-members/",
+      "schema_hash": "eb7c68c003b91cf89dd308ae7dae25e409262a73ee9a13d3bf0ab581577760de"
+    },
+    {
+      "action": "members__get_project_member_detail",
+      "docs_path": "/api-reference/members/get-project-member-detail",
+      "method": "GET",
+      "mutation": false,
+      "operation_sha256": "7030daaa2304af0f87011dd16bea63dc538bc4200252e8e0780f16a86a96cb56",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/project-members/{member_id}/",
+      "schema_hash": "17f80294e50fd7106d9a3b9b4a33b652a6991b76208f2c4e3ddfba3744675613"
+    },
+    {
+      "action": "state__list_states",
+      "docs_path": "/api-reference/state/list-states",
+      "method": "GET",
+      "mutation": false,
+      "operation_sha256": "89353bdd3954ec5af394d37a9105d856621fcd15ab37d36dd463a9fede5118e4",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/states/",
+      "schema_hash": "a7a1fdb0525be4a56a0f91d36e76260e5dada44ea4cf505ac053620456138f1f"
+    },
+    {
+      "action": "state__get_state_detail",
+      "docs_path": "/api-reference/state/get-state-detail",
+      "method": "GET",
+      "mutation": false,
+      "operation_sha256": "a61ffc188e1a90793c03c4915528aac407916f6c9012db0cd958e0eb61876906",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/states/{state_id}/",
+      "schema_hash": "b35dc41a0f28f4dc31891e0ba045e14ccc670600903e78d4d56377bbfecef463"
+    },
+    {
+      "action": "worklogs__get_total_time",
+      "docs_path": "/api-reference/worklogs/get-total-time",
+      "method": "GET",
+      "mutation": false,
+      "operation_sha256": "d0c31fa784ee6fd6e79a795af02922b7d58de4d8a28e64ee89d897eda14245be",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/total-worklogs/",
+      "schema_hash": "34ab959f59b1e95e6a3d8cd59fea2222677df8fab746925accf3fab2425c1d88"
+    },
+    {
+      "action": "options__list_dropdown_options",
+      "docs_path": "/api-reference/issue-types/options/list-dropdown-options",
+      "method": "GET",
+      "mutation": false,
+      "operation_sha256": "980194a9659c8eea1c974e4c036e18406fdd171e3a10f7b8852c48dbfdf36f41",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/work-item-properties/{property_id}/options/",
+      "schema_hash": "07e50d50b3a31ccd67680a5c167d7e68bd316f9e3024ab6963240c10d97ac8c6"
+    },
+    {
+      "action": "options__get_option_details",
+      "docs_path": "/api-reference/issue-types/options/get-option-details",
+      "method": "GET",
+      "mutation": false,
+      "operation_sha256": "8b8a7884fe6adb663603cf4780f7f7aaff5f12ea3915b41e1e8e46d269671f64",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/work-item-properties/{property_id}/options/{option_id}/",
+      "schema_hash": "0ff23832401c1775680fc05113fbff4e733b302d07d921256a16a8bdb33a3450"
+    },
+    {
+      "action": "types__list_issue_types",
+      "docs_path": "/api-reference/issue-types/types/list-issue-types",
+      "method": "GET",
+      "mutation": false,
+      "operation_sha256": "d9db8e61e46f5b992c95007891aebf78c76b408afd3aa9dd992a733370dc6006",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/work-item-types/",
+      "schema_hash": "4cd44537a0b87524198ca830a4feaff4acc3afd5e98a92245b705444b21af9ae"
+    },
+    {
+      "action": "types__get_work_item_type_schema",
+      "docs_path": "/api-reference/issue-types/types/get-work-item-type-schema",
+      "method": "GET",
+      "mutation": false,
+      "operation_sha256": "69b67fe1ca8e9ed36aeecb9509face8238b543ffb3107026d16d52ddacd41786",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/work-item-types/schema/",
+      "schema_hash": "e7e9a29add1204b911b14521b967f1ed86dc982e6f5be4b473c198adaa8203cc"
+    },
+    {
+      "action": "types__get_issue_type_details",
+      "docs_path": "/api-reference/issue-types/types/get-issue-type-details",
+      "method": "GET",
+      "mutation": false,
+      "operation_sha256": "6628d9806c602525a5b354df932e6ea48fa5e92579ea86bc5d1dbb4affcb68ee",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/work-item-types/{type_id}/",
+      "schema_hash": "45c087ba1d2792c3044ff7e679ebbb78b07516321eb6255d6004977da1371481"
+    },
+    {
+      "action": "properties__list_properties",
+      "docs_path": "/api-reference/issue-types/properties/list-properties",
+      "method": "GET",
+      "mutation": false,
+      "operation_sha256": "701d6320c08b42e67e2a08b4b544a2ef84d4f16593bd4b26d3f036e5ba9e9485",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/work-item-types/{type_id}/work-item-properties/",
+      "schema_hash": "0f0a364635ac2736b2c7d6e6165c95dc08ccbea2a0c5a9e94fd7ca4388468018"
+    },
+    {
+      "action": "properties__get_property_details",
+      "docs_path": "/api-reference/issue-types/properties/get-property-details",
+      "method": "GET",
+      "mutation": false,
+      "operation_sha256": "7ddf936e24a8ad96676ba0ecc89dea5007c304a3d0e1d5c2645b491ff926f156",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/work-item-types/{type_id}/work-item-properties/{property_id}/",
+      "schema_hash": "44340e62345c1512511de2ae723bba76609e5567a3fb4fdb5963b5363fc4c0eb"
+    },
+    {
+      "action": "issue__list_issues",
+      "docs_path": "/api-reference/issue/list-issues",
+      "method": "GET",
+      "mutation": false,
+      "operation_sha256": "747475ce291c3b6bcc9e3bef883f5dc504a20de43eca949c0bb8353f131764d6",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/work-items/",
+      "schema_hash": "b914fd513641021c74e69736d749c2301891c314998ac7aa806c395cc2e78841"
+    },
+    {
+      "action": "issue__get_issue_detail",
+      "docs_path": "/api-reference/issue/get-issue-detail",
+      "method": "GET",
+      "mutation": false,
+      "operation_sha256": "2739dede9638793c6f0a5582cc2975e47cb7057a22a6722f6e7cd246c10e96a1",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/work-items/{resource_id}/",
+      "schema_hash": "84f9c7dfe0a9eaeaaddaf4ca95c1965f122eb1202e4d9b9191f0c2dfb57787b4"
+    },
+    {
+      "action": "issue_activity__list_issue_activities",
+      "docs_path": "/api-reference/issue-activity/list-issue-activities",
+      "method": "GET",
+      "mutation": false,
+      "operation_sha256": "1136859af5d0e37f8811b4d64ca905451f04d817bc75cc67ba2e3ab7b9841d6c",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/work-items/{work_item_id}/activities/",
+      "schema_hash": "6e44cb5fd62096a6cbb7e4a461f92aaa1bccfe22e26018c241c487a0dc58d4d3"
+    },
+    {
+      "action": "issue_activity__get_issue_activity_detail",
+      "docs_path": "/api-reference/issue-activity/get-issue-activity-detail",
+      "method": "GET",
+      "mutation": false,
+      "operation_sha256": "4a0ffc98c78fdfa423e0c3b974a34c2b0ace7620be72582def898405e82eb7b9",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/work-items/{work_item_id}/activities/{resource_id}/",
+      "schema_hash": "34b2f68d0423e294c8feb51b7e9ac1527117a755d71731630a6d2b4b8db8e57b"
+    },
+    {
+      "action": "issue_attachments__get_attachments",
+      "docs_path": "/api-reference/issue-attachments/get-attachments",
+      "method": "GET",
+      "mutation": false,
+      "operation_sha256": "87403284207d18e36d7542b8762f086887f4672f90b8902c93e380e61bde9087",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/work-items/{work_item_id}/attachments/",
+      "schema_hash": "66a6ad26516d141217c9c86c8084e3f8c8dcfed13c066617d908f695aee1c1e6"
+    },
+    {
+      "action": "issue_attachments__get_attachment_detail",
+      "docs_path": "/api-reference/issue-attachments/get-attachment-detail",
+      "method": "GET",
+      "mutation": false,
+      "operation_sha256": "9f0788c6d46249698aa92fc78cae83ee15c6116d087fdcc2050704c87415e60a",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/work-items/{work_item_id}/attachments/{resource_id}/",
+      "schema_hash": "c851faf7d3dbbc5d9887ab1ab00427bcd80aab145d89e23aee85742f9e7f4c17"
+    },
+    {
+      "action": "issue_comment__list_issue_comments",
+      "docs_path": "/api-reference/issue-comment/list-issue-comments",
+      "method": "GET",
+      "mutation": false,
+      "operation_sha256": "a2736ebd1ca597e8d494e5b58a3568cd502624c685d1980d3e901654f4adbb28",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/work-items/{work_item_id}/comments/",
+      "schema_hash": "29b45ae67cfd3cb237820558b7e2715ecd81370e7c164b717827a5e78394e6be"
+    },
+    {
+      "action": "issue_comment__get_issue_comment_detail",
+      "docs_path": "/api-reference/issue-comment/get-issue-comment-detail",
+      "method": "GET",
+      "mutation": false,
+      "operation_sha256": "82f37eb75ff579feea30a20b94cbf3068087a58d75dec2ff7c6a8c0f5b428381",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/work-items/{work_item_id}/comments/{resource_id}/",
+      "schema_hash": "6ec2ce177527bd85fe1147b5b773e45e71cca6a6d5fc347a5ab4fda584378cd9"
+    },
+    {
+      "action": "link__list_links",
+      "docs_path": "/api-reference/link/list-links",
+      "method": "GET",
+      "mutation": false,
+      "operation_sha256": "dd8722f8b9a548df72ec26a664165f1d808a666bdd35d409c001944ffcd93f6f",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/work-items/{work_item_id}/links/",
+      "schema_hash": "1916debd4200265aef0c5a85f4fd0f6ad7668b42c2b5fa1b933ee7e3f85b0b43"
+    },
+    {
+      "action": "link__get_link_detail",
+      "docs_path": "/api-reference/link/get-link-detail",
+      "method": "GET",
+      "mutation": false,
+      "operation_sha256": "93ed3631e3ce08a770eb81e5a7373de87853fca637e992dd8ed9ebf41023af0e",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/work-items/{work_item_id}/links/{resource_id}/",
+      "schema_hash": "96fd856ab3c250662d4a9bec90cc4a07e634be32b44f95135869b6e2fe286ec2"
+    },
+    {
+      "action": "work_item_pages__list_work_item_pages",
+      "docs_path": "/api-reference/work-item-pages/list-work-item-pages",
+      "method": "GET",
+      "mutation": false,
+      "operation_sha256": "d1a9e807bed7daf01ad6b1b61d8d68a3135803ad8ef2f92ef05ba8af5455a3f1",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/work-items/{work_item_id}/pages/",
+      "schema_hash": "e72c571b56cb003e88fd0c4769e1fc55dec2239b73afd65d2d1b7e3e1e5f2c61"
+    },
+    {
+      "action": "work_item_pages__get_work_item_page_detail",
+      "docs_path": "/api-reference/work-item-pages/get-work-item-page-detail",
+      "method": "GET",
+      "mutation": false,
+      "operation_sha256": "45fb95a145484d3582aa6c3cd236c1f730b5801c06c43f3f89ec04246fd14344",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/work-items/{work_item_id}/pages/{page_id}/",
+      "schema_hash": "09acde4fcec7c122676fbc37a36d98b83df73ffa01c698b42840c21aec497624"
+    },
+    {
+      "action": "values__get_property_value_detail",
+      "docs_path": "/api-reference/issue-types/values/get-property-value-detail",
+      "method": "GET",
+      "mutation": false,
+      "operation_sha256": "514a58b9602ddf169d441f971af0c914d80b5146d9f58209cea18535f018f1ff",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/work-items/{work_item_id}/work-item-properties/{property_id}/values/",
+      "schema_hash": "b86fbe378a2027e8f2307df13d16e15cbef68b3e69d6574fd4d9332c77c927aa"
+    },
+    {
+      "action": "values__list_property_values",
+      "docs_path": "/api-reference/issue-types/values/list-property-values",
+      "method": "GET",
+      "mutation": false,
+      "operation_sha256": "98e53b5be8801595e00a57057e7980dcebffeffd0d6b593ad8db42c889c40018",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/work-items/{work_item_id}/work-item-properties/{property_id}/values/",
+      "schema_hash": "b86fbe378a2027e8f2307df13d16e15cbef68b3e69d6574fd4d9332c77c927aa"
+    },
+    {
+      "action": "worklogs__get_worklogs_for_issue",
+      "docs_path": "/api-reference/worklogs/get-worklogs-for-issue",
+      "method": "GET",
+      "mutation": false,
+      "operation_sha256": "ad18fc3e840451acdbce695324473adea6b3d11e3c8cdfa3122cf49d51419565",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/work-items/{work_item_id}/worklogs/",
+      "schema_hash": "54eec4fc4481cd289c8cf30d04d6ab7e3c2f1a20a0bc077cb0342a6e90fd0add"
+    },
+    {
+      "action": "project__get_project_detail",
+      "docs_path": "/api-reference/project/get-project-detail",
+      "method": "GET",
+      "mutation": false,
+      "operation_sha256": "b74aa2a10c64e43f73a5d42fa47455f545c76bcbe1acff6670d206d7a3adc469",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/{resource_id}/",
+      "schema_hash": "96005e9748cc8892eaef97d1a90be52a197f5f6838db7e4e9af82f6a410b8ef4"
+    },
+    {
+      "action": "sticky__list_stickies",
+      "docs_path": "/api-reference/sticky/list-stickies",
+      "method": "GET",
+      "mutation": false,
+      "operation_sha256": "2ca86b6f0b447750aae93086e70eb8e5873da3f0cb44dffea9052ec35ee771f3",
+      "path": "/api/v1/workspaces/{workspace_slug}/stickies/",
+      "schema_hash": "fd0de8a6a16d9b560f96b2b184c36e9288573e800a73bd76a19a1a581e93847a"
+    },
+    {
+      "action": "sticky__get_sticky_detail",
+      "docs_path": "/api-reference/sticky/get-sticky-detail",
+      "method": "GET",
+      "mutation": false,
+      "operation_sha256": "f4b23479c55261f6f178c08e3c43f138f452829f6da7d82f19a8704ed633c589",
+      "path": "/api/v1/workspaces/{workspace_slug}/stickies/{resource_id}/",
+      "schema_hash": "9c4a409059f2d7f4e65985bdd4899e9929561c09398007c6a1637fcc9314af8a"
+    },
+    {
+      "action": "teamspace__list_teamspaces",
+      "docs_path": "/api-reference/teamspace/list-teamspaces",
+      "method": "GET",
+      "mutation": false,
+      "operation_sha256": "ce5112a67bd35e17e0b4765cdb98a53db1d8320eeb428597130335cd3c290bcd",
+      "path": "/api/v1/workspaces/{workspace_slug}/teamspaces/",
+      "schema_hash": "d763aab32b4e618df8e9127fad7656fe0130e08e0057163b8bb8792a8ac58132"
+    },
+    {
+      "action": "teamspace__get_teamspace_detail",
+      "docs_path": "/api-reference/teamspace/get-teamspace-detail",
+      "method": "GET",
+      "mutation": false,
+      "operation_sha256": "c90e6a3c256fb2c647d4370751e9b8a087f89d0beb873b161b14514dead94ad3",
+      "path": "/api/v1/workspaces/{workspace_slug}/teamspaces/{resource_id}/",
+      "schema_hash": "a9bcac1f3d11a6f2317e0db579e6112c55f341b47e3b4f4445ee88a27197ab9c"
+    },
+    {
+      "action": "teamspace__list_teamspace_members",
+      "docs_path": "/api-reference/teamspace/list-teamspace-members",
+      "method": "GET",
+      "mutation": false,
+      "operation_sha256": "ce51bef42390f16112487750970c40b39baa5074e5feda61c9aca0e4936af6a6",
+      "path": "/api/v1/workspaces/{workspace_slug}/teamspaces/{teamspace_id}/members/",
+      "schema_hash": "3b87b0bbfba5f21c6766bc59582478713179e560ede544a22677830404dffc6e"
+    },
+    {
+      "action": "teamspace__list_teamspace_projects",
+      "docs_path": "/api-reference/teamspace/list-teamspace-projects",
+      "method": "GET",
+      "mutation": false,
+      "operation_sha256": "37d317ab79b2fdbf8d054dd053847b7f466ed526997fa9e9d6c82b0674278ad1",
+      "path": "/api/v1/workspaces/{workspace_slug}/teamspaces/{teamspace_id}/projects/",
+      "schema_hash": "85ee22e8744eb2550f5796f9c8019d5291d9be05b5f3ad81a86c013cba80bfeb"
+    },
+    {
+      "action": "issue__search_issues",
+      "docs_path": "/api-reference/issue/search-issues",
+      "method": "GET",
+      "mutation": false,
+      "operation_sha256": "e00bc635ad2155f3a29da9bbdba3367170fed5787e7a7499e921d7b1828b3098",
+      "path": "/api/v1/workspaces/{workspace_slug}/work-items/search/",
+      "schema_hash": "a1cd59cd63d2b5ad8da5ea1a89f97f4d879e0d975313b11813055b10318fcfc6"
+    },
+    {
+      "action": "issue__get_issue_sequence_id",
+      "docs_path": "/api-reference/issue/get-issue-sequence-id",
+      "method": "GET",
+      "mutation": false,
+      "operation_sha256": "ca382b8e82f6d09a32725bdc900056b4e154479b31c9a0a434cae02cc32d70ac",
+      "path": "/api/v1/workspaces/{workspace_slug}/work-items/{project_identifier}-{issue_identifier}/",
+      "schema_hash": "310cdb91a9f96c6c70cca827fb313ebd8385f74836aceba3266651fcee5eb030"
+    },
+    {
+      "action": "assets__update_user_asset",
+      "docs_path": "/api-reference/assets/update-user-asset",
+      "method": "PATCH",
+      "mutation": true,
+      "operation_sha256": "4d5812bf7dcd3b1541704f8a4b4dd2611406de66b8954094385ec4bc9913f8e0",
+      "path": "/api/v1/assets/user-assets/{asset_id}/",
+      "schema_hash": "c25d83912c75c976db3a08b2964b2273c2b4e1e84dd3c91aab20ee0298d2a8ee"
+    },
+    {
+      "action": "epics__update_epic",
+      "docs_path": "/api-reference/epics/update-epic",
+      "method": "PATCH",
+      "mutation": true,
+      "operation_sha256": "fc654f98d5e33f9b81b43825607f23edf859fa1196abb631c34e9efd080a30f2",
+      "path": "/api/v1/workspaces/{slug}/projects/{project_id}/epics/{epic_id}/",
+      "schema_hash": "7a5d3767d03194f2d49baf991838d6082731c5d093ca412ba25d5b06e4cfe67e"
+    },
+    {
+      "action": "assets__update_workspace_asset",
+      "docs_path": "/api-reference/assets/update-workspace-asset",
+      "method": "PATCH",
+      "mutation": true,
+      "operation_sha256": "54f7795496036d92f67f95d2cc78742afe7692dec82e06e909330321368949c5",
+      "path": "/api/v1/workspaces/{workspace_slug}/assets/{asset_id}/",
+      "schema_hash": "05fdda12b32faeda3660ae6ebaddb41dab6bf412ea15c142a404a7bb607c78ca"
+    },
+    {
+      "action": "customer__update_customer_property_detail",
+      "docs_path": "/api-reference/customer/update-customer-property-detail",
+      "method": "PATCH",
+      "mutation": true,
+      "operation_sha256": "0e6f2ca852492fbd56836f5973f3f8f4521df7feb652413f2562a2e57f0375bf",
+      "path": "/api/v1/workspaces/{workspace_slug}/customer-properties/{property_id}/",
+      "schema_hash": "1d2efcf53f8fb6bf2b0ee7f242c9a69b0da4449c021879e613a90d76e56675cc"
+    },
+    {
+      "action": "customer__update_customer_property_value",
+      "docs_path": "/api-reference/customer/update-customer-property-value",
+      "method": "PATCH",
+      "mutation": true,
+      "operation_sha256": "9a0659a9810c77443be2ba49b032b884bfbe82578d3a2b07c708c6657b25df25",
+      "path": "/api/v1/workspaces/{workspace_slug}/customers/{customer_id}/property-values/{property_id}/",
+      "schema_hash": "28c7e01b10cd3f8545d515046e9e40f4135fab35c403b16c239db213aa7e78e9"
+    },
+    {
+      "action": "customer__update_customer_request_detail",
+      "docs_path": "/api-reference/customer/update-customer-request-detail",
+      "method": "PATCH",
+      "mutation": true,
+      "operation_sha256": "5623b266eb65311436064b4c521571586f284a8c0fe3ca3e06115bdc1ae5b58c",
+      "path": "/api/v1/workspaces/{workspace_slug}/customers/{customer_id}/requests/{resource_id}/",
+      "schema_hash": "ed1325c9e0786b9f1502c35b4dad3f9fec2bf7f448221f45a29c8f8d7ba53635"
+    },
+    {
+      "action": "customer__update_customer_detail",
+      "docs_path": "/api-reference/customer/update-customer-detail",
+      "method": "PATCH",
+      "mutation": true,
+      "operation_sha256": "73ef15323125159b24d8b52f2afbdeb0ed53ce5e5a591b066bfa129a997da640",
+      "path": "/api/v1/workspaces/{workspace_slug}/customers/{resource_id}/",
+      "schema_hash": "11e883fa9cdce5286ccc1a97fdde7cd4a878ef012b06ef68dfff1179fffab9a9"
+    },
+    {
+      "action": "workspace_features__update_workspace_features",
+      "docs_path": "/api-reference/workspace-features/update-workspace-features",
+      "method": "PATCH",
+      "mutation": true,
+      "operation_sha256": "78a458f037317006a968171c99afb8d75d58fdd487f0dca3f97ec3622a4ef8b3",
+      "path": "/api/v1/workspaces/{workspace_slug}/features/",
+      "schema_hash": "042dd1f1ab8a0ac3a9a93c480347070667766a304b5d3994f3b712b3dfa80426"
+    },
+    {
+      "action": "idp_group_sync__update_group_sync_config",
+      "docs_path": "/api-reference/idp-group-sync/update-group-sync-config",
+      "method": "PATCH",
+      "mutation": true,
+      "operation_sha256": "41efc849ebb65e6dc12f8ac7598284fd4863c626e9de4fb1bd8d88d34101e315",
+      "path": "/api/v1/workspaces/{workspace_slug}/group-sync/config/",
+      "schema_hash": "6e215def31e2e867e8552845ded85913c1eca12ffcd405d8095a1b662102370b"
+    },
+    {
+      "action": "idp_group_sync__update_project_mapping",
+      "docs_path": "/api-reference/idp-group-sync/update-project-mapping",
+      "method": "PATCH",
+      "mutation": true,
+      "operation_sha256": "c8496719f060a5ec2f966d81dc8eb91ba077861f28f330e4ac395cbcd98d2464",
+      "path": "/api/v1/workspaces/{workspace_slug}/group-sync/project-mappings/{mapping_id}/",
+      "schema_hash": "07b947e6a91b8232c6307602f1239ff569f866dd9605391ff13d8180ce2a5175"
+    },
+    {
+      "action": "idp_group_sync__update_workspace_mapping",
+      "docs_path": "/api-reference/idp-group-sync/update-workspace-mapping",
+      "method": "PATCH",
+      "mutation": true,
+      "operation_sha256": "3795fdb16b2f1f6cc2187e48ba06bf102e90b057836ac7e4b4af0fca0d61d745",
+      "path": "/api/v1/workspaces/{workspace_slug}/group-sync/workspace-mappings/{mapping_id}/",
+      "schema_hash": "399b63c343b6cdf366ff2b810145988be9e4b61e08414399752f38d9273cf596"
+    },
+    {
+      "action": "initiative__update_initiative_label_detail",
+      "docs_path": "/api-reference/initiative/update-initiative-label-detail",
+      "method": "PATCH",
+      "mutation": true,
+      "operation_sha256": "ac4f018834490a12ae03eed6db6f59b7e32b7b235016c46da91cc00cad143a89",
+      "path": "/api/v1/workspaces/{workspace_slug}/initiatives/labels/{label_id}/",
+      "schema_hash": "879e6773942eef93d40d8bc6e209564e8a593b72389eb952c1b5bd86ced68f36"
+    },
+    {
+      "action": "initiative__update_initiative_detail",
+      "docs_path": "/api-reference/initiative/update-initiative-detail",
+      "method": "PATCH",
+      "mutation": true,
+      "operation_sha256": "b22779f466446ffc347551a29d837423fa95122a4b309f2469fbb8239dab141c",
+      "path": "/api/v1/workspaces/{workspace_slug}/initiatives/{initiative_id}/",
+      "schema_hash": "51d70aed4d1dc12d9a917ba14b0940f73e167715c3c9f22091fd5485a5a2161a"
+    },
+    {
+      "action": "workspace_invitations__update_workspace_invitation",
+      "docs_path": "/api-reference/workspace-invitations/update-workspace-invitation",
+      "method": "PATCH",
+      "mutation": true,
+      "operation_sha256": "90c2d3edaebb76774e65222eeb9485591067d4490dc021127cf229708d7a8e80",
+      "path": "/api/v1/workspaces/{workspace_slug}/invitations/{invitation_id}/",
+      "schema_hash": "2ce4364e6d618fb308f7942f8e4f760c23cf8d38b20624b4106e4d6c6626a19d"
+    },
+    {
+      "action": "project_labels__update_project_label_detail",
+      "docs_path": "/api-reference/project-labels/update-project-label-detail",
+      "method": "PATCH",
+      "mutation": true,
+      "operation_sha256": "bfb5d4f33098258deae422d20be4cbad947919a2b5bcd60d7d84203623943063",
+      "path": "/api/v1/workspaces/{workspace_slug}/project-labels/{label_id}/",
+      "schema_hash": "22c91dcc6e509c18c66a7e23e16742485bf0a025259b5fed3edbd60da8cd1119"
+    },
+    {
+      "action": "cycle__update_cycle_detail",
+      "docs_path": "/api-reference/cycle/update-cycle-detail",
+      "method": "PATCH",
+      "mutation": true,
+      "operation_sha256": "a1b5e5b3ec996bdbc0f2a4356a3eed1da0651d59a6399748ffc2f314d885c402",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/cycles/{resource_id}/",
+      "schema_hash": "8c5a2d8ec51c35579d0b0612b5f8a5c69c0c05d7944f77042c213523b6d64eed"
+    },
+    {
+      "action": "estimate__update_estimate",
+      "docs_path": "/api-reference/estimate/update-estimate",
+      "method": "PATCH",
+      "mutation": true,
+      "operation_sha256": "4563f1415d9e775eac9b86f3d73789b676b77bf368b3d903ef8d3ae913eb565d",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/estimates/",
+      "schema_hash": "a02013a064230f8c028905a5e748e002b7ff407947bbf4d0283704b3d3491a57"
+    },
+    {
+      "action": "estimate__update_estimate_point",
+      "docs_path": "/api-reference/estimate/update-estimate-point",
+      "method": "PATCH",
+      "mutation": true,
+      "operation_sha256": "c76701e8575577cfe1bfaf79b33c59ce9cea5ad0643afdb331a70485f3d8dfae",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/estimates/{estimate_id}/estimate-points/{estimate_point_id}/",
+      "schema_hash": "102140f4e446f5a0e9d03d8e9abaa55b1a638a5f40e655d77468d1f1f63e4a06"
+    },
+    {
+      "action": "project_features__update_project_features",
+      "docs_path": "/api-reference/project-features/update-project-features",
+      "method": "PATCH",
+      "mutation": true,
+      "operation_sha256": "fc4d9f2178ae8f5b51545dc77075b31bfc186647820ea3a5fe28eb23e27da1a6",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/features/",
+      "schema_hash": "747f0115772617c4c56d9727f6d0079d77c0a8c16f0f314f9e8e52be6b3ae6ff"
+    },
+    {
+      "action": "intake_issue__update_intake_issue_detail",
+      "docs_path": "/api-reference/intake-issue/update-intake-issue-detail",
+      "method": "PATCH",
+      "mutation": true,
+      "operation_sha256": "7ecff9032d6da8f738a0ce76e6ba735defda18025d7cf363ae4f0b6e0a4476eb",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/intake-issues/{work_item_id}/",
+      "schema_hash": "1a7fa1902e9598a61646e35367d9b254597c097caac7e9ccd73a4569dd3ea689"
+    },
+    {
+      "action": "label__update_label_detail",
+      "docs_path": "/api-reference/label/update-label-detail",
+      "method": "PATCH",
+      "mutation": true,
+      "operation_sha256": "72c1f198fcf5861ac7003d037104063d00f854c55f88bc1741815ac5428b9d0c",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/labels/{label_id}/",
+      "schema_hash": "e2086d2268358d1a81c13c8442674baca3893aedb767d45ee045e35e0bdce90a"
+    },
+    {
+      "action": "milestones__update_milestone_detail",
+      "docs_path": "/api-reference/milestones/update-milestone-detail",
+      "method": "PATCH",
+      "mutation": true,
+      "operation_sha256": "b0ea50b21c042219b0336283430f9067f0febf3fb623d61d333d45921598790a",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/milestones/{milestone_id}/",
+      "schema_hash": "aa8f3d64e99b841f6a0be939a2b5868f4c257329dfe2fe4df667882724270686"
+    },
+    {
+      "action": "module__update_module_detail",
+      "docs_path": "/api-reference/module/update-module-detail",
+      "method": "PATCH",
+      "mutation": true,
+      "operation_sha256": "25be4dab643c7f14930cb420adb0a856e6663ac22b549605774476c5763a9084",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/modules/{resource_id}/",
+      "schema_hash": "2e8dc11b9cf267d336084ac736fbbf7fe7b9c3d3234853cf04232242039a6937"
+    },
+    {
+      "action": "members__update_project_member",
+      "docs_path": "/api-reference/members/update-project-member",
+      "method": "PATCH",
+      "mutation": true,
+      "operation_sha256": "11370e213082d3223516c157d6152d12d4b6f2030afe80b44fba5af8a82d79b8",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/project-members/{member_id}/",
+      "schema_hash": "fd81e127fa8a26802329a991902caf7a0aef2aec6da60fdcdfa80edd1a2e2d7a"
+    },
+    {
+      "action": "state__update_state_detail",
+      "docs_path": "/api-reference/state/update-state-detail",
+      "method": "PATCH",
+      "mutation": true,
+      "operation_sha256": "d2f5e8f44cedfd90034a3235cc43bcaef23b798f60492c79d741c69a02c70f19",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/states/{state_id}/",
+      "schema_hash": "8a0b97494f9a0637529380752727e0d58d8bc7086b7687350ef8aab3f939bc26"
+    },
+    {
+      "action": "options__update_dropdown_options",
+      "docs_path": "/api-reference/issue-types/options/update-dropdown-options",
+      "method": "PATCH",
+      "mutation": true,
+      "operation_sha256": "8b03207b081e686a7d4720b1a099ff97939e109a6a7de4bb29b7ab0a2430abdb",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/work-item-properties/{property_id}/options/{option_id}/",
+      "schema_hash": "8c470d67e8ee22f35e4c21a45df03870b54106312d6f781083f6464d97ece754"
+    },
+    {
+      "action": "types__update_issue_types",
+      "docs_path": "/api-reference/issue-types/types/update-issue-types",
+      "method": "PATCH",
+      "mutation": true,
+      "operation_sha256": "cd0d38d5a67b912811ada1eeab8eb41b53af4167b6d40f5da8a51f83822f0c48",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/work-item-types/{type_id}/",
+      "schema_hash": "3564fde823f401d87f73d670c0b85b0eff44a7b7e42a620fb01cdfda6acb6b7f"
+    },
+    {
+      "action": "properties__update_property",
+      "docs_path": "/api-reference/issue-types/properties/update-property",
+      "method": "PATCH",
+      "mutation": true,
+      "operation_sha256": "bc3622a70d12f4418136d1e8487837c042aebcf45930d951bcdb9265556e790a",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/work-item-types/{type_id}/work-item-properties/{property_id}/",
+      "schema_hash": "b9aac9ee7ee2b8575671dba26fbfdb0123a82836033b2a2daf037faf431accd6"
+    },
+    {
+      "action": "issue__update_issue_detail",
+      "docs_path": "/api-reference/issue/update-issue-detail",
+      "method": "PATCH",
+      "mutation": true,
+      "operation_sha256": "0a4fddb93957c156f1b35cdcf61b9c4dd8e22141ca152d73de6ecf92e8ef4423",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/work-items/{resource_id}/",
+      "schema_hash": "36e2abaa5ab728ddc77624c307d1e4dbb56b5831a1dffb30f113eb665ec09933"
+    },
+    {
+      "action": "issue_attachments__complete_upload",
+      "docs_path": "/api-reference/issue-attachments/complete-upload",
+      "method": "PATCH",
+      "mutation": true,
+      "operation_sha256": "12e7ba092dc8f88dbedf1603837b2ca799f765ba70b87b49e2c64ed79d4cb469",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/work-items/{work_item_id}/attachments/{resource_id}/",
+      "schema_hash": "bd68e7ed7126fa66baa2dc3db566dfa8ab54b9a9565f8ce545cbac4463c465a2"
+    },
+    {
+      "action": "issue_attachments__update_attachment",
+      "docs_path": "/api-reference/issue-attachments/update-attachment",
+      "method": "PATCH",
+      "mutation": true,
+      "operation_sha256": "9c3f895e4132a20182492ff0a8679ca6213c78ff56aafadb86c4ae5f1c20f866",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/work-items/{work_item_id}/attachments/{resource_id}/",
+      "schema_hash": "bd68e7ed7126fa66baa2dc3db566dfa8ab54b9a9565f8ce545cbac4463c465a2"
+    },
+    {
+      "action": "issue_comment__update_issue_comment_detail",
+      "docs_path": "/api-reference/issue-comment/update-issue-comment-detail",
+      "method": "PATCH",
+      "mutation": true,
+      "operation_sha256": "df3f7ac2bd19d026014c47ef64bf5b56e6a3454825dd3e307897668a9ec43569",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/work-items/{work_item_id}/comments/{resource_id}/",
+      "schema_hash": "4506256a8e08629cad10af9d94f1f41e20947c6e61053b7fc0f363a3fe2efe64"
+    },
+    {
+      "action": "link__update_link_detail",
+      "docs_path": "/api-reference/link/update-link-detail",
+      "method": "PATCH",
+      "mutation": true,
+      "operation_sha256": "428a8b61baa0d6fea1fa4dfdb7f22b1f27d13c1d2417b9e0577d8463609b68ab",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/work-items/{work_item_id}/links/{resource_id}/",
+      "schema_hash": "d145014e50e6210431ffb8c5098280a4915dd5c62701a764b7af41b957b50c29"
+    },
+    {
+      "action": "values__update_property_value",
+      "docs_path": "/api-reference/issue-types/values/update-property-value",
+      "method": "PATCH",
+      "mutation": true,
+      "operation_sha256": "2b4e5ab5d74df30de305a208e9dbc94fab98827a1b91d0e61224833a90efd3d0",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/work-items/{work_item_id}/work-item-properties/{property_id}/values/",
+      "schema_hash": "701c4a61516b2e680373f46a8060bd840b437d8b05009b93ed1405b5ac3e47e9"
+    },
+    {
+      "action": "worklogs__update_worklog",
+      "docs_path": "/api-reference/worklogs/update-worklog",
+      "method": "PATCH",
+      "mutation": true,
+      "operation_sha256": "558e8e57e3a259aae6b1de717c6f1d1684bb5cd8c93cfae0d1561b034e3a63ad",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/work-items/{work_item_id}/worklogs/{worklog_id}/",
+      "schema_hash": "d603cb62323d2f0fda1c6257da078ca8602882d1717beb3756630524e6bd4178"
+    },
+    {
+      "action": "project__update_project_detail",
+      "docs_path": "/api-reference/project/update-project-detail",
+      "method": "PATCH",
+      "mutation": true,
+      "operation_sha256": "c20b1eb27ad38131aeede6c5bc68e3ed02c6c620d08246c6f8d0172302461476",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/{resource_id}/",
+      "schema_hash": "4dbf8babb3a362b80002172584cde65650947a41abec9e9b8d436c6b3a5a2733"
+    },
+    {
+      "action": "sticky__update_sticky_detail",
+      "docs_path": "/api-reference/sticky/update-sticky-detail",
+      "method": "PATCH",
+      "mutation": true,
+      "operation_sha256": "c6311e2bfd81e4022903c16bcf5452fa269f631e6ce355e47f40d287ec515e91",
+      "path": "/api/v1/workspaces/{workspace_slug}/stickies/{resource_id}/",
+      "schema_hash": "0b2dd97d3965ed7832e2fd1506b4da984301d6b11ef1922dbb3f0df52fc05f0e"
+    },
+    {
+      "action": "teamspace__update_teamspace_detail",
+      "docs_path": "/api-reference/teamspace/update-teamspace-detail",
+      "method": "PATCH",
+      "mutation": true,
+      "operation_sha256": "90ee5644f0fc6b41429df36e8f1593de7de7a84f190a93dc3cd52f31d4dd2396",
+      "path": "/api/v1/workspaces/{workspace_slug}/teamspaces/{resource_id}/",
+      "schema_hash": "ad43e117875e41a9d88b96f784cab5e6b7fee161a4222ec079706e0eee9d754f"
+    },
+    {
+      "action": "assets__create_user_asset_upload",
+      "docs_path": "/api-reference/assets/create-user-asset-upload",
+      "method": "POST",
+      "mutation": true,
+      "operation_sha256": "cdf57a4ae452277c89787a337e16ddbe69c9dd160745c550eb4ace07a7c71a04",
+      "path": "/api/v1/assets/user-assets/",
+      "schema_hash": "4cddbce48b7a1ea26d18cfea3d24d34f7f94a3a504b373231f898c00abd81eeb"
+    },
+    {
+      "action": "epics__create_epic",
+      "docs_path": "/api-reference/epics/create-epic",
+      "method": "POST",
+      "mutation": true,
+      "operation_sha256": "3e472285fa33051a830cbb07b80d42858c0b9fb42fa44b59cdf4fc76e19e6f5b",
+      "path": "/api/v1/workspaces/{slug}/projects/{project_id}/epics/",
+      "schema_hash": "ea10ba27a4a39d26337d921d7da709323ba2bfe50e7e5b15c46dbfb694185bad"
+    },
+    {
+      "action": "epics__add_epic_work_items",
+      "docs_path": "/api-reference/epics/add-epic-work-items",
+      "method": "POST",
+      "mutation": true,
+      "operation_sha256": "4ee9119e1d1d86ec5197665d12001aa1877463bb45a8fe6081addb301e75e740",
+      "path": "/api/v1/workspaces/{slug}/projects/{project_id}/epics/{epic_id}/issues/",
+      "schema_hash": "824603c725965d09abb9696dbaebb2c738fba3829ef0db27acc90a01b4cbf830"
+    },
+    {
+      "action": "assets__create_workspace_asset_upload",
+      "docs_path": "/api-reference/assets/create-workspace-asset-upload",
+      "method": "POST",
+      "mutation": true,
+      "operation_sha256": "ceb1ac2b6097ca42f7b646c457b3a4d1662f819181700531d9285ac6bc9391af",
+      "path": "/api/v1/workspaces/{workspace_slug}/assets/",
+      "schema_hash": "e10e33b19869b3129d9fc9618945b2b3e8450b5818d2eb9c170a209f6da43451"
+    },
+    {
+      "action": "customer__add_customer_property",
+      "docs_path": "/api-reference/customer/add-customer-property",
+      "method": "POST",
+      "mutation": true,
+      "operation_sha256": "d1cc52138ea4e226afa1f7b2adbf5654b187b94fb2c90b6009e4fbc32a8b6db2",
+      "path": "/api/v1/workspaces/{workspace_slug}/customer-properties/",
+      "schema_hash": "d564f5dd7f1383b467985674193988ecda59347eee5376125ad868e280a49112"
+    },
+    {
+      "action": "customer__add_customer",
+      "docs_path": "/api-reference/customer/add-customer",
+      "method": "POST",
+      "mutation": true,
+      "operation_sha256": "3b4179d950b792f9f5ad005f728b747b54a7da26b640f05b112122b8c3d6adae",
+      "path": "/api/v1/workspaces/{workspace_slug}/customers/",
+      "schema_hash": "f7c92e3cb8a741b3866a3f2389a5507740e996f4e4e0a0e18781b181372526b5"
+    },
+    {
+      "action": "customer__link_work_items_to_customer",
+      "docs_path": "/api-reference/customer/link-work-items-to-customer",
+      "method": "POST",
+      "mutation": true,
+      "operation_sha256": "c7677791fe83431fa7092b3b44fa640002cd6c08188e5ac0330973e8f49490a8",
+      "path": "/api/v1/workspaces/{workspace_slug}/customers/{customer_id}/issues/",
+      "schema_hash": "4f0a0625129c6fb93d1efbc596641e2fd79c0aed1737f5090b02e058f80637ca"
+    },
+    {
+      "action": "customer__add_customer_request",
+      "docs_path": "/api-reference/customer/add-customer-request",
+      "method": "POST",
+      "mutation": true,
+      "operation_sha256": "8535c86773a22c7044728e58e4a0bf1de31329b6a9bc994d4746ae32d3990c8a",
+      "path": "/api/v1/workspaces/{workspace_slug}/customers/{customer_id}/requests/",
+      "schema_hash": "51d74421f097ddf5e30ab85550b4bae77b3e669121be30e2c5b11de0b59191ce"
+    },
+    {
+      "action": "idp_group_sync__create_project_mapping",
+      "docs_path": "/api-reference/idp-group-sync/create-project-mapping",
+      "method": "POST",
+      "mutation": true,
+      "operation_sha256": "f9a14d551a0d1f93d3451709347e137077fa359bd0d8e624e9b12ded8b5cacd2",
+      "path": "/api/v1/workspaces/{workspace_slug}/group-sync/project-mappings/",
+      "schema_hash": "3428207b900f66a4667245a795214e6a25d61d77811336189ce8d6b723c0f3e6"
+    },
+    {
+      "action": "idp_group_sync__create_workspace_mapping",
+      "docs_path": "/api-reference/idp-group-sync/create-workspace-mapping",
+      "method": "POST",
+      "mutation": true,
+      "operation_sha256": "2dee00a904a573ef68bbd45b0d53832a1d7fe3ef70d200ff4244df5d04fe35a0",
+      "path": "/api/v1/workspaces/{workspace_slug}/group-sync/workspace-mappings/",
+      "schema_hash": "d60121acac8be2f556f818e2fc13f63ba3c74e082350d92d0c34ac403ac6f8f8"
+    },
+    {
+      "action": "initiative__add_initiative",
+      "docs_path": "/api-reference/initiative/add-initiative",
+      "method": "POST",
+      "mutation": true,
+      "operation_sha256": "688f51ce905b6145aa87df92f43a76a7ec13f694ade5d9339cc4e12887440abd",
+      "path": "/api/v1/workspaces/{workspace_slug}/initiatives/",
+      "schema_hash": "77ef09dbf257ab112c3751ee0367db099df1a8c30da3f6d48ecbcd51cd5a85ad"
+    },
+    {
+      "action": "initiative__add_initiative_label",
+      "docs_path": "/api-reference/initiative/add-initiative-label",
+      "method": "POST",
+      "mutation": true,
+      "operation_sha256": "42927927638c90684077a444272ee6d5928b5e1cd0f5bb02f92634cb73e3eaab",
+      "path": "/api/v1/workspaces/{workspace_slug}/initiatives/labels/",
+      "schema_hash": "5b1e838d465c3f9e1342b3cbd5e8dbba1bef427ffd382bb533ffa44caa81cb1e"
+    },
+    {
+      "action": "initiative__add_epics_to_initiative",
+      "docs_path": "/api-reference/initiative/add-epics-to-initiative",
+      "method": "POST",
+      "mutation": true,
+      "operation_sha256": "df3f39ba5c9c425032f17c43f8ad32f919c4a738cf861faeaba6cad7d08100b2",
+      "path": "/api/v1/workspaces/{workspace_slug}/initiatives/{initiative_id}/epics/",
+      "schema_hash": "31d33336d965a40c5587608f244e8bf6fc23256ff2a6e2c8bef3bdc674008c56"
+    },
+    {
+      "action": "initiative__add_labels_to_initiative",
+      "docs_path": "/api-reference/initiative/add-labels-to-initiative",
+      "method": "POST",
+      "mutation": true,
+      "operation_sha256": "e927e8dd2a01b504923dc7c0e15f0ae9d36118feecc854b2ec112636240e2016",
+      "path": "/api/v1/workspaces/{workspace_slug}/initiatives/{initiative_id}/labels/",
+      "schema_hash": "37947c1360c17584c50cd3a2e43906e4c996ad6a925289e2e6291b20dfde4eb4"
+    },
+    {
+      "action": "initiative__add_projects_to_initiative",
+      "docs_path": "/api-reference/initiative/add-projects-to-initiative",
+      "method": "POST",
+      "mutation": true,
+      "operation_sha256": "a1afbbd2cb82b798223ae7e08edf5e71a66fd4fecd5390da484829887274b218",
+      "path": "/api/v1/workspaces/{workspace_slug}/initiatives/{initiative_id}/projects/",
+      "schema_hash": "3864bd19fd977c8867e168057cf7542e7a5b9b3c5481c532e4cd95312ef75fb5"
+    },
+    {
+      "action": "workspace_invitations__add_workspace_invitation",
+      "docs_path": "/api-reference/workspace-invitations/add-workspace-invitation",
+      "method": "POST",
+      "mutation": true,
+      "operation_sha256": "06a5d399d18f441d9b28e2c74ce59cf45d9d44d61b6ddeb24b3e4fda9ca5730c",
+      "path": "/api/v1/workspaces/{workspace_slug}/invitations/",
+      "schema_hash": "d5c58ac609297533015b35300f639a901824f38af05b6b6db3cf1416272346d4"
+    },
+    {
+      "action": "members__remove_workspace_member",
+      "docs_path": "/api-reference/members/remove-workspace-member",
+      "method": "POST",
+      "mutation": true,
+      "operation_sha256": "7666d54dcc009b6a6b2d79e77ed3a45e39137da8c7952f527ab640263adbdcfa",
+      "path": "/api/v1/workspaces/{workspace_slug}/members/remove/",
+      "schema_hash": "ab583cfa1ea383b7e01132ae7415fb31af8d9c50463c578af341ede57c2ddbc4"
+    },
+    {
+      "action": "page__add_workspace_page",
+      "docs_path": "/api-reference/page/add-workspace-page",
+      "method": "POST",
+      "mutation": true,
+      "operation_sha256": "c2443e81e2319b0c246dda6b5ed6a6e62a48178e530b42b4d72ac24738a955d4",
+      "path": "/api/v1/workspaces/{workspace_slug}/pages/",
+      "schema_hash": "aee23261165a6ffc351c35a8cba445b8d7eb57d06adfffd706c897194f32806a"
+    },
+    {
+      "action": "project_labels__add_project_label",
+      "docs_path": "/api-reference/project-labels/add-project-label",
+      "method": "POST",
+      "mutation": true,
+      "operation_sha256": "ec0f7aea51fd5ddebcba4b44072dcc3df28ea8c8dfffe2ef1a11467509742330",
+      "path": "/api/v1/workspaces/{workspace_slug}/project-labels/",
+      "schema_hash": "13ab765181eb5032c14954ecc2af37eab4cb91838cf6e927e5c1e6eeaae6bb28"
+    },
+    {
+      "action": "project__add_project",
+      "docs_path": "/api-reference/project/add-project",
+      "method": "POST",
+      "mutation": true,
+      "operation_sha256": "1d667d176b5735a34ad9b801f93d6d8409998606919170b6ddf8e84d832e3970",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/",
+      "schema_hash": "b6ad001736b96f429db534bf5a14c5a10adb6c174ef82434267e1f889ca04cb8"
+    },
+    {
+      "action": "project__create_project_with_template",
+      "docs_path": "/api-reference/project/create-project-with-template",
+      "method": "POST",
+      "mutation": true,
+      "operation_sha256": "2806cb0aac30951ab1c2ca9fa64d6314a27d26fe048cb8812d2351a89291fa79",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/templates/use/",
+      "schema_hash": "bc8cef787f1e5f54da5327dde9a57cd8e065d92df13909e17605742f6328b499"
+    },
+    {
+      "action": "project__archive_project",
+      "docs_path": "/api-reference/project/archive-project",
+      "method": "POST",
+      "mutation": true,
+      "operation_sha256": "b295db05c50b56ed6a20b925bd50bf9d086fcc8c948f633397a234806f208e73",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/archive/",
+      "schema_hash": "fdadad8296ad53776bb3e2e4ccf40b2a5d43a56eae2a184bfbbb6a33f4146f5a"
+    },
+    {
+      "action": "cycle__add_cycle",
+      "docs_path": "/api-reference/cycle/add-cycle",
+      "method": "POST",
+      "mutation": true,
+      "operation_sha256": "5f09b2dbd1956a459821e5ca0b174e240066d975af5bc3746003bd704464ddcb",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/cycles/",
+      "schema_hash": "77d36babbc4c56c8e30f651ca9aa8edc13b7ed060b106c8ce0ab5a0a1fdc9865"
+    },
+    {
+      "action": "cycle__archive_cycle",
+      "docs_path": "/api-reference/cycle/archive-cycle",
+      "method": "POST",
+      "mutation": true,
+      "operation_sha256": "c1fdb2f58634e7f300f75a1ec38673bb5a87d884117a1db638dd1675c64cd253",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/cycles/{cycle_id}/archive/",
+      "schema_hash": "0450c7317d2bde89c170404253d44d76e743664c244b0fa3a1d7ecc160178f3f"
+    },
+    {
+      "action": "cycle__add_cycle_work_items",
+      "docs_path": "/api-reference/cycle/add-cycle-work-items",
+      "method": "POST",
+      "mutation": true,
+      "operation_sha256": "b573a6ffe2ca048ea015eb7619bcb399159bc72ddaa55eef77102c60087bedc6",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/cycles/{cycle_id}/cycle-issues/",
+      "schema_hash": "99f417ec3af0d75c81c3898fc583af60918cbe8f9729dc38b7861e12829637f6"
+    },
+    {
+      "action": "cycle__transfer_cycle_work_items",
+      "docs_path": "/api-reference/cycle/transfer-cycle-work-items",
+      "method": "POST",
+      "mutation": true,
+      "operation_sha256": "9332976218f11bd3201803c228b03d6647624617cc61bd0402fada80f2c89939",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/cycles/{cycle_id}/transfer-issues/",
+      "schema_hash": "1785f3229872c0f971c7b26e3c590b265c6486b26ff9757bed259deeb4eadb1f"
+    },
+    {
+      "action": "estimate__add_estimate",
+      "docs_path": "/api-reference/estimate/add-estimate",
+      "method": "POST",
+      "mutation": true,
+      "operation_sha256": "9c5903a6096ef304221326c1640223640b6303516501333ae8378afaed0d49ee",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/estimates/",
+      "schema_hash": "cc668e5d9fdbbb1456eb5c15711e319fa4999b30603e18a22cb586c14b23a06f"
+    },
+    {
+      "action": "estimate__add_estimate_points",
+      "docs_path": "/api-reference/estimate/add-estimate-points",
+      "method": "POST",
+      "mutation": true,
+      "operation_sha256": "d62f0aa071cceb083d4eef775e3fe6d48f81a818f91846decf9a16d860192cbb",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/estimates/{estimate_id}/estimate-points/",
+      "schema_hash": "5edd1dadaea0f5684039ed45a21d7b65fb8f68ad58d56a0d1f2c45f942c2b122"
+    },
+    {
+      "action": "intake_issue__add_intake_issue",
+      "docs_path": "/api-reference/intake-issue/add-intake-issue",
+      "method": "POST",
+      "mutation": true,
+      "operation_sha256": "f972163badd6b8e71915842a1289530b02c4f9658bc3b762978e78102c8d5d5c",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/intake-issues/",
+      "schema_hash": "8630e161b2d8d73f0f3e3eb1689c89d06882a64209b44f36cf3d43ff3e63326f"
+    },
+    {
+      "action": "label__add_label",
+      "docs_path": "/api-reference/label/add-label",
+      "method": "POST",
+      "mutation": true,
+      "operation_sha256": "1e5e5723f237132b0ff48f187d391ea466bbcffc1440159fb52a8103d2a9ff72",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/labels/",
+      "schema_hash": "8f85d9d9a3900908e65477a130fbbe994a8a9ff70104a244079d1e7a51e3c692"
+    },
+    {
+      "action": "milestones__add_milestone",
+      "docs_path": "/api-reference/milestones/add-milestone",
+      "method": "POST",
+      "mutation": true,
+      "operation_sha256": "fdc74ae4e934414f95cd373de5213697ef44e1403fb37f34cc8e924d2659d016",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/milestones/",
+      "schema_hash": "6070023700e5a00f0dfce20cdb9357f6b88ad077b31e9bcfe4fdea3aa281298c"
+    },
+    {
+      "action": "module__add_module",
+      "docs_path": "/api-reference/module/add-module",
+      "method": "POST",
+      "mutation": true,
+      "operation_sha256": "7bec37c995a64593c6f1a944af3137165a0f4dde8d6436f4cee05e34a44d8d3e",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/modules/",
+      "schema_hash": "47f18766ef49417de2a2dc77dbd381a94f2b2d4e9636f45486e50902af03ab89"
+    },
+    {
+      "action": "module__add_module_work_items",
+      "docs_path": "/api-reference/module/add-module-work-items",
+      "method": "POST",
+      "mutation": true,
+      "operation_sha256": "bdcfcef93b8a7cac3cdeb2a6dcb5465458aa9f3b445c9cd505af24ef913c55d3",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/modules/{module_id}/module-issues/",
+      "schema_hash": "035ed157692c84a201891b730fca8ab8dda301d3feee81c8106d5ed75b57a8c5"
+    },
+    {
+      "action": "module__archive_module",
+      "docs_path": "/api-reference/module/archive-module",
+      "method": "POST",
+      "mutation": true,
+      "operation_sha256": "5c29e2faa08c9054f9bdaf57672a96a93071b5c510954e327b2f104ab4b55d38",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/modules/{resource_id}/archive/",
+      "schema_hash": "a419b39baeaa7d440fe7464e3a4e4933762b04c9fa145e6a306dbb9223d58691"
+    },
+    {
+      "action": "page__add_project_page",
+      "docs_path": "/api-reference/page/add-project-page",
+      "method": "POST",
+      "mutation": true,
+      "operation_sha256": "3b9fdb6ade860f2ce4124a73f4beef27e515552e4398d8984956ece2e6b39146",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/pages/",
+      "schema_hash": "a4c69da6730f823882982e10aa87972db10ff093d9f356e86dc249baf4cf4202"
+    },
+    {
+      "action": "members__add_project_member",
+      "docs_path": "/api-reference/members/add-project-member",
+      "method": "POST",
+      "mutation": true,
+      "operation_sha256": "861aecc9ccb2c9c53daf193126532f4c27677c7609664d736ea0baaee419f7c5",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/project-members/",
+      "schema_hash": "ff38956f643b326e2508d2b7f59726f81e07f18c1cc3f6790f05b1dcddd4f1bd"
+    },
+    {
+      "action": "state__add_state",
+      "docs_path": "/api-reference/state/add-state",
+      "method": "POST",
+      "mutation": true,
+      "operation_sha256": "88422ee2481d1551b44dc31c0a5dc4936ab165d6b6956e1dba85719d5ee1764e",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/states/",
+      "schema_hash": "ca3d596b2ceea9c6d169421a9b5b2a0475db83966d9ea76feff4099931fb54ef"
+    },
+    {
+      "action": "options__add_dropdown_options",
+      "docs_path": "/api-reference/issue-types/options/add-dropdown-options",
+      "method": "POST",
+      "mutation": true,
+      "operation_sha256": "0b53a6ecea0e869103e43fbe41feec2e012150a27ffad8539b41e19a12cba97e",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/work-item-properties/{property_id}/options/",
+      "schema_hash": "95e327793d8f9b510e4129debd92bc1710c81cedc140dffd43376c4c05b7dd7a"
+    },
+    {
+      "action": "types__add_issue_type",
+      "docs_path": "/api-reference/issue-types/types/add-issue-type",
+      "method": "POST",
+      "mutation": true,
+      "operation_sha256": "50783bf2f6f8b0e9f7a74f4e0e152a0a9bca9e5239703586d71479a0a58f586c",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/work-item-types/",
+      "schema_hash": "1e362fcfef359a6a26f8e230527283c6491eaa59cb751d26138a8083ef78fa5a"
+    },
+    {
+      "action": "properties__add_property",
+      "docs_path": "/api-reference/issue-types/properties/add-property",
+      "method": "POST",
+      "mutation": true,
+      "operation_sha256": "b50b4a9a5946b317047567bf9b959c014e4a364120bcfef8be02f6ff2f2a79fa",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/work-item-types/{type_id}/work-item-properties/",
+      "schema_hash": "2e087aada80a62455f3302352f0e0db3e7b659b2bd3d0aba917271d80f855860"
+    },
+    {
+      "action": "issue__add_issue",
+      "docs_path": "/api-reference/issue/add-issue",
+      "method": "POST",
+      "mutation": true,
+      "operation_sha256": "ef581bfcd755e872e615ff4b818441331f918331495960dd93199848931b408c",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/work-items/",
+      "schema_hash": "bb9483c4d7d6b7238dc40172efe29d1ee0d6650aa0d33f6d3050c6dbfbcc1993"
+    },
+    {
+      "action": "issue_attachments__get_upload_credentials",
+      "docs_path": "/api-reference/issue-attachments/get-upload-credentials",
+      "method": "POST",
+      "mutation": true,
+      "operation_sha256": "546fd1612e6dc4173a67987b01b449a96402ec8aea617c7195ba0e738c3f985e",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/work-items/{work_item_id}/attachments/",
+      "schema_hash": "af900d5c2a2a4418e0a58bbd56a147091c30ef4884286f9e09897467a7434b64"
+    },
+    {
+      "action": "issue_comment__add_issue_comment",
+      "docs_path": "/api-reference/issue-comment/add-issue-comment",
+      "method": "POST",
+      "mutation": true,
+      "operation_sha256": "e0ad3d626b1d602c3bbd7bdb47bbd236db5731b88f0242aa56f41aafc68fd5b8",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/work-items/{work_item_id}/comments/",
+      "schema_hash": "3c2a4712e0ba07678b9438fbd66d726f2f3b9d8a04e2febf353212b71502cb8b"
+    },
+    {
+      "action": "link__add_link",
+      "docs_path": "/api-reference/link/add-link",
+      "method": "POST",
+      "mutation": true,
+      "operation_sha256": "4f76e4123228a2aa3f7dd0467cbd8af026c95585f3864c9e3b479fa44356973b",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/work-items/{work_item_id}/links/",
+      "schema_hash": "223f58c6ec30b1228ae2b5c299e21c47f2b4465734c793a4b796051e95702d13"
+    },
+    {
+      "action": "work_item_pages__add_work_item_page",
+      "docs_path": "/api-reference/work-item-pages/add-work-item-page",
+      "method": "POST",
+      "mutation": true,
+      "operation_sha256": "ca1010792843dd3b2b820179f7ce87883d817dbc2ca7b601a126a0c2fcf55e32",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/work-items/{work_item_id}/pages/",
+      "schema_hash": "4bb4a1f4d9116b57206888ad8771d118dd7406dea19599af8cb157337d60d1db"
+    },
+    {
+      "action": "values__add_property_values",
+      "docs_path": "/api-reference/issue-types/values/add-property-values",
+      "method": "POST",
+      "mutation": true,
+      "operation_sha256": "24ebb9a9a90cdf3ef7612e739be5c92354b690c1dab1edf37648d820f83e0136",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/work-items/{work_item_id}/work-item-properties/{property_id}/values/",
+      "schema_hash": "b188ee21db285da57e1c9b2ff6ce2938e3def476a5e07ff745ca73d548c518bb"
+    },
+    {
+      "action": "worklogs__create_worklog",
+      "docs_path": "/api-reference/worklogs/create-worklog",
+      "method": "POST",
+      "mutation": true,
+      "operation_sha256": "4c29f09e971bb7045bdeeaae2a26d6b0e4310d0877c36b8605b2ad78d4da1cfc",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/work-items/{work_item_id}/worklogs/",
+      "schema_hash": "f42101666f50d870f22b7d27bf0a517ec8a3f94728b5cd367df6be5ecddda71b"
+    },
+    {
+      "action": "sticky__add_sticky",
+      "docs_path": "/api-reference/sticky/add-sticky",
+      "method": "POST",
+      "mutation": true,
+      "operation_sha256": "505d7b67a23e16f6ebfb91fa113a458b6d4f775fe1bdeb0cd3f2e94110c2325e",
+      "path": "/api/v1/workspaces/{workspace_slug}/stickies/",
+      "schema_hash": "0913c83da7c75892c6a98d1090eb343c8cbc48821798ec110cb3d0a336304565"
+    },
+    {
+      "action": "teamspace__add_teamspace",
+      "docs_path": "/api-reference/teamspace/add-teamspace",
+      "method": "POST",
+      "mutation": true,
+      "operation_sha256": "e972edc688077de5a65ed9ae0d469f97947a7352824615d86aa61e9fbf4c6452",
+      "path": "/api/v1/workspaces/{workspace_slug}/teamspaces/",
+      "schema_hash": "4b7c51a8c20ccdd95eb846aeec471963e7a3530e9489333ff6581cb74d9af928"
+    },
+    {
+      "action": "teamspace__add_teamspace_members",
+      "docs_path": "/api-reference/teamspace/add-teamspace-members",
+      "method": "POST",
+      "mutation": true,
+      "operation_sha256": "45183b50b66919d1dc1ec28168fcd8fac48e07223e9ab252bb9c9837d17b6a56",
+      "path": "/api/v1/workspaces/{workspace_slug}/teamspaces/{teamspace_id}/members/",
+      "schema_hash": "b5ee4d09e3f16f52bbd30106481428d01d7b55a2dd3b507e2670c6b08b484115"
+    },
+    {
+      "action": "teamspace__add_projects_to_teamspace",
+      "docs_path": "/api-reference/teamspace/add-projects-to-teamspace",
+      "method": "POST",
+      "mutation": true,
+      "operation_sha256": "38be2bf99bd6fae22a4fd3bc5f8bae21821fe5f8ad9c783b96798cbd6e6feb76",
+      "path": "/api/v1/workspaces/{workspace_slug}/teamspaces/{teamspace_id}/projects/",
+      "schema_hash": "7099a067d7bf757a4f5654ed1a18da4bd60ce18865e8313da06c380d05706a14"
+    },
+    {
+      "action": "issue__advanced_search_work_items",
+      "docs_path": "/api-reference/issue/advanced-search-work-items",
+      "method": "POST",
+      "mutation": true,
+      "operation_sha256": "eb9cac156a5534d671ff87bf994ca42e15be622243667d6c0aeab454caeda3a4",
+      "path": "/api/v1/workspaces/{workspace_slug}/work-items/advanced-search/",
+      "schema_hash": "4199492fec051ae77338198f867e347c6ad627b8cd8f9aa0af3326bd23192930"
+    }
+  ],
+  "registry_manifest": {
+    "contract_hash": "9470f5466f3dfc7d32bfcbde72d2a8e7a77045213b6b209772695babbf5671d9",
+    "contract_version": 2,
+    "http_operation_count": 223,
+    "method_counts": {
+      "DELETE": 44,
+      "GET": 91,
+      "PATCH": 38,
+      "POST": 52
+    },
+    "mutation_count": 134,
+    "operation_count": 225,
+    "version": 2
+  },
+  "registry_path": "src/plane_api/operation_registry.json",
+  "registry_sha256": "264a7c9c6eed036551733d7efcb8b510e7c7f7bcf39c7b708cb13e827a7dcb04",
+  "source": {
+    "commit": "e5dc6310b80a3a9c8376b9b799319103cc18e28c",
+    "relative_root": "docs/api-reference",
+    "tree": "f09bb801f223b10bbca7159379b199073b9caadb"
+  },
+  "staged_data": false
+}
