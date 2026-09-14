@@ -12,7 +12,7 @@ Plugins are a roadmap only: this release does not implement or activate a plugin
 
 ## Traceability
 
-Canonical tracking item: INTERNAL-REFERENCE (Plane). GitHub is the source, PR and release surface, not a duplicate issue tracker for this delivery.
+Delivery is tracked through an issue and pull request. Private operational records are not distributable artifacts.
 
 Implementation commits:
 
