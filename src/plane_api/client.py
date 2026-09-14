@@ -10,7 +10,7 @@ from datetime import datetime, timezone
 from contextlib import contextmanager
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Mapping
+from typing import Any, Mapping, Sequence
 from urllib.error import HTTPError, URLError
 from urllib.parse import quote, urlencode, urljoin, urlsplit, urlunsplit
 from urllib.request import Request, urlopen
@@ -161,77 +161,205 @@ class PlaneClient:
         *,
         path_params: Mapping[str, Any] | None,
         payload: Mapping[str, Any] | None,
-        approved_live_mutation: bool,
-        authorization_receipt: Mapping[str, Any] | None,
-        attempts: int,
-        idempotency_key: str,
+        approved_live_mutation: bool = False,
+        authorization_receipt: Mapping[str, Any] | None = None,
+        attempts: int = 1,
+        idempotency_key: str = "",
         allow_runtime_state_transition: bool = False,
     ) -> dict[str, Any]:
-        """Validate a live action receipt before a byte can leave this process."""
+        """Compatibility wrapper for the receipt-free trusted-local preflight.
+
+        ``approved_live_mutation``, ``authorization_receipt`` and
+        ``allow_runtime_state_transition`` remain accepted only so old direct
+        callers do not fail at argument binding. They no longer carry authority
+        or unlock a different Plane operation path.
+        """
+        return self.preflight_native_mutation(
+            action,
+            path_params=path_params,
+            payload=payload,
+            attempts=attempts,
+            idempotency_key=idempotency_key,
+        )
+
+
+    def preflight_native_mutation(
+        self,
+        action: str,
+        *,
+        path_params: Mapping[str, Any] | None,
+        payload: Mapping[str, Any] | None,
+        attempts: int,
+        idempotency_key: str,
+    ) -> dict[str, Any]:
+        """Preflight a trusted local MCP caller's single Plane mutation.
+
+        Stdio establishes the caller boundary.  This validates registry-bound
+        request data and execution invariants, but deliberately does not claim
+        that a human approved the operation.
+        """
         operation = get_operation(action)
         if not operation.mutation:
             raise ValueError("preflight is only valid for POST, PATCH, or DELETE registry actions")
         contract = get_mutation_contract(action)
         if contract.get("write_policy") != "allow" or contract.get("expected_terminal") not in {"verified", "verified_absence", "provider_acknowledged"}:
             raise PermissionError(f"Plane mutation contract is not executable: {action}")
-        if approved_live_mutation is not True:
-            raise PermissionError("explicit live mutation approval is required")
         if attempts != 1:
-            raise ValueError("exactly one mutation attempt is allowed")
+            raise ValueError("exactly one mutation attempt is allowed; automatic retries are disabled")
         key = str(idempotency_key or "").strip()
         if not 16 <= len(key) <= 200:
             raise ValueError("idempotency_key must contain 16 to 200 characters")
-        params, body, receipt = dict(path_params or {}), dict(payload or {}), dict(authorization_receipt or {})
-        if (
-            action == "issue__update_issue_detail"
-            and "state" in body
-            and allow_runtime_state_transition is not True
-        ):
-            raise PermissionError("issue state transition requires the runtime-specific governed state tool")
+        params, body = dict(path_params or {}), dict(payload or {})
         if not _request_body_available(operation) and body:
             raise ValueError("registry operation does not permit a request body")
-        _expand_path(operation.path, params)
-        if receipt.get("action") != operation.action or str(receipt.get("method") or "").upper() != operation.method:
-            raise PermissionError("authorization receipt does not authorize this registry operation")
-        if receipt.get("approved_live_mutation") is not True:
-            raise PermissionError("authorization receipt lacks explicit live mutation approval")
-        if receipt.get("authorization_scope") != "one_operation_one_target":
-            raise PermissionError("authorization receipt scope must be one_operation_one_target")
-        if dict(receipt.get("path_params") or {}) != params:
-            raise PermissionError("authorization receipt target does not match path parameters")
-        expected_payload_fingerprint = payload_fingerprint(body)
-        if receipt.get("payload_fingerprint") != expected_payload_fingerprint:
-            raise PermissionError(
-                "authorization receipt payload does not match; provide "
-                f"payload_fingerprint={expected_payload_fingerprint}"
-            )
-        key_hash = hashlib.sha256(key.encode("utf-8")).hexdigest()
-        authorization_id = str(receipt.get("authorization_id") or "").strip()
-        if not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._:-]{7,199}", authorization_id):
-            raise PermissionError("authorization receipt requires a bounded authorization_id")
-        if receipt.get("key_hash") != key_hash:
-            raise PermissionError("authorization receipt key_hash does not match idempotency_key")
-        if receipt.get("provider_instance_hash") != _provider_instance_hash(self.config):
-            raise PermissionError("authorization receipt provider_instance_hash does not match configured Plane instance")
+        if set(body) & set(params):
+            raise ValueError("mutation payload must not override path parameters")
+        body_schema = (operation.request_schema or {}).get("body") or {}
+        documented_fields = {field["name"] for field in body_schema.get("parameters", [])}
+        if documented_fields and set(body) - documented_fields:
+            raise ValueError("mutation payload contains fields outside the registered body schema")
+        path = _expand_path(operation.path, params)
+        schema = (operation.request_schema or {}).get("json_schema")
+        if isinstance(schema, Mapping):
+            # Source docs sometimes retain a renamed path parameter beside the
+            # real URI placeholder. It is metadata, not a second required input.
+            path_fields = {field["name"] for field in (operation.request_schema or {}).get("path", {}).get("parameters", [])}
+            uri_fields = set(re.findall(r"\{([^}]+)\}", operation.path))
+            stale_path_fields = path_fields - uri_fields - documented_fields
+            schema = {**schema, "required": [field for field in schema.get("required", []) if field not in stale_path_fields]}
+            _validate_json_schema({**params, **body}, schema, context="mutation request")
         specification = contract["postcondition"]
         if specification.get("strategy") != "provider_ack":
-            targets = specification.get("targets") or {}
-            selector = targets.get("selector")
+            selector = (specification.get("targets") or {}).get("selector")
             if not isinstance(selector, Mapping) or not selector.get("source") or not selector.get("field"):
                 raise ValueError("Plane mutation contract has no explicit affected-resource selector")
-            source = str(selector["source"])
-            field = str(selector["field"])
+            source, field = str(selector["source"]), str(selector["field"])
             if source == "path" and not str(params.get(field) or "").strip():
                 raise ValueError("Plane mutation target selector is empty")
             if source == "payload" and not _target_values(body.get(field)):
                 raise ValueError("Plane mutation target selector is empty")
-            if source == "write_response" and field not in (targets.get("write_response_fields") or ()):
-                raise ValueError("Plane mutation contract has an invalid write-response target selector")
-        # Workspace/project values are target-bound whenever the documented path uses them.
-        for name in ("workspace_slug", "project_id"):
-            if name in params and str(receipt.get(name) or "") != str(params[name]):
-                raise PermissionError(f"authorization receipt {name} does not match target")
-        return {"action": operation.action, "method": operation.method, "path": _expand_path(operation.path, params), "payload_fingerprint": expected_payload_fingerprint, "key_hash": key_hash, "authorization_id": authorization_id}
+        return {
+            "action": operation.action,
+            "method": operation.method,
+            "path": path,
+            "payload_fingerprint": payload_fingerprint(body),
+            "key_hash": hashlib.sha256(key.encode("utf-8")).hexdigest(),
+        }
+
+    def execute_native_mutation_action(
+        self,
+        action: str,
+        *,
+        path_params: Mapping[str, Any] | None = None,
+        query: Mapping[str, Any] | None = None,
+        payload: Mapping[str, Any] | None = None,
+        idempotency_key: str = "",
+        attempts: int = 1,
+        ledger_path: str | Path,
+    ) -> dict[str, Any]:
+        """Execute one trusted-local mutation without a synthetic approval receipt."""
+        return self.execute_mutation_action(
+            action,
+            path_params=path_params,
+            query=query,
+            payload=payload,
+            idempotency_key=idempotency_key,
+            attempts=attempts,
+            ledger_path=ledger_path,
+            _trusted_local_client=True,
+        )
+
+    def reconcile_native_mutation(
+        self,
+        action: str,
+        *,
+        path_params: Mapping[str, Any] | None = None,
+        query: Mapping[str, Any] | None = None,
+        payload: Mapping[str, Any] | None = None,
+        idempotency_key: str = "",
+        attempts: int = 1,
+        ledger_path: str | Path,
+    ) -> dict[str, Any]:
+        """Refresh a failed readback without replaying its provider write."""
+        operation = get_operation(action)
+        params, body = dict(path_params or {}), dict(payload or {})
+        preflight = self.preflight_native_mutation(
+            action,
+            path_params=params,
+            payload=body,
+            attempts=attempts,
+            idempotency_key=idempotency_key,
+        )
+        key_hash = preflight["key_hash"]
+        fingerprint = _fingerprint(
+            action, "", "", None,
+            {"path_params": params, "query": dict(query or {}), "payload": body},
+        )
+        store = _require_ledger_path(ledger_path)
+        with _locked_ledger(store) as ledger:
+            prior = ledger["receipts"].get(key_hash)
+            if not isinstance(prior, Mapping):
+                raise ValueError("idempotency_key has no local mutation receipt")
+            if prior.get("provider_instance_hash") != _provider_instance_hash(self.config):
+                raise PermissionError("idempotency_key belongs to a different Plane provider instance")
+            if prior.get("fingerprint") != fingerprint:
+                raise ValueError("idempotency_key was already used for a different mutation")
+            status = str(prior.get("status") or "")
+            prior_copy = dict(prior)
+
+        if status == "attempt_started":
+            return {
+                "action": operation.action,
+                "status": "outcome_unknown",
+                "provider_mutation_applied": "unknown",
+                "readback_verified": False,
+                "replayed_write": False,
+            }
+        if status == "rejected_not_applied":
+            return {
+                "action": operation.action,
+                "status": "rejected_not_applied",
+                "provider_mutation_applied": False,
+                "readback_verified": False,
+                "replayed_write": False,
+            }
+        if status == "verified":
+            return {
+                "action": operation.action,
+                "status": "reconciled_verified",
+                "provider_mutation_applied": bool(prior_copy.get("mutation_applied", True)),
+                "readback_verified": True,
+                "replayed_write": False,
+            }
+        if status != "write_succeeded_readback_validation_failed":
+            raise RuntimeError("mutation receipt has an unsupported reconciliation status")
+        try:
+            postcondition = self._evaluate_generic_postcondition(
+                operation,
+                params,
+                prior_copy.get("provider_id"),
+                query,
+                response_metadata=prior_copy.get("response_metadata"),
+                payload=body,
+            )
+        except (PlaneProviderRequestError, PlaneResponseValidationError, PlaneReadbackValidationError) as exc:
+            return {
+                "action": operation.action,
+                "status": "reconciliation_inconclusive",
+                "provider_mutation_applied": True,
+                "readback_verified": False,
+                "replayed_write": False,
+                "error": {"class": type(exc).__name__, "code": _reconciliation_error_code(exc)},
+            }
+        with _locked_ledger(store) as ledger:
+            _cas_receipt(ledger, key_hash, fingerprint, {"status": "verified", "postcondition": postcondition})
+        return {
+            "action": operation.action,
+            "status": "reconciled_verified",
+            "provider_mutation_applied": True,
+            "readback_verified": True,
+            "replayed_write": False,
+        }
 
     def execute_mutation_action(
         self,
@@ -243,9 +371,10 @@ class PlaneClient:
         approved_live_mutation: bool = False,
         authorization_receipt: Mapping[str, Any] | None = None,
         idempotency_key: str = "",
-        attempts: int = 0,
+        attempts: int = 1,
         ledger_path: str | Path,
         allow_runtime_state_transition: bool = False,
+        _trusted_local_client: bool = False,
     ) -> dict[str, Any]:
         """Execute one write; authorization and idempotency are independently one-shot.
 
@@ -254,31 +383,30 @@ class PlaneClient:
         """
         operation = get_operation(action)
         params, body = dict(path_params or {}), dict(payload or {})
-        preflight = self.preflight_mutation(
+        preflight = self.preflight_native_mutation(
             action,
             path_params=params,
             payload=body,
-            approved_live_mutation=approved_live_mutation,
-            authorization_receipt=authorization_receipt,
             attempts=attempts,
             idempotency_key=idempotency_key,
-            allow_runtime_state_transition=allow_runtime_state_transition,
         )
         key_hash = preflight["key_hash"]
         fingerprint = _fingerprint(action, "", "", None, {"path_params": params, "query": dict(query or {}), "payload": body})
         store = _require_ledger_path(ledger_path)
-        # Phase 1: atomically consume the approval and reserve the key.  This
-        # rejects an approval replayed with another key before provider I/O.
+        # Phase 1: atomically reserve the key before provider I/O.
         with _locked_ledger(store) as ledger:
-            authorizations = ledger.setdefault("authorizations", {})
-            if not isinstance(authorizations, dict):
-                raise RuntimeError("Plane mutation authorization ledger has invalid shape")
-            authorization_id = preflight["authorization_id"]
-            if authorization_id in authorizations:
-                raise PermissionError("authorization_id was already consumed")
-            authorizations[authorization_id] = {"key_hash": key_hash, "action": action, "provider_instance_hash": _provider_instance_hash(self.config)}
+            conflicts = ledger.get("migration_conflicts", {})
+            conflicting_receipts = conflicts.get("receipts", {}) if isinstance(conflicts, Mapping) else {}
+            if key_hash in conflicting_receipts:
+                raise RuntimeError("idempotency_key collides across legacy mutation ledgers; manual reconciliation is required")
             prior = ledger["receipts"].get(key_hash)
             if prior:
+                if _trusted_local_client and not str(prior.get("provider_instance_hash") or "").strip():
+                    raise RuntimeError(
+                        "existing mutation receipt lacks provider binding; explicit ledger migration is required"
+                    )
+                if _trusted_local_client and prior["provider_instance_hash"] != _provider_instance_hash(self.config):
+                    raise PermissionError("idempotency_key belongs to a different Plane provider instance")
                 if prior.get("fingerprint") != fingerprint:
                     raise ValueError("idempotency_key was already used for a different mutation")
                 if prior.get("status") == "attempt_started":
@@ -293,7 +421,7 @@ class PlaneClient:
                         duplicate=True,
                     )
                 if prior.get("status") == "write_succeeded_readback_validation_failed":
-                    if operation.action == "module__update_module_detail":
+                    if operation.action in {"module__update_module_detail", "issue__update_issue_detail"}:
                         duplicate_prior = dict(prior)
                     else:
                         return _generic_receipt(
@@ -341,7 +469,7 @@ class PlaneClient:
             if operation.action == "module__update_module_detail":
                 _validate_module_update_ack(_response_body(response), body)
             else:
-                _validate_response_shape(_response_body(response), {"response_shape": (operation.response_schema or {}).get("shape")}, operation.response_schema, context="mutation")
+                _validate_mutation_write_response(operation, response, body)
             if contract_specification.get("strategy") == "provider_ack" and operation.action != "module__update_module_detail":
                 _validate_provider_acknowledgement(response, operation.response_schema, contract_specification)
         except PlaneResponseValidationError:
@@ -823,12 +951,7 @@ class PlaneClient:
             if operation.action == "module__update_module_detail":
                 _validate_module_update_ack(_response_body(response), payload or {})
             else:
-                _validate_response_shape(
-                    _response_body(response),
-                    {"response_shape": (operation.response_schema or {}).get("shape")},
-                    operation.response_schema,
-                    context="mutation",
-                )
+                _validate_mutation_write_response(operation, response, payload or {})
             if kind == "provider_ack" and operation.action != "module__update_module_detail":
                 _validate_provider_acknowledgement(response, operation.response_schema, specification)
         else:
@@ -840,6 +963,11 @@ class PlaneClient:
                 _validate_persisted_acknowledgement(response_metadata, specification)
         if operation.action == "module__update_module_detail":
             return self._prove_module_update_effect(params, payload or {}, kind, specification)
+        if operation.action == "issue__update_issue_detail":
+            return self._prove_module_update_effect(
+                params, payload or {}, kind, specification,
+                detail_action="issue__get_issue_detail",
+            )
         get_action = specification.get("get_action")
         if operation.action == "issue__add_issue":
             # The source registry already documents the immutable detail GET.
@@ -923,13 +1051,15 @@ class PlaneClient:
         payload: Mapping[str, Any],
         kind: str,
         specification: Mapping[str, Any],
+        *,
+        detail_action: str = "module__get_module_detail",
     ) -> dict[str, Any]:
-        """Verify a sparse module PATCH acknowledgement against exact GET state."""
+        """Verify PATCH effects against an exact registry-bound detail GET."""
 
-        detail_operation = get_operation("module__get_module_detail")
+        detail_operation = get_operation(detail_action)
         path = _expand_path(detail_operation.path, params)
         response = self._request(
-            "GET", path, with_metadata=True, phase="readback:module__update_module_detail"
+            "GET", path, with_metadata=True, phase=f"readback:{detail_action}"
         )
         _validate_response_status(
             response, detail_operation.response_schema.get("status"),
@@ -985,7 +1115,13 @@ class PlaneClient:
                 context="readback",
             )
             body = _response_body(current)
-            _validate_response_shape(body, specification, get_operation.response_schema, context="readback")
+            _validate_response_shape(
+                body,
+                specification,
+                get_operation.response_schema,
+                context="readback",
+                operation_action=get_operation.action,
+            )
             _validate_identity_bindings(body, specification, params)
             rows_seen += len(_rows(body) or [])
             if rows_seen > max_rows:
@@ -1041,7 +1177,16 @@ class PlaneClient:
                 context="absence readback",
             )
             body = _response_body(current)
-            _validate_response_shape(body, specification, get_operation.response_schema, context="absence readback")
+            if _is_collection_shape(specification.get("response_shape")):
+                _validate_absence_collection_envelope(body, specification, context="absence readback")
+            else:
+                _validate_response_shape(
+                    body,
+                    specification,
+                    get_operation.response_schema,
+                    context="absence readback",
+                    operation_action=get_operation.action,
+                )
             _validate_identity_bindings(body, specification, params)
             if not _is_collection_shape(specification.get("response_shape")):
                 raise RuntimeError(
@@ -1712,6 +1857,55 @@ def _locked_ledger(path: Path):
             fcntl.flock(lock.fileno(), fcntl.LOCK_UN)
 
 
+def migrate_legacy_ledgers(target: str | Path, sources: Sequence[str | Path]) -> Path:
+    """Merge compatible historical ledgers without discarding collisions.
+
+    A conflicting key is preserved in migration metadata and blocks reuse of
+    only that key.  Unrelated operations continue through the canonical ledger.
+    """
+    destination = _require_ledger_path(target)
+    source_paths = [Path(source).expanduser() for source in sources]
+    source_paths = [path for path in source_paths if path.is_file() and path.resolve() != destination.resolve()]
+    if not source_paths:
+        return destination
+    loaded: list[tuple[Path, dict[str, Any]]] = []
+    for source in source_paths:
+        try:
+            raw = source.read_text(encoding="utf-8").strip()
+            value = json.loads(raw) if raw else {}
+        except (OSError, json.JSONDecodeError) as exc:
+            raise RuntimeError(f"legacy Plane mutation ledger is unreadable: {source}") from exc
+        if not isinstance(value, dict) or not isinstance(value.get("receipts", {}), dict):
+            raise RuntimeError(f"legacy Plane mutation ledger has invalid shape: {source}")
+        loaded.append((source, value))
+    with _locked_ledger(destination) as ledger:
+        migration = ledger.setdefault("migration", {})
+        conflicts = ledger.setdefault("migration_conflicts", {})
+        if not isinstance(migration, dict) or not isinstance(conflicts, dict):
+            raise RuntimeError("Plane mutation ledger migration metadata has invalid shape")
+        for section in ("receipts", "authorizations", "reconciliation_authorizations"):
+            destination_section = ledger.setdefault(section, {})
+            section_conflicts = conflicts.setdefault(section, {})
+            if not isinstance(destination_section, dict) or not isinstance(section_conflicts, dict):
+                raise RuntimeError(f"Plane mutation ledger {section} has invalid migration shape")
+            for source, payload in loaded:
+                values = payload.get(section, {})
+                if not isinstance(values, dict):
+                    raise RuntimeError(f"legacy Plane mutation ledger {section} has invalid shape: {source}")
+                for key, value in values.items():
+                    if key not in destination_section:
+                        destination_section[key] = value
+                    elif destination_section[key] != value:
+                        conflict_sources = section_conflicts.setdefault(str(key), [])
+                        if str(source) not in conflict_sources:
+                            conflict_sources.append(str(source))
+        sources_seen = {str(value) for value in migration.get("sources", []) if isinstance(value, str)}
+        sources_seen.update(str(source) for source, _ in loaded)
+        migration["sources"] = sorted(sources_seen)
+        migration["version"] = 1
+    return destination
+
+
 def _persist_ledger(path: Path, ledger: Mapping[str, Any]) -> None:
     temporary = path.with_suffix(path.suffix + ".tmp")
     with temporary.open("w", encoding="utf-8") as handle:
@@ -2280,12 +2474,41 @@ def _schema_alias(value: Mapping[str, Any], field: str) -> str | None:
     return next((alias for alias in aliases.get(field, ()) if alias in value), None)
 
 
+def _validate_mutation_write_response(
+    operation: Any,
+    response: Any,
+    payload: Mapping[str, Any],
+) -> None:
+    """Validate only the provider evidence needed before a postcondition GET.
+
+    Plane's comment endpoint can return a minimal ``{"id": ...}`` body despite
+    its published example including actor and rendered-content fields. The
+    membership readback remains mandatory and verifies that identifier. A 204
+    endpoint has no body contract, so an empty body is valid provider evidence.
+    """
+    body = _response_body(response)
+    if operation.action == "issue_comment__add_issue_comment":
+        if not isinstance(body, Mapping) or not str(body.get("id") or "").strip():
+            raise PlaneResponseValidationError("comment mutation response lacks a provider id")
+        return
+    response_schema = operation.response_schema or {}
+    if response_schema.get("available") is False and body in (None, {}, ""):
+        return
+    _validate_response_shape(
+        body,
+        {"response_shape": response_schema.get("shape")},
+        response_schema,
+        context="mutation",
+    )
+
+
 def _validate_response_shape(
     body: Any,
     specification: Mapping[str, Any],
     response_schema: Mapping[str, Any] | None,
     *,
     context: str,
+    operation_action: str | None = None,
 ) -> None:
     shape = specification.get("response_shape")
     if shape is None:
@@ -2308,7 +2531,7 @@ def _validate_response_shape(
     if isinstance(response_schema, Mapping):
         schema = response_schema.get("json_schema")
         if isinstance(schema, Mapping):
-            schema = _provider_compatible_response_schema(schema)
+            schema = _provider_compatible_response_schema(schema, operation_action=operation_action)
             if shape in {"collection", "relation_membership"}:
                 if schema.get("type") == "object":
                     _validate_json_schema(body, schema, context=context)
@@ -2335,7 +2558,34 @@ def _validate_response_shape(
                 _validate_json_schema(body, schema, context=context)
 
 
-def _provider_compatible_response_schema(schema: Mapping[str, Any]) -> Mapping[str, Any]:
+def _validate_absence_collection_envelope(
+    body: Any,
+    specification: Mapping[str, Any],
+    *,
+    context: str,
+) -> None:
+    """Validate collection evidence needed to prove a mutation target is absent.
+
+    An absence readback must not reject a valid page because an unrelated
+    surviving representation has drifted from the provider's documented detail
+    schema.  It still requires a resolvable collection and its documented
+    pagination continuation signal so the caller can exhaust every page.
+    """
+    if isinstance(body, list):
+        return
+    if not isinstance(body, Mapping) or not isinstance(body.get("results"), list):
+        raise PlaneResponseValidationError(f"Plane {context} response shape is not a collection")
+    pagination = specification.get("pagination") or {}
+    next_flag = str(pagination.get("next_page_flag") or "next_page_results")
+    if not isinstance(body.get(next_flag), bool):
+        raise PlaneResponseValidationError(
+            f"Plane {context} response lacks a boolean pagination continuation flag"
+        )
+
+
+def _provider_compatible_response_schema(
+    schema: Mapping[str, Any], *, operation_action: str | None = None
+) -> Mapping[str, Any]:
     """Apply reviewed Plane response compatibility without weakening identity.
 
     Plane's module detail/update responses return the optional display and date
@@ -2345,6 +2595,16 @@ def _provider_compatible_response_schema(schema: Mapping[str, Any]) -> Mapping[s
     value types.  Required keys, module identity, counters, status, and
     timestamps remain strictly validated.
     """
+
+    if operation_action == "issue_comment__list_issue_comments":
+        properties = schema.get("properties")
+        results = properties.get("results") if isinstance(properties, Mapping) else None
+        items = results.get("items") if isinstance(results, Mapping) else None
+        required_fields = items.get("required") if isinstance(items, Mapping) else None
+        if isinstance(properties, Mapping) and isinstance(results, Mapping) and isinstance(items, Mapping) and isinstance(required_fields, list) and "name" in required_fields:
+            compatible_items = {**dict(items), "required": [field for field in required_fields if field != "name"]}
+            compatible_results = {**dict(results), "items": compatible_items}
+            schema = {**dict(schema), "properties": {**dict(properties), "results": compatible_results}}
 
     required = set(schema.get("required") or ())
     module_signature = {

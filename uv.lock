@@ -792,10 +792,11 @@ wheels = [
 
 [[package]]
 name = "plane-mcp-karval"
-version = "0.1.0"
+version = "0.3.1"
 source = { editable = "." }
 dependencies = [
     { name = "fastmcp" },
+    { name = "python-dotenv" },
 ]
 
 [package.dev-dependencies]
@@ -804,7 +805,10 @@ dev = [
 ]
 
 [package.metadata]
-requires-dist = [{ name = "fastmcp", specifier = ">=2.13,<3" }]
+requires-dist = [
+    { name = "fastmcp", specifier = ">=2.13,<3" },
+    { name = "python-dotenv", specifier = ">=1.2,<2" },
+]
 
 [package.metadata.requires-dev]
 dev = [{ name = "pytest", specifier = ">=8.0" }]

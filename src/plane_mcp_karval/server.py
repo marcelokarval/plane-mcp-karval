@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import os
 from collections.abc import Mapping
+from importlib.metadata import version as installed_version
 from pathlib import Path
 from typing import Any, Literal
 
@@ -27,6 +28,7 @@ from plane_api import (
     get_operation,
     list_operations,
 )
+from plane_api.client import migrate_legacy_ledgers
 from plane_mcp_karval.plane_title_icons import (
     ICON_CONTRACT_VERSION,
     PRESENTATION_CONTRACT_VERSION,
@@ -52,7 +54,10 @@ from plane_mcp_karval.issue_creation_readiness import (
 Method = Literal["GET", "POST", "PATCH", "DELETE"]
 Mode = Literal["read", "descriptor"]
 
-DEFAULT_LEDGER = "~/.codex/state/plane-mcp-karval-mutations.json"
+LEGACY_LEDGERS = (
+    "~/.hermes/state/plane-governed-mutations.json",
+    "~/.codex/state/plane-mcp-karval-mutations.json",
+)
 
 
 def _env(name: str) -> str:
@@ -88,6 +93,16 @@ def _client() -> PlaneClient:
     )
 
 
+def _ledger_path() -> Path:
+    """Resolve one shared ledger and absorb compatible historical state once."""
+    configured = _env("PLANE_MUTATION_LEDGER")
+    if configured:
+        return Path(configured).expanduser()
+    legacy_paths = [Path(value).expanduser() for value in LEGACY_LEDGERS]
+    state_home = Path(_env("XDG_STATE_HOME") or "~/.local/state").expanduser()
+    return migrate_legacy_ledgers(state_home / "plane-mcp-karval" / "mutations.json", legacy_paths)
+
+
 def _workspace(value: str | None = None) -> str:
     workspace = str(value or "").strip() or _default_workspace()
     if not workspace:
@@ -97,6 +112,28 @@ def _workspace(value: str | None = None) -> str:
 
 def _clean_mapping(value: Mapping[str, Any] | None) -> dict[str, Any]:
     return {str(key): item for key, item in dict(value or {}).items() if item is not None}
+
+
+def _payload_shape(value: Mapping[str, Any] | None) -> dict[str, str]:
+    """Describe input fields without reflecting potentially sensitive values."""
+    return {
+        str(key): type(item).__name__
+        for key, item in dict(value or {}).items()
+    }
+
+
+def _derived_idempotency_key(value: str, suffix: str) -> str:
+    key = str(value or "").strip()
+    if not 16 <= len(key) <= 190:
+        raise ValueError("lifecycle idempotency_key must contain 16 to 190 characters")
+    return f"{key}:{suffix}"
+
+
+def _state_id(item: Mapping[str, Any]) -> str:
+    state = item.get("state")
+    if isinstance(state, Mapping):
+        return str(state.get("id") or "").strip()
+    return str(state or "").strip()
 
 
 def _catalog_payload(
@@ -140,22 +177,18 @@ def _mutation_receipt(
     method: str,
     path_params: Mapping[str, Any],
     payload: Mapping[str, Any],
-    approved_live_mutation: bool,
-    authorization_receipt: Mapping[str, Any],
     attempts: int,
     idempotency_key: str,
     query: Mapping[str, Any] | None = None,
 ) -> dict[str, Any]:
-    return _client().execute_mutation_action(
+    return _client().execute_native_mutation_action(
         operation,
         path_params=_clean_mapping(path_params),
         query=_clean_mapping(query),
-        payload=_clean_mapping(payload),
-        approved_live_mutation=approved_live_mutation,
-        authorization_receipt=_clean_mapping(authorization_receipt),
+        payload=dict(payload or {}),
         idempotency_key=idempotency_key,
         attempts=attempts,
-        ledger_path=Path(DEFAULT_LEDGER).expanduser(),
+        ledger_path=_ledger_path(),
     )
 
 
@@ -164,12 +197,14 @@ def create_server() -> FastMCP:
 
     mcp = FastMCP(
         "plane-mcp-karval",
-        version="1.0.0",
+        version=installed_version("plane-mcp-karval"),
         instructions=(
             "Use plane_catalog to discover the full Plane registry. Use "
             "plane_read_action for registered GET actions. Use "
-            "plane_action_descriptor before any mutation and plane_mutation_action "
-            "only after one explicit operation/target approval."
+            "plane_mutation_action with a caller-supplied idempotency key for "
+            "one registry mutation. Descriptors and semantic helpers are optional. "
+            "Local stdio is the caller authority boundary; this server does not "
+            "manufacture human approval."
         ),
         strict_input_validation=True,
     )
@@ -221,12 +256,22 @@ def create_server() -> FastMCP:
     ) -> dict[str, Any]:
         """Describe a registered Plane action without calling the provider."""
 
-        return _client().operation_descriptor(
-            operation,
-            path_params=_clean_mapping(path_params),
-            query=_clean_mapping(query),
-            payload=_clean_mapping(payload),
-        )
+        op = get_operation(operation)
+        return {
+            "dry_run": True,
+            "would_mutate": op.mutation,
+            "action": op.action,
+            "method": op.method,
+            "path_template": op.path,
+            "path_params": _clean_mapping(path_params),
+            "query": _clean_mapping(query),
+            "payload_shape": _payload_shape(payload),
+            "request_schema": op.request_schema,
+            "provider_configuration": "unavailable_without_a_configured_client",
+            "execution": "trusted_local_stdio_single_attempt_no_automatic_retry",
+            "docs_path": op.docs_path,
+            "docs_url": f"https://developers.plane.so{op.docs_path}",
+        }
 
     @mcp.tool(
         annotations=ToolAnnotations(
@@ -250,6 +295,125 @@ def create_server() -> FastMCP:
             operation,
             path_params=_clean_mapping(path_params),
             query=_clean_mapping(query),
+        )
+
+    @mcp.tool(
+        annotations=ToolAnnotations(
+            readOnlyHint=True,
+            destructiveHint=False,
+            idempotentHint=True,
+            openWorldHint=True,
+        )
+    )
+    def plane_capture_state_catalog(workspace_slug: str, project_id: str) -> dict[str, Any]:
+        """Read a project's current states without changing them."""
+        response = _client().execute_read_action(
+            "state__list_states",
+            path_params={"workspace_slug": workspace_slug, "project_id": project_id},
+            query={},
+        )
+        return {
+            "workspace_slug": workspace_slug,
+            "project_id": project_id,
+            "source_action": "state__list_states",
+            "states": response.get("results", []) if isinstance(response, Mapping) else [],
+        }
+
+    @mcp.tool(
+        annotations=ToolAnnotations(
+            readOnlyHint=False,
+            destructiveHint=False,
+            idempotentHint=False,
+            openWorldHint=True,
+        )
+    )
+    def plane_lifecycle_transition(
+        workspace_slug: str,
+        project_id: str,
+        work_item_id: str,
+        idempotency_key: str,
+        target_state_id: str | None = None,
+        expected_state_id: str | None = None,
+        expected_updated_at: str | None = None,
+        comment: dict[str, Any] | None = None,
+        attempts: int = 1,
+    ) -> dict[str, Any]:
+        """Optionally change state and add a comment with explicit partial results.
+
+        This is a convenience workflow. Generic state PATCH and comments remain
+        independently available through the registry dispatcher.
+        """
+        if attempts != 1:
+            raise ValueError("exactly one lifecycle attempt is allowed")
+        if not str(target_state_id or "").strip() and comment is None:
+            raise ValueError("target_state_id or comment is required")
+        client = _client()
+        before = client.get_work_item(workspace_slug, project_id, work_item_id)
+        if not isinstance(before, Mapping):
+            raise RuntimeError("Plane lifecycle pre-read returned an invalid work item")
+        actual_state = _state_id(before)
+        actual_updated_at = str(before.get("updated_at") or "")
+        if expected_state_id is not None and str(expected_state_id) != actual_state:
+            return {"status": "precondition_failed", "reason": "state", "state": actual_state}
+        if expected_updated_at is not None and str(expected_updated_at) != actual_updated_at:
+            return {"status": "precondition_failed", "reason": "updated_at", "updated_at": actual_updated_at}
+
+        state_receipt: dict[str, Any] | None = None
+        if str(target_state_id or "").strip():
+            state_receipt = _mutation_receipt(
+                operation="issue__update_issue_detail",
+                method="PATCH",
+                path_params={"workspace_slug": workspace_slug, "project_id": project_id, "resource_id": work_item_id},
+                payload={"state": str(target_state_id)},
+                idempotency_key=_derived_idempotency_key(idempotency_key, "state"),
+                attempts=attempts,
+            )
+            if state_receipt.get("readback_verified") is not True:
+                return {"status": "state_applied_comment_pending", "state": state_receipt, "comment": None}
+
+        comment_receipt: dict[str, Any] | None = None
+        if comment is not None:
+            comment_receipt = _mutation_receipt(
+                operation="issue_comment__add_issue_comment",
+                method="POST",
+                path_params={"workspace_slug": workspace_slug, "project_id": project_id, "work_item_id": work_item_id},
+                payload={"comment_html": render_comment(comment, output_format="html"), "external_source": "plane-mcp-karval"},
+                idempotency_key=_derived_idempotency_key(idempotency_key, "comment"),
+                attempts=attempts,
+            )
+            if comment_receipt.get("readback_verified") is not True:
+                return {"status": "comment_pending_reconciliation", "state": state_receipt, "comment": comment_receipt}
+        return {
+            "status": "state_verified" if state_receipt is not None else "comment_verified",
+            "state": state_receipt,
+            "comment": comment_receipt,
+        }
+
+    @mcp.tool(
+        annotations=ToolAnnotations(
+            readOnlyHint=True,
+            destructiveHint=False,
+            idempotentHint=True,
+            openWorldHint=True,
+        )
+    )
+    def plane_reconcile_mutation(
+        operation: str,
+        path_params: dict[str, Any],
+        payload: dict[str, Any] | None,
+        idempotency_key: str,
+        query: dict[str, Any] | None = None,
+        attempts: int = 1,
+    ) -> dict[str, Any]:
+        """Refresh only a recorded mutation's readback; never replay its write."""
+        return _client().reconcile_native_mutation(
+            operation,
+            path_params=_clean_mapping(path_params),
+            query=_clean_mapping(query),
+            payload=_clean_mapping(payload),
+            idempotency_key=idempotency_key,
+            attempts=attempts,
+            ledger_path=_ledger_path(),
         )
 
     @mcp.tool(
@@ -296,16 +460,40 @@ def create_server() -> FastMCP:
             openWorldHint=True,
         )
     )
+    def plane_add_comment(
+        workspace_slug: str,
+        project_id: str,
+        work_item_id: str,
+        comment_html: str,
+        idempotency_key: str,
+        attempts: int = 1,
+        external_source: str = "plane-mcp-karval",
+        external_id: str | None = None,
+    ) -> dict[str, Any]:
+        """Append one ordinary HTML comment with idempotency and provider readback."""
+        if not str(comment_html or "").strip():
+            raise ValueError("comment_html is required")
+        return _mutation_receipt(
+            operation="issue_comment__add_issue_comment",
+            method="POST",
+            path_params={"workspace_slug": workspace_slug, "project_id": project_id, "work_item_id": work_item_id},
+            payload=_clean_mapping({"comment_html": comment_html, "external_source": external_source, "external_id": external_id}),
+            idempotency_key=idempotency_key,
+            attempts=attempts,
+        )
+
+    @mcp.tool(
+        annotations=ToolAnnotations(
+            readOnlyHint=False,
+            destructiveHint=False,
+            idempotentHint=False,
+            openWorldHint=True,
+        )
+    )
     def plane_add_lifecycle_comment(
         project_id: str,
         work_item_id: str,
         comment: dict[str, Any],
-        approved_live_mutation: bool,
-        authorization_scope: str,
-        authorized_workspace_slug: str,
-        authorized_project_id: str,
-        authorized_work_item_id: str,
-        authorization_receipt: dict[str, Any],
         idempotency_key: str,
         attempts: int = 1,
         workspace_slug: str | None = None,
@@ -316,26 +504,13 @@ def create_server() -> FastMCP:
 
         workspace = _workspace(workspace_slug)
         body = render_comment(comment, output_format="html")
-        return _client().governed_add_work_item_comment(
-            workspace_slug=workspace,
-            project_id=project_id,
-            work_item_id=work_item_id,
-            payload=_clean_mapping(
-                {
-                    "comment_html": body,
-                    "external_source": external_source,
-                    "external_id": external_id,
-                }
-            ),
-            approved_live_mutation=approved_live_mutation,
-            authorization_scope=authorization_scope,
-            authorized_workspace_slug=authorized_workspace_slug,
-            authorized_project_id=authorized_project_id,
-            authorized_work_item_id=authorized_work_item_id,
-            authorization_receipt=_clean_mapping(authorization_receipt),
+        return _mutation_receipt(
+            operation="issue_comment__add_issue_comment",
+            method="POST",
+            path_params={"workspace_slug": workspace, "project_id": project_id, "work_item_id": work_item_id},
+            payload=_clean_mapping({"comment_html": body, "external_source": external_source, "external_id": external_id}),
             idempotency_key=idempotency_key,
             attempts=attempts,
-            ledger_path=Path(DEFAULT_LEDGER).expanduser(),
         )
 
     @mcp.tool(
@@ -407,11 +582,10 @@ def create_server() -> FastMCP:
         payload: dict[str, Any],
         issue_readiness: dict[str, Any] | None,
     ) -> dict[str, Any]:
-        """Validate issue readiness and return the canonical mutation receipt hash.
+        """Optionally validate issue readiness and return its advisory fingerprint.
 
-        This is deliberately provider-free: it gives callers the exact
-        ``issue_readiness_fingerprint`` required by ``plane_mutation_action``
-        without exposing a second route for issue creation.
+        This provider-free helper never creates an issue and is not a required
+        predecessor of ``plane_mutation_action``.
         """
 
         errors = validate_issue_creation_readiness(issue_readiness, payload)
@@ -436,32 +610,25 @@ def create_server() -> FastMCP:
         operation: str,
         path_params: dict[str, Any],
         payload: dict[str, Any] | None,
-        approved_live_mutation: bool,
-        authorization_receipt: dict[str, Any],
         idempotency_key: str,
         attempts: int = 1,
         query: dict[str, Any] | None = None,
-        issue_readiness: dict[str, Any] | None = None,
     ) -> dict[str, Any]:
-        """Execute any registered Plane mutation with strict approval and readback."""
+        """Execute one registry mutation for the trusted local stdio caller.
+
+        State PATCH has normal non-atomic provider semantics: there is no CAS,
+        automatic compensation, or automatic retry.
+        """
 
         op = get_operation(operation)
         if op.method not in {"POST", "PATCH", "DELETE"} or not op.mutation:
             raise PermissionError("plane_mutation_action accepts only registered mutation operations")
-        if operation == "issue__add_issue":
-            errors = validate_issue_creation_readiness(issue_readiness, payload or {})
-            if errors:
-                raise PermissionError("issue creation readiness failed: " + "; ".join(errors))
-            if str(authorization_receipt.get("issue_readiness_fingerprint") or "").strip() != readiness_fingerprint(issue_readiness or {}):
-                raise PermissionError("authorization receipt issue_readiness_fingerprint does not match")
         return _mutation_receipt(
             operation=operation,
             method=op.method,
             path_params=path_params,
             query=query,
             payload=payload or {},
-            approved_live_mutation=approved_live_mutation,
-            authorization_receipt=authorization_receipt,
             attempts=attempts,
             idempotency_key=idempotency_key,
         )
@@ -498,7 +665,7 @@ def create_server() -> FastMCP:
             attempts=attempts,
             approved_live_reconciliation=approved_live_reconciliation,
             authorization_receipt=_clean_mapping(authorization_receipt),
-            ledger_path=Path(DEFAULT_LEDGER).expanduser(),
+            ledger_path=_ledger_path(),
         )
 
     @mcp.tool(
@@ -530,7 +697,7 @@ def create_server() -> FastMCP:
             attempts=attempts,
             approved_live_reconciliation=approved_live_reconciliation,
             authorization_receipt=_clean_mapping(authorization_receipt),
-            ledger_path=Path(DEFAULT_LEDGER).expanduser(),
+            ledger_path=_ledger_path(),
         )
 
     @mcp.tool(

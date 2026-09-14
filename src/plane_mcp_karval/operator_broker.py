@@ -155,7 +155,10 @@ class JsonStateStore:
                 os.unlink(temporary)
 
     def close(self) -> None:
-        os.close(self._lock_fd)
+        lock_fd = self._lock_fd
+        self._lock_fd = -1
+        if lock_fd >= 0:
+            os.close(lock_fd)
         try:
             self._lock_path.unlink()
         except FileNotFoundError:
@@ -185,6 +188,7 @@ class ProductionStateStore:
     def __init__(self, config: TrustedStoreConfig) -> None:
         if not isinstance(config, TrustedStoreConfig) or not callable(getattr(config.authenticator, "authenticate", None)) or not callable(getattr(config.authenticator, "verify", None)):
             raise BrokerError("trusted production store configuration required")
+        _BrokerCore._validate_metadata(config.metadata)
         self.root = Path(config.root)
         self.filename = config.filename
         self.metadata = config.metadata
@@ -223,22 +227,34 @@ class ProductionStateStore:
             raise BrokerError("unsafe state root")
 
     def load(self) -> dict[str, object]:
+        fd = -1
         try:
             fd = os.open(self.filename, os.O_RDONLY | os.O_NOFOLLOW, dir_fd=self._root_fd)
             info = os.fstat(fd)
         except OSError as error:
+            if fd >= 0:
+                try:
+                    os.close(fd)
+                except OSError:
+                    pass
             raise BrokerError("state store missing") from error
-        if not stat.S_ISREG(info.st_mode) or info.st_nlink != 1 or info.st_uid != os.getuid() or info.st_mode & 0o077 or info.st_size > self.MAX_BYTES:
-            os.close(fd)
-            raise BrokerError("unsafe state file")
         try:
+            if not stat.S_ISREG(info.st_mode) or info.st_nlink != 1 or info.st_uid != os.getuid() or info.st_mode & 0o077 or info.st_size > self.MAX_BYTES:
+                raise BrokerError("unsafe state file")
             with os.fdopen(fd, "rb") as handle:
+                fd = -1
                 raw = handle.read(self.MAX_BYTES + 1)
             if len(raw) > self.MAX_BYTES:
                 raise BrokerError("state file too large")
             envelope = json.loads(raw)
         except (OSError, ValueError) as error:
             raise BrokerError("state store unavailable") from error
+        finally:
+            if fd >= 0:
+                try:
+                    os.close(fd)
+                except OSError:
+                    pass
         if not isinstance(envelope, dict) or set(envelope) != {"schema_version", "metadata", "payload", "integrity"}:
             raise BrokerError("invalid state envelope")
         if envelope["schema_version"] != self.SCHEMA_VERSION or not isinstance(envelope["metadata"], dict) or not isinstance(envelope["payload"], dict) or not isinstance(envelope["integrity"], str):
@@ -270,17 +286,36 @@ class ProductionStateStore:
         if len(encoded) > self.MAX_BYTES:
             raise BrokerError("state exceeds size limit")
         if exclusive:
+            fd = -1
+            created = False
             try:
                 fd = os.open(self.filename, os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW, 0o600, dir_fd=self._root_fd)
+                created = True
                 info = os.fstat(fd)
                 if not stat.S_ISREG(info.st_mode) or info.st_nlink != 1 or info.st_uid != os.getuid() or info.st_mode & 0o077:
                     raise BrokerError("unsafe bootstrap file")
-                with os.fdopen(fd, "wb") as handle:
+                handle = os.fdopen(fd, "wb")
+                fd = -1
+                with handle:
                     handle.write(encoded); handle.flush(); os.fsync(handle.fileno())
                 os.fsync(self._root_fd)
                 return
-            except FileExistsError as error:
-                raise BrokerError("state already bootstrapped") from error
+            except Exception as error:
+                if fd >= 0:
+                    try:
+                        os.close(fd)
+                    except OSError:
+                        pass
+                if created:
+                    try:
+                        os.unlink(self.filename, dir_fd=self._root_fd)
+                    except FileNotFoundError:
+                        pass
+                if isinstance(error, BrokerError):
+                    raise
+                if isinstance(error, FileExistsError):
+                    raise BrokerError("state already bootstrapped") from error
+                raise
         temporary_name = f".{self.filename}.{secrets.token_urlsafe(12)}.tmp"
         try:
             fd = os.open(temporary_name, os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW, 0o600, dir_fd=self._root_fd)
@@ -291,24 +326,45 @@ class ProductionStateStore:
             if not stat.S_ISREG(temporary_info.st_mode) or temporary_info.st_nlink != 1 or temporary_info.st_uid != os.getuid():
                 raise BrokerError("unsafe temporary state file")
             os.fchmod(fd, 0o600)
-            with os.fdopen(fd, "wb") as handle:
+            handle = os.fdopen(fd, "wb")
+            fd = -1
+            with handle:
                 handle.write(encoded); handle.flush(); os.fsync(handle.fileno())
             os.replace(temporary_name, self.filename, src_dir_fd=self._root_fd, dst_dir_fd=self._root_fd)
             os.fsync(self._root_fd)
         finally:
+            if fd >= 0:
+                try:
+                    os.close(fd)
+                except OSError:
+                    pass
             try:
                 os.unlink(temporary_name, dir_fd=self._root_fd)
             except FileNotFoundError:
                 pass
 
     def close(self) -> None:
-        fcntl.flock(self._lock_fd, fcntl.LOCK_UN)
-        os.close(self._lock_fd)
-        os.close(self._root_fd)
+        lock_fd, root_fd = self._lock_fd, self._root_fd
+        self._lock_fd = self._root_fd = -1
+        try:
+            if lock_fd >= 0:
+                fcntl.flock(lock_fd, fcntl.LOCK_UN)
+        finally:
+            if lock_fd >= 0:
+                try:
+                    os.close(lock_fd)
+                except OSError:
+                    pass
+            if root_fd >= 0:
+                try:
+                    os.close(root_fd)
+                except OSError:
+                    pass
 
     @classmethod
     def bootstrap(cls, config: TrustedStoreConfig, state: dict[str, object]) -> None:
         """Offline create-once bootstrap; normal startup never creates state."""
+        _BrokerCore._validate_metadata(config.metadata)
         expected = {
             "schema_version": cls.SCHEMA_VERSION,
             "metadata": asdict(config.metadata),
@@ -360,7 +416,7 @@ class _BrokerCore:
     TTL_SECONDS = 60.0
     MAX_PENDING = 1024
     MAX_NONCES = 2048
-    MAX_TOMBSTONES = 2048
+    MAX_TOMBSTONES = 1024
     MAX_IDENTIFIER = 256
     ATTESTATION_MAX = 4096
 
@@ -409,6 +465,7 @@ class _BrokerCore:
     def prepare(self, binding: BrokerBinding) -> PreparedRequest:
         self._validate_binding(binding)
         binding = replace(binding, **asdict(self._owned))
+        self._validate_binding(binding)
         request = PreparedRequest(
             request_id=self._opaque(self._request_id_factory()),
             nonce=self._opaque(self._nonce_factory()),
@@ -416,35 +473,33 @@ class _BrokerCore:
             expires_at=self._now() + self.TTL_SECONDS,
         )
         with self._lock:
-            self._prune()
-            self._prune_nonces()
-            self._compact_retention()
-            existing = self._idempotency.get(binding.idempotency)
-            if existing:
-                existing_id, existing_digest = existing
-                if existing_digest != binding.digest():
-                    raise BrokerError("idempotency binding conflict")
-                return self._requests[existing_id]
-            if binding.idempotency in self._tombstones:
-                raise BrokerError("idempotency replay tombstone")
-            pending = sum(
-                request.state in {
-                    BrokerState.PREPARED,
-                    BrokerState.CONFIRMED,
-                    BrokerState.ATTEMPT_STARTED,
-                }
-                for request in self._requests.values()
-            )
-            if pending >= self.MAX_PENDING:
-                raise BrokerError("broker queue full")
-            if request.request_id in self._requests or request.request_id in self._receipts:
-                raise BrokerError("request identifier collision")
-            if request.nonce in self._nonces:
-                raise BrokerError("nonce collision")
-            self._requests[request.request_id] = request
-            self._idempotency[binding.idempotency] = (request.request_id, binding.digest())
-            self._nonces[request.nonce] = self._last_now
-            self._persist()
+            backup = (self._requests.copy(), self._receipts.copy(), self._idempotency.copy(), self._tombstones.copy(), self._nonces.copy(), self._inflight.copy(), self._quarantine.copy())
+            try:
+                self._prune()
+                self._prune_nonces()
+                self._compact_retention()
+                existing = self._idempotency.get(binding.idempotency)
+                if existing:
+                    existing_id, existing_digest = existing
+                    if existing_digest != binding.digest():
+                        raise BrokerError("idempotency binding conflict")
+                    return self._requests[existing_id]
+                if binding.idempotency in self._tombstones:
+                    raise BrokerError("idempotency replay tombstone")
+                pending = sum(request.state in {BrokerState.PREPARED, BrokerState.CONFIRMED, BrokerState.ATTEMPT_STARTED} for request in self._requests.values())
+                if pending >= self.MAX_PENDING or len(self._nonces) >= self.MAX_NONCES:
+                    raise BrokerError("broker queue full")
+                if request.request_id in self._requests or request.request_id in self._receipts:
+                    raise BrokerError("request identifier collision")
+                if request.nonce in self._nonces:
+                    raise BrokerError("nonce collision")
+                self._requests[request.request_id] = request
+                self._idempotency[binding.idempotency] = (request.request_id, binding.digest())
+                self._nonces[request.nonce] = self._last_now
+                self._persist()
+            except Exception:
+                self._requests, self._receipts, self._idempotency, self._tombstones, self._nonces, self._inflight, self._quarantine = backup
+                raise
         return request
 
     def confirm(self, request_id: str, nonce: str, attestation: str) -> None:
@@ -557,6 +612,7 @@ class _BrokerCore:
         for request_id in expired:
             request = self._requests.pop(request_id)
             self._idempotency.pop(request.binding.idempotency, None)
+            self._nonces.pop(request.nonce, None)
 
     def _prune_receipts(self) -> None:
         if len(self._receipts) <= self.MAX_PENDING:
@@ -569,7 +625,7 @@ class _BrokerCore:
             request for request in self._requests.values()
             if request.state in {BrokerState.COMPLETED, BrokerState.DRIFTED, BrokerState.EXPIRED}
         ]
-        for request in terminal[: max(0, len(terminal) - self.MAX_PENDING)]:
+        for request in terminal[: max(0, len(terminal) - (self.MAX_PENDING - 1))]:
             if len(self._tombstones) >= self.MAX_TOMBSTONES:
                 raise BrokerError("tombstone capacity exhausted")
             self._tombstones[request.binding.idempotency] = request.binding.digest()
@@ -593,8 +649,7 @@ class _BrokerCore:
                 self._nonces.pop(nonce, None)
 
     def _persist(self) -> None:
-        self._store.save(
-            {
+        snapshot = {
                 "requests": {
                     request_id: {
                         "request_id": request.request_id,
@@ -618,11 +673,34 @@ class _BrokerCore:
                 "inflight": [list(target) for target in self._inflight],
                 "quarantine": [list(target) for target in self._quarantine],
             }
-        )
+        self._validate_snapshot_capacity(snapshot)
+        self._store.save(snapshot)
+
+    def _validate_snapshot_capacity(self, snapshot: dict[str, object]) -> None:
+        for name in ("requests", "receipts", "idempotency"):
+            value = snapshot[name]
+            if not isinstance(value, dict) or len(value) > self.MAX_PENDING:
+                raise BrokerError("persisted capacity exhausted")
+        if not isinstance(snapshot["tombstones"], dict) or len(snapshot["tombstones"]) > self.MAX_TOMBSTONES:
+            raise BrokerError("tombstone capacity exhausted")
+        for name in ("nonces", "inflight", "quarantine"):
+            value = snapshot[name]
+            if not isinstance(value, list) or len(value) > (self.MAX_NONCES if name == "nonces" else self.MAX_PENDING):
+                raise BrokerError("persisted capacity exhausted")
 
     def _restore(self, state: dict[str, object]) -> None:
         if not state:
             return
+        requests: dict[str, PreparedRequest] = {}
+        receipts: dict[str, BrokerReceipt] = {}
+        idempotency: dict[str, tuple[str, str]] = {}
+        tombstones: dict[str, str] = {}
+        nonces: dict[str, float] = {}
+        inflight: set[tuple[str, ...]] = set()
+        quarantine: set[tuple[str, ...]] = set()
+        boot_tombstones: dict[str, str] = {}
+        boot_receipts: dict[str, BrokerReceipt] = {}
+        boot_expired: set[str] = set()
         required = {"schema_version", "metadata", "requests", "receipts", "idempotency", "tombstones", "nonces", "inflight", "quarantine"}
         stored_metadata = state.get("metadata")
         current_metadata = asdict(self._owned)
@@ -632,11 +710,41 @@ class _BrokerCore:
         )
         if set(state) != required or state.get("schema_version") != 1 or not isinstance(stored_metadata, dict) or set(stored_metadata) != set(current_metadata) or (stored_metadata != current_metadata and not boot_changed):
             raise BrokerError("invalid persisted state")
-        for request_id, raw in dict(state.get("requests", {})).items():
-            item = dict(raw)
+        collections = ("requests", "receipts", "idempotency", "tombstones")
+        if any(not isinstance(state[name], dict) for name in collections) or not isinstance(state["nonces"], list) or not isinstance(state["inflight"], list) or not isinstance(state["quarantine"], list):
+            raise BrokerError("invalid persisted collections")
+        if any(len(state[name]) > self.MAX_PENDING for name in ("requests", "receipts", "idempotency")) or len(state["tombstones"]) > self.MAX_TOMBSTONES or len(state["nonces"]) > self.MAX_NONCES or len(state["inflight"]) > self.MAX_PENDING or len(state["quarantine"]) > self.MAX_PENDING:
+            raise BrokerError("persisted collection capacity exceeded")
+        if len(state["nonces"]) != len(set(state["nonces"])) or any(not isinstance(value, str) or not value.isascii() or not 16 <= len(value) <= self.MAX_IDENTIFIER for value in state["nonces"]):
+            raise BrokerError("invalid persisted nonce collection")
+        for key, digest in state["tombstones"].items():
+            if not isinstance(key, str) or not key.isascii() or not 1 <= len(key) <= self.MAX_IDENTIFIER or not isinstance(digest, str) or len(digest) != 64 or digest != digest.lower() or any(char not in "0123456789abcdef" for char in digest):
+                raise BrokerError("invalid persisted tombstone")
+        targets: list[tuple[str, ...]] = []
+        for name in ("inflight", "quarantine"):
+            for target in state[name]:
+                if not isinstance(target, list) or len(target) != 5 or any(not isinstance(value, str) or not value or len(value) > 512 for value in target):
+                    raise BrokerError("invalid persisted target")
+                targets.append(tuple(target))
+            if len(state[name]) != len({tuple(target) for target in state[name]}):
+                raise BrokerError("duplicate persisted target")
+        if set(map(tuple, state["inflight"])) & set(map(tuple, state["quarantine"])):
+            raise BrokerError("inflight quarantine overlap")
+        if set(state["tombstones"]) & set(state["idempotency"]):
+            raise BrokerError("tombstone idempotency collision")
+        for key, value in state["idempotency"].items():
+            if not isinstance(key, str) or not key.isascii() or not 1 <= len(key) <= self.MAX_IDENTIFIER or not isinstance(value, list) or len(value) != 2 or not isinstance(value[0], str) or not value[0].isascii() or not isinstance(value[1], str) or len(value[1]) != 64 or value[1] != value[1].lower() or any(char not in "0123456789abcdef" for char in value[1]):
+                raise BrokerError("invalid persisted idempotency")
+        for key, raw in state["receipts"].items():
+            if not isinstance(key, str) or not isinstance(raw, dict) or set(raw) != {"request_id", "state", "detail"} or raw["request_id"] != key or not isinstance(raw["detail"], str) or len(raw["detail"]) > self.ATTESTATION_MAX or raw["state"] not in {value.value for value in BrokerState if value not in {BrokerState.PREPARED, BrokerState.CONFIRMED, BrokerState.ATTEMPT_STARTED}}:
+                raise BrokerError("invalid persisted receipt")
+        for request_id, raw in state["requests"].items():
+            if not isinstance(raw, dict):
+                raise BrokerError("invalid persisted request")
+            item = raw
             if set(item) != {"request_id", "nonce", "binding", "expires_at", "state", "authorization"}:
                 raise BrokerError("invalid persisted request")
-            if not isinstance(request_id, str) or not isinstance(item["request_id"], str) or request_id != item["request_id"] or not isinstance(item["nonce"], str) or len(item["nonce"]) > self.MAX_IDENTIFIER or not isinstance(item["binding"], dict) or set(item["binding"]) != set(BrokerBinding.__dataclass_fields__) or not isinstance(item["expires_at"], (int, float)) or not math.isfinite(item["expires_at"]):
+            if not isinstance(request_id, str) or not isinstance(item["request_id"], str) or request_id != item["request_id"] or not isinstance(item["nonce"], str) or not item["nonce"].isascii() or not 16 <= len(item["nonce"]) <= self.MAX_IDENTIFIER or not isinstance(item["binding"], dict) or set(item["binding"]) != set(BrokerBinding.__dataclass_fields__) or not isinstance(item["expires_at"], (int, float)) or not math.isfinite(item["expires_at"]):
                 raise BrokerError("invalid persisted request")
             binding = BrokerBinding(**item["binding"])
             self._validate_binding(binding)
@@ -648,14 +756,14 @@ class _BrokerCore:
             original_request = PreparedRequest(item["request_id"], item["nonce"], binding, float(item["expires_at"]), original_state)
             authorization = item.get("authorization")
             if item["state"] == BrokerState.CONFIRMED.value and (
-                not isinstance(authorization, list) or len(authorization) != 2 or not all(isinstance(value, str) for value in authorization)
+                not isinstance(authorization, list) or len(authorization) != 2 or not all(isinstance(value, str) and value.isascii() and len(value) <= self.ATTESTATION_MAX for value in authorization)
                 or not self._signer.verify(authorization[1], authorization[0])
             ):
                 raise BrokerError("confirmed authorization invalid")
-            if item["state"] in {BrokerState.ATTEMPT_STARTED.value, BrokerState.UNKNOWN.value, BrokerState.APPLIED_UNVERIFIED.value, BrokerState.COMPLETED.value, BrokerState.DRIFTED.value, BrokerState.EXPIRED.value} and authorization is not None:
-                if not isinstance(authorization, list) or len(authorization) != 2 or not all(isinstance(value, str) for value in authorization) or not self._signer.verify(authorization[1], authorization[0]):
+            elif item["state"] in {BrokerState.ATTEMPT_STARTED.value, BrokerState.UNKNOWN.value, BrokerState.APPLIED_UNVERIFIED.value, BrokerState.COMPLETED.value, BrokerState.DRIFTED.value, BrokerState.EXPIRED.value} and authorization is not None:
+                if not isinstance(authorization, list) or len(authorization) != 2 or not all(isinstance(value, str) and value.isascii() and len(value) <= self.ATTESTATION_MAX for value in authorization) or not self._signer.verify(authorization[1], authorization[0]):
                     raise BrokerError("confirmed authorization invalid")
-            elif authorization is not None:
+            elif authorization is not None and item["state"] != BrokerState.CONFIRMED.value:
                 raise BrokerError("unexpected persisted authorization")
             if authorization is not None and (len(authorization[0]) > self.ATTESTATION_MAX or not secrets.compare_digest(authorization[0], self._attestation_payload(original_request))):
                 raise BrokerError("persisted authorization binding mismatch")
@@ -664,67 +772,102 @@ class _BrokerCore:
             if boot_changed and restored_state in {BrokerState.PREPARED, BrokerState.CONFIRMED}:
                 restored_state = BrokerState.EXPIRED
                 authorization_value = None
+                boot_receipts[request_id] = BrokerReceipt(request_id, BrokerState.EXPIRED, "boot changed")
+                boot_tombstones[binding.idempotency] = binding.digest()
             if boot_changed and restored_state is BrokerState.ATTEMPT_STARTED:
                 restored_state = BrokerState.UNKNOWN
-            self._requests[request_id] = PreparedRequest(
+            requests[request_id] = PreparedRequest(
                 request_id=item["request_id"], nonce=item["nonce"],
                 binding=binding,
                 expires_at=float(item["expires_at"]), state=restored_state,
                 authorization=authorization_value,
             )
+        request_nonces = [request.nonce for request in requests.values()]
+        if len(request_nonces) != len(set(request_nonces)) or set(request_nonces) != set(state["nonces"]):
+            raise BrokerError("inconsistent persisted nonce ownership")
         for request_id, raw in dict(state.get("receipts", {})).items():
             item = dict(raw)
-            self._receipts[request_id] = BrokerReceipt(
+            receipts[request_id] = BrokerReceipt(
                 request_id=item["request_id"], state=BrokerState(item["state"]), detail=item["detail"]
             )
-        self._idempotency = {
+        idempotency = {
             key: (value[0], value[1]) for key, value in dict(state.get("idempotency", {})).items()
         }
-        self._tombstones = {key: value for key, value in dict(state.get("tombstones", {})).items()}
-        self._nonces = {
+        tombstones = {key: value for key, value in dict(state.get("tombstones", {})).items()}
+        nonces = {
             nonce: float(index) for index, nonce in enumerate(state.get("nonces", []))
         }
-        self._inflight = {tuple(target) for target in state.get("inflight", [])}
-        self._quarantine = {tuple(target) for target in state.get("quarantine", [])}
+        inflight = {tuple(target) for target in state.get("inflight", [])}
+        quarantine = {tuple(target) for target in state.get("quarantine", [])}
         converted_unknown: list[PreparedRequest] = []
         if boot_changed:
-            for request in self._requests.values():
+            for request in requests.values():
                 if request.state is BrokerState.UNKNOWN:
                     converted_unknown.append(request)
             for request in converted_unknown:
-                self._inflight.discard(self._target(request.binding))
-                self._quarantine.add(self._target(request.binding))
-                self._receipts[request.request_id] = BrokerReceipt(request.request_id, BrokerState.UNKNOWN, "boot changed")
-            for key, (request_id, _digest) in list(self._idempotency.items()):
-                request = self._requests.get(request_id)
+                inflight.discard(self._target(request.binding))
+                quarantine.add(self._target(request.binding))
+                boot_receipts[request.request_id] = BrokerReceipt(request.request_id, BrokerState.UNKNOWN, "boot changed")
+            for key, (request_id, _digest) in list(idempotency.items()):
+                request = requests.get(request_id)
                 if request is not None and request.state is BrokerState.EXPIRED:
-                    self._idempotency.pop(key, None)
-        if any(request_id != request.request_id for request_id, request in self._requests.items()):
+                    boot_expired.add(key)
+        tombstones.update(boot_tombstones)
+        receipts.update(boot_receipts)
+        for key in boot_expired:
+            idempotency.pop(key, None)
+        if any(request_id != request.request_id for request_id, request in requests.items()):
             raise BrokerError("inconsistent persisted request")
-        for request_id, receipt in self._receipts.items():
-            if request_id not in self._requests or self._requests[request_id].state is not receipt.state:
+        for request_id, receipt in receipts.items():
+            if request_id not in requests or requests[request_id].state is not receipt.state:
                 raise BrokerError("inconsistent persisted receipt")
-        for key, (request_id, digest) in self._idempotency.items():
-            request = self._requests.get(request_id)
+        expected_receipts = {request_id for request_id, request in requests.items() if request.state in {BrokerState.COMPLETED, BrokerState.DRIFTED, BrokerState.UNKNOWN, BrokerState.APPLIED_UNVERIFIED, BrokerState.EXPIRED}}
+        if set(receipts) != expected_receipts:
+            raise BrokerError("incomplete persisted receipts")
+        for key, (request_id, digest) in idempotency.items():
+            request = requests.get(request_id)
             if request is None or request.binding.idempotency != key or request.binding.digest() != digest:
                 raise BrokerError("inconsistent persisted idempotency")
-        for request_id, request in self._requests.items():
-            if request.state in {BrokerState.PREPARED, BrokerState.CONFIRMED, BrokerState.ATTEMPT_STARTED} and request.nonce not in self._nonces:
+        for request_id, request in requests.items():
+            if request.state in {BrokerState.PREPARED, BrokerState.CONFIRMED, BrokerState.ATTEMPT_STARTED} and request.nonce not in nonces:
                 raise BrokerError("inconsistent persisted nonce")
             if request.state is BrokerState.CONFIRMED and request.authorization is None:
                 raise BrokerError("confirmed authorization missing")
-        if any(self._target(request.binding) not in self._inflight for request in self._requests.values() if request.state is BrokerState.ATTEMPT_STARTED):
+            mapping = idempotency.get(request.binding.idempotency)
+            if mapping is not None:
+                if mapping != (request_id, request.binding.digest()):
+                    raise BrokerError("inconsistent persisted request idempotency")
+            boot_history = (
+                request.state is BrokerState.EXPIRED
+                and request.binding.broker_boot != current_metadata["broker_boot"]
+                and receipts.get(request_id) == BrokerReceipt(request_id, BrokerState.EXPIRED, "boot changed")
+                and tombstones.get(request.binding.idempotency) == request.binding.digest()
+            )
+            if mapping is None and not boot_history:
+                raise BrokerError("incomplete persisted idempotency relationship")
+        expected_inflight = {self._target(request.binding) for request in requests.values() if request.state is BrokerState.ATTEMPT_STARTED}
+        expected_quarantine = {self._target(request.binding) for request in requests.values() if request.state in {BrokerState.UNKNOWN, BrokerState.APPLIED_UNVERIFIED}}
+        if inflight != expected_inflight:
             raise BrokerError("inconsistent inflight state")
-        if any(self._target(request.binding) not in self._quarantine for request in self._requests.values() if request.state in {BrokerState.UNKNOWN, BrokerState.APPLIED_UNVERIFIED}):
+        if quarantine != expected_quarantine:
             raise BrokerError("inconsistent quarantine state")
+        if set(idempotency) & set(tombstones):
+            raise BrokerError("tombstone idempotency collision")
+        if any(request.binding.idempotency not in idempotency for request in requests.values() if request.state in {BrokerState.PREPARED, BrokerState.CONFIRMED, BrokerState.ATTEMPT_STARTED}):
+            raise BrokerError("incomplete idempotency relationship")
+        self._validate_snapshot_capacity({"requests": requests, "receipts": receipts, "idempotency": idempotency, "tombstones": tombstones, "nonces": list(nonces), "inflight": [list(v) for v in inflight], "quarantine": [list(v) for v in quarantine]})
+        self._requests = requests
+        self._receipts = receipts
+        self._idempotency = idempotency
+        self._tombstones = tombstones
+        self._nonces = nonces
+        self._inflight = inflight
+        self._quarantine = quarantine
 
     @staticmethod
     def _validate_metadata(metadata: BrokerMetadata) -> None:
-        if not isinstance(metadata, BrokerMetadata) or any(
-            not isinstance(value, str) or not value or len(value) > _BrokerCore.MAX_IDENTIFIER
-            or value.lower() in {"default", "placeholder", "changeme", "example"}
-            for value in asdict(metadata).values()
-        ):
+        limits = {"provider": 256, "tenant": 256, "policy": 64, "session": 256, "broker_boot": 256}
+        if not isinstance(metadata, BrokerMetadata) or any(not isinstance(value, str) or not value.isascii() or len(value) > limits[field] or value.lower() in {"default", "placeholder", "changeme", "example"} for field, value in asdict(metadata).items()):
             raise BrokerError("immutable broker metadata required")
         if metadata.policy not in {"comment-v1"}:
             raise BrokerError("metadata policy not allowed")
@@ -769,10 +912,8 @@ class _BrokerCore:
 
     @staticmethod
     def _validate_binding(binding: BrokerBinding) -> None:
-        if not isinstance(binding, BrokerBinding) or any(
-            not isinstance(value, str) or not value or len(value) > 512
-            for value in binding.__dict__.values()
-        ):
+        limits = {"provider": 256, "tenant": 256, "workspace": 256, "project": 256, "work_item": 256, "expected_state": 64, "target_state": 64, "updated_at": 256, "comment_hash": 512, "policy": 64, "idempotency": _BrokerCore.MAX_IDENTIFIER, "session": 256, "broker_boot": 256}
+        if not isinstance(binding, BrokerBinding) or any(not isinstance(value, str) or not value.isascii() or len(value) > limits[field] or value.lower() in {"default", "placeholder", "changeme", "example"} for field, value in binding.__dict__.items()):
             raise BrokerError("invalid binding")
         if binding.policy != "comment-v1" or binding.target_state != binding.expected_state:
             raise BrokerError("generic state mutation denied")

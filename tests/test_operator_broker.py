@@ -9,6 +9,7 @@ import pytest
 import hashlib
 import hmac
 import json
+import os
 
 from plane_mcp_karval.operator_broker import (
     BrokerBinding,
@@ -41,6 +42,16 @@ class Signer:
 
     def verify(self, attestation: str, payload: str) -> bool:
         return self.valid and attestation == "operator" and bool(payload)
+
+
+class CountingSigner(Signer):
+    def __init__(self):
+        super().__init__()
+        self.count = 0
+
+    def verify(self, attestation: str, payload: str) -> bool:
+        self.count += 1
+        return super().verify(attestation, payload)
 
 
 class Provider:
@@ -154,6 +165,83 @@ def test_expired_and_replayed_and_substituted_approvals_fail():
     with pytest.raises(BrokerError):
         b.execute(second.request_id)
     assert provider.calls == ["read", "read", "execute"]
+
+
+def test_expired_prepare_prunes_nonce_symmetrically_and_capacity_failure_is_transactional():
+    clock = Clock()
+    b = broker(clock=clock, provider=Provider())
+    b.MAX_NONCES = 1
+    first = b.prepare(binding())
+    clock.value += 61
+    second = b.prepare(binding(idempotency="idem-b"))
+    assert first.nonce not in b._nonces
+    assert second.nonce in b._nonces
+    before = json.dumps(b._persist if False else {
+        "requests": b._requests, "idempotency": b._idempotency, "nonces": b._nonces
+    }, default=str, sort_keys=True)
+    b.MAX_NONCES = 1
+    with pytest.raises(BrokerError):
+        b.prepare(binding(idempotency="idem-c"))
+    assert json.dumps({"requests": b._requests, "idempotency": b._idempotency, "nonces": b._nonces}, default=str, sort_keys=True) == before
+
+
+def test_binding_idempotency_length_is_ascii_and_tombstone_boot_overflow_is_atomic(monkeypatch):
+    with pytest.raises(BrokerError):
+        broker().prepare(binding(idempotency="x" * 257))
+    exact = broker().prepare(binding(idempotency="x" * 256))
+    assert len(exact.binding.idempotency) == 256
+
+    metadata = BrokerMetadata("provider-test", "tenant-test", "comment-v1", "session-test", "boot-a")
+    store = MemoryStateStore()
+    first = make_test_broker(clock=Clock(), signer=Signer(), provider=Provider(), metadata=metadata, store=store)
+    first.prepare(binding())
+    snapshot = store.load()
+    monkeypatch.setattr(broker_module._BrokerCore, "MAX_TOMBSTONES", 0)
+    with pytest.raises(BrokerError):
+        make_test_broker(clock=Clock(), signer=Signer(), provider=Provider(), metadata=replace(metadata, broker_boot="boot-b"), store=store)
+    assert store.load() == snapshot
+
+
+def test_restore_rejects_malformed_scalar_envelope_without_provider_io():
+    provider = Provider()
+    store = MemoryStateStore()
+    metadata = BrokerMetadata("provider-test", "tenant-test", "comment-v1", "session-test", "boot-test")
+    source = make_test_broker(clock=Clock(), signer=Signer(), provider=provider, metadata=metadata, store=store)
+    request = source.prepare(binding())
+    snapshot = store.load()
+    raw = snapshot["requests"]
+    assert isinstance(raw, dict)
+    request_id, item = next(iter(raw.items()))
+    assert isinstance(item, dict)
+    for field, value in (("nonce", "é"), ("authorization", ["x", "y"]),):
+        corrupted = json.loads(json.dumps(snapshot))
+        corrupted["requests"][request_id][field] = value
+        bad_store = MemoryStateStore(); bad_store.save(corrupted)
+        with pytest.raises(BrokerError):
+            make_test_broker(clock=Clock(), signer=Signer(), provider=provider, metadata=metadata, store=bad_store)
+        assert provider.calls == []
+
+
+def test_metadata_contract_and_owned_prepare_revalidation():
+    unicode_metadata = BrokerMetadata("prov-é", "tenant", "comment-v1", "session", "boot")
+    with pytest.raises(BrokerError):
+        create_test_broker(clock=Clock(), verifier=Signer(), provider=Provider(), metadata=unicode_metadata, store=MemoryStateStore())
+    valid = BrokerMetadata("p" * 256, "t" * 256, "comment-v1", "s" * 256, "b" * 256)
+    b = create_test_broker(clock=Clock(), verifier=Signer(), provider=Provider(), metadata=valid, store=MemoryStateStore())
+    request = b.prepare(binding())
+    assert request.binding.provider == valid.provider
+
+
+def test_restore_rejects_only_reverse_idempotency_corruption_from_valid_snapshot():
+    metadata = BrokerMetadata("provider-test", "tenant-test", "comment-v1", "session-test", "boot-test")
+    source_store = MemoryStateStore()
+    source = make_test_broker(clock=Clock(), signer=Signer(), provider=Provider(), metadata=metadata, store=source_store)
+    request = source.prepare(binding())
+    snapshot = source_store.load()
+    snapshot["idempotency"][request.binding.idempotency][1] = "0" * 64
+    corrupted = MemoryStateStore(); corrupted.save(snapshot)
+    with pytest.raises(BrokerError):
+        make_test_broker(clock=Clock(), signer=Signer(), provider=Provider(), metadata=metadata, store=corrupted)
 
 
 def test_drift_is_terminal_and_does_not_execute():
@@ -317,7 +405,7 @@ def test_terminal_state_is_on_request_and_verified_target_is_released():
     b = broker()
     first = confirmed(b, b.prepare(binding()))
     assert b.execute(first.request_id).state is BrokerState.COMPLETED
-    assert b.request(first.request_id).state is BrokerState.COMPLETED
+    assert b.prepare(binding()).request_id == first.request_id
     second = confirmed(b, b.prepare(binding(idempotency="idem-next")))
     assert b.execute(second.request_id).state is BrokerState.COMPLETED
 
@@ -401,7 +489,8 @@ def test_terminal_receipts_do_not_consume_pending_capacity_and_are_prunable():
     b.execute(first.request_id)
     second = confirmed(b, b.prepare(binding(idempotency="idem-next")))
     b.execute(second.request_id)
-    assert b.request(first.request_id).state is BrokerState.COMPLETED
+    with pytest.raises(BrokerError):
+        b.prepare(binding())
 
 
 class TestStateAuthenticator:
@@ -410,6 +499,29 @@ class TestStateAuthenticator:
 
     def verify(self, payload: bytes, tag: str) -> bool:
         return hmac.compare_digest(self.authenticate(payload), tag)
+
+
+def test_production_metadata_contract_rejects_unicode_and_accepts_max_ascii_restart(tmp_path: Path):
+    root = tmp_path / "trusted"
+    root.mkdir(); root.chmod(0o700)
+    unicode_metadata = BrokerMetadata("provider-é", "tenant", "comment-v1", "session", "boot")
+    unicode_config = TrustedStoreConfig(root, "unicode.json", unicode_metadata, TestStateAuthenticator())
+    with pytest.raises(BrokerError):
+        ProductionStateStore(unicode_config)
+    with pytest.raises(BrokerError):
+        ProductionStateStore.bootstrap(unicode_config, {})
+    assert not (root / "unicode.json").exists()
+
+    metadata = BrokerMetadata("p" * 256, "t" * 256, "comment-v1", "s" * 256, "b" * 256)
+    config = TrustedStoreConfig(root, "max.json", metadata, TestStateAuthenticator())
+    initial = {"schema_version": 1, "metadata": asdict(metadata), "requests": {}, "receipts": {}, "idempotency": {}, "tombstones": {}, "nonces": [], "inflight": [], "quarantine": []}
+    ProductionStateStore.bootstrap(config, initial)
+    first = create_production_broker(config, Signer(), Provider(), Clock())
+    first.prepare(binding())
+    first._store.close()
+    second = create_production_broker(config, Signer(), Provider(), Clock())
+    assert second.request(next(iter(second._requests))).binding.provider == metadata.provider
+    second._store.close()
 
 
 def test_production_store_requires_existing_trusted_root_and_authenticator(tmp_path: Path):
@@ -463,6 +575,48 @@ def test_boot_identity_invalidates_prepared_but_preserves_unknown_evidence(tmp_p
     assert restarted.request(prepared.request_id).state is BrokerState.EXPIRED
 
 
+def test_production_boot_conversion_persists_and_restarts_with_exact_history(tmp_path: Path):
+    root = tmp_path / "trusted"; root.mkdir(); root.chmod(0o700)
+    metadata_a = BrokerMetadata("provider-test", "tenant-test", "comment-v1", "session-test", "boot-a")
+    config_a = TrustedStoreConfig(root, "state.json", metadata_a, TestStateAuthenticator())
+    initial = {"schema_version": 1, "metadata": asdict(metadata_a), "requests": {}, "receipts": {}, "idempotency": {}, "tombstones": {}, "nonces": [], "inflight": [], "quarantine": []}
+    ProductionStateStore.bootstrap(config_a, initial)
+    first = create_production_broker(config_a, Signer(), Provider(), Clock())
+    prepared = first.prepare(binding(idempotency="boot-prepared"))
+    confirmed_request = first.prepare(binding(idempotency="boot-confirmed"))
+    first.confirm(confirmed_request.request_id, confirmed_request.nonce, "operator")
+    first._store.close()
+    config_b = TrustedStoreConfig(root, "state.json", replace(metadata_a, broker_boot="boot-b"), TestStateAuthenticator())
+    transformed = create_production_broker(config_b, Signer(), Provider(), Clock())
+    transformed._persist()
+    transformed._store.close()
+    restarted = create_production_broker(config_b, Signer(), Provider(), Clock())
+    assert restarted.request(prepared.request_id).state is BrokerState.EXPIRED
+    assert restarted.request(confirmed_request.request_id).state is BrokerState.EXPIRED
+    restarted._store.close()
+
+
+@pytest.mark.parametrize("corruption", ["receipt", "tombstone"])
+def test_production_boot_conversion_rejects_corrupt_history_relation(tmp_path: Path, corruption: str):
+    root = tmp_path / "trusted"; root.mkdir(); root.chmod(0o700)
+    metadata_a = BrokerMetadata("provider-test", "tenant-test", "comment-v1", "session-test", "boot-a")
+    config_a = TrustedStoreConfig(root, "state.json", metadata_a, TestStateAuthenticator())
+    initial = {"schema_version": 1, "metadata": asdict(metadata_a), "requests": {}, "receipts": {}, "idempotency": {}, "tombstones": {}, "nonces": [], "inflight": [], "quarantine": []}
+    ProductionStateStore.bootstrap(config_a, initial)
+    first = create_production_broker(config_a, Signer(), Provider(), Clock())
+    request = first.prepare(binding(idempotency="boot-corrupt")); first._store.close()
+    config_b = TrustedStoreConfig(root, "state.json", replace(metadata_a, broker_boot="boot-b"), TestStateAuthenticator())
+    transformed = create_production_broker(config_b, Signer(), Provider(), Clock()); transformed._persist(); transformed._store.close()
+    store = ProductionStateStore(config_b); state = store.load()
+    if corruption == "receipt":
+        state["receipts"][request.request_id]["detail"] = "arbitrary"
+    else:
+        state["tombstones"][request.binding.idempotency] = "0" * 64
+    store.save(state); store.close()
+    with pytest.raises(BrokerError):
+        create_production_broker(config_b, Signer(), Provider(), Clock())
+
+
 def test_factories_select_store_boundary_and_production_bootstrap_once(tmp_path: Path):
     metadata = BrokerMetadata("provider-test", "tenant-test", "comment-v1", "session-test", "boot-test")
     test_broker = create_test_broker(metadata=metadata, verifier=Signer(), provider=Provider(), clock=Clock(), store=MemoryStateStore())
@@ -512,6 +666,22 @@ def test_compacted_terminal_retains_restart_replay_tombstone(tmp_path: Path):
         restarted.prepare(binding(idempotency="idem-one"))
 
 
+def test_production_compaction_restart_replay_and_tombstone_exhaustion(tmp_path: Path):
+    metadata = BrokerMetadata("provider-test", "tenant-test", "comment-v1", "session-test", "boot-test")
+    root = tmp_path / "trusted"; root.mkdir(); root.chmod(0o700)
+    config = TrustedStoreConfig(root, "state.json", metadata, TestStateAuthenticator())
+    initial = {"schema_version": 1, "metadata": asdict(metadata), "requests": {}, "receipts": {}, "idempotency": {}, "tombstones": {}, "nonces": [], "inflight": [], "quarantine": []}
+    ProductionStateStore.bootstrap(config, initial)
+    b = create_production_broker(config, Signer(), Provider(), Clock()); b.MAX_PENDING = 1
+    first = confirmed(b, b.prepare(binding(idempotency="prod-one"))); b.execute(first.request_id)
+    second = confirmed(b, b.prepare(binding(idempotency="prod-two"))); b.execute(second.request_id)
+    b.prepare(binding(idempotency="prod-three")); b._store.close()
+    restarted = create_production_broker(config, Signer(), Provider(), Clock())
+    with pytest.raises(BrokerError):
+        restarted.prepare(binding(idempotency="prod-one"))
+    restarted._store.close()
+
+
 def test_unrestricted_public_operator_broker_constructor_is_removed():
     assert not hasattr(broker_module, "OperatorBroker")
 
@@ -522,3 +692,167 @@ def test_documented_production_api_exports_only_factory():
     assert api.__all__ == ("create_production_broker",)
     assert not hasattr(api, "create_test_broker")
     assert not hasattr(api, "MemoryStateStore")
+
+
+def test_valid_confirmed_production_restart_restores_and_executes_once(tmp_path: Path):
+    metadata = BrokerMetadata("provider-test", "tenant-test", "comment-v1", "session-test", "boot-test")
+    root = tmp_path / "trusted"; root.mkdir(); root.chmod(0o700)
+    config = TrustedStoreConfig(root, "state.json", metadata, TestStateAuthenticator())
+    initial = {"schema_version": 1, "metadata": asdict(metadata), "requests": {}, "receipts": {}, "idempotency": {}, "tombstones": {}, "nonces": [], "inflight": [], "quarantine": []}
+    ProductionStateStore.bootstrap(config, initial)
+    first_provider = Provider()
+    first = create_production_broker(config, Signer(), first_provider, Clock())
+    request = confirmed(first, first.prepare(binding()))
+    first._store.close()
+    second_provider = Provider()
+    second = create_production_broker(config, Signer(), second_provider, Clock())
+    assert second.request(request.request_id).state is BrokerState.CONFIRMED
+    assert second.execute(request.request_id).state is BrokerState.COMPLETED
+    with pytest.raises(BrokerError):
+        second.execute(request.request_id)
+    assert second_provider.calls.count("execute") == 1
+    second._store.close()
+
+
+def test_production_store_copied_authorization_is_rejected(tmp_path: Path):
+    metadata = BrokerMetadata("provider-test", "tenant-test", "comment-v1", "session-test", "boot-test")
+    root = tmp_path / "trusted"; root.mkdir(); root.chmod(0o700)
+    config = TrustedStoreConfig(root, "state.json", metadata, TestStateAuthenticator())
+    initial = {"schema_version": 1, "metadata": asdict(metadata), "requests": {}, "receipts": {}, "idempotency": {}, "tombstones": {}, "nonces": [], "inflight": [], "quarantine": []}
+    ProductionStateStore.bootstrap(config, initial)
+    first = create_production_broker(config, Signer(), Provider(), Clock())
+    request = confirmed(first, first.prepare(binding()))
+    first._store.close()
+    tampered = ProductionStateStore(config)
+    state = tampered.load()
+    state["requests"][request.request_id]["authorization"][0] = "copied-payload"
+    tampered.save(state); tampered.close()
+    with pytest.raises(BrokerError):
+        create_production_broker(config, Signer(), Provider(), Clock())
+
+
+def test_persisted_confirmed_authorization_is_verified_once(tmp_path: Path):
+    metadata = BrokerMetadata("provider-test", "tenant-test", "comment-v1", "session-test", "boot-test")
+    root = tmp_path / "trusted"; root.mkdir(); root.chmod(0o700)
+    config = TrustedStoreConfig(root, "state.json", metadata, TestStateAuthenticator())
+    initial = {"schema_version": 1, "metadata": asdict(metadata), "requests": {}, "receipts": {}, "idempotency": {}, "tombstones": {}, "nonces": [], "inflight": [], "quarantine": []}
+    ProductionStateStore.bootstrap(config, initial)
+    first = create_production_broker(config, Signer(), Provider(), Clock())
+    request = confirmed(first, first.prepare(binding())); first._store.close()
+    verifier = CountingSigner()
+    second = create_production_broker(config, verifier, Provider(), Clock())
+    assert second.request(request.request_id).state is BrokerState.CONFIRMED
+    assert verifier.count == 1
+    second._store.close()
+
+
+def test_production_pending_is_expired_after_boot_and_cannot_execute(tmp_path: Path):
+    metadata_a = BrokerMetadata("provider-test", "tenant-test", "comment-v1", "session-test", "boot-a")
+    root = tmp_path / "trusted"; root.mkdir(); root.chmod(0o700)
+    config_a = TrustedStoreConfig(root, "state.json", metadata_a, TestStateAuthenticator())
+    initial = {"schema_version": 1, "metadata": asdict(metadata_a), "requests": {}, "receipts": {}, "idempotency": {}, "tombstones": {}, "nonces": [], "inflight": [], "quarantine": []}
+    ProductionStateStore.bootstrap(config_a, initial)
+    first = create_production_broker(config_a, Signer(), Provider(), Clock())
+    request = first.prepare(binding()); first._store.close()
+    config_b = TrustedStoreConfig(root, "state.json", replace(metadata_a, broker_boot="boot-b"), TestStateAuthenticator())
+    provider = Provider()
+    second = create_production_broker(config_b, Signer(), provider, Clock())
+    assert second.request(request.request_id).state is BrokerState.EXPIRED
+    with pytest.raises(BrokerError):
+        second.execute(request.request_id)
+    assert provider.calls == []
+    second._store.close()
+
+
+def test_tombstone_capacity_fails_closed_before_snapshot_write():
+    b = broker(); b.MAX_PENDING = 2; b.MAX_TOMBSTONES = 1
+    first = confirmed(b, b.prepare(binding(idempotency="cap-one"))); b.execute(first.request_id)
+    second = confirmed(b, b.prepare(binding(idempotency="cap-two"))); b.execute(second.request_id)
+    b.MAX_TOMBSTONES = 0
+    with pytest.raises(BrokerError):
+        b.prepare(binding(idempotency="cap-three"))
+
+
+def test_production_factory_failure_releases_store_lock(tmp_path: Path):
+    metadata = BrokerMetadata("provider-test", "tenant-test", "comment-v1", "session-test", "boot-test")
+    root = tmp_path / "trusted"; root.mkdir(); root.chmod(0o700)
+    config = TrustedStoreConfig(root, "state.json", metadata, TestStateAuthenticator())
+    initial = {"schema_version": 1, "metadata": asdict(metadata), "requests": {}, "receipts": {}, "idempotency": {}, "tombstones": {}, "nonces": [], "inflight": [], "quarantine": []}
+    ProductionStateStore.bootstrap(config, initial)
+    with pytest.raises(BrokerError):
+        create_production_broker(config, Signer(), object(), Clock())
+    recovered = ProductionStateStore(config)
+    recovered.close()
+
+
+def test_exclusive_bootstrap_failure_closes_and_removes_partial_fd(monkeypatch, tmp_path: Path):
+    metadata = BrokerMetadata("provider-test", "tenant-test", "comment-v1", "session-test", "boot-test")
+    root = tmp_path / "trusted"; root.mkdir(); root.chmod(0o700)
+    config = TrustedStoreConfig(root, "state.json", metadata, TestStateAuthenticator())
+    initial = {"schema_version": 1, "metadata": asdict(metadata), "requests": {}, "receipts": {}, "idempotency": {}, "tombstones": {}, "nonces": [], "inflight": [], "quarantine": []}
+    original_fsync = os.fsync
+    monkeypatch.setattr(os, "fsync", lambda _fd: (_ for _ in ()).throw(OSError("injected")))
+    with pytest.raises(OSError):
+        ProductionStateStore.bootstrap(config, initial)
+    monkeypatch.setattr(os, "fsync", original_fsync)
+    assert not (root / "state.json").exists()
+    recovered = ProductionStateStore(config)
+    recovered.close()
+
+
+def test_restore_rejects_malformed_tombstone_shape_and_count(tmp_path: Path):
+    path = tmp_path / "bad-tombstones.json"
+    store = JsonStateStore(path)
+    metadata = BrokerMetadata("provider-test", "tenant-test", "comment-v1", "session-test", "boot-test")
+    state = {"schema_version": 1, "metadata": asdict(metadata), "requests": {}, "receipts": {}, "idempotency": {}, "tombstones": {"not-an-id": "not-a-digest"}, "nonces": [], "inflight": [], "quarantine": []}
+    store.save(state); store.close()
+    with pytest.raises(BrokerError):
+        make_test_broker(clock=Clock(), signer=Signer(), provider=Provider(), metadata=metadata, store=JsonStateStore(path))
+
+
+def test_restore_failure_does_not_publish_partially_parsed_collections():
+    source = broker()
+    request = source.prepare(binding())
+    serialized = source._store.load()
+    serialized["requests"]["malformed"] = {"state": "CONFIRMED"}
+    target = broker()
+    with pytest.raises(BrokerError):
+        target._restore(serialized)
+    assert target._requests == {}
+    assert target._receipts == {}
+    assert target._idempotency == {}
+    assert target._tombstones == {}
+    assert target._nonces == {}
+    assert target._inflight == set()
+    assert target._quarantine == set()
+
+
+def test_restore_rejects_extra_reverse_targets_and_incomplete_idempotency():
+    b = broker()
+    state = b._store.load()
+    state["inflight"] = [["plane", "tenant", "workspace", "project", "item"]]
+    with pytest.raises(BrokerError):
+        b._restore(state)
+
+
+def test_production_quarantine_survives_boot_recovery_and_second_restart(tmp_path: Path):
+    metadata_a = BrokerMetadata("provider-test", "tenant-test", "comment-v1", "session-test", "boot-a")
+    root = tmp_path / "trusted"; root.mkdir(); root.chmod(0o700)
+    config_a = TrustedStoreConfig(root, "state.json", metadata_a, TestStateAuthenticator())
+    initial = {"schema_version": 1, "metadata": asdict(metadata_a), "requests": {}, "receipts": {}, "idempotency": {}, "tombstones": {}, "nonces": [], "inflight": [], "quarantine": []}
+    ProductionStateStore.bootstrap(config_a, initial)
+    first = create_production_broker(config_a, Signer(), MutatesThenRaises(), Clock())
+    unknown = confirmed(first, first.prepare(binding()))
+    assert first.execute(unknown.request_id).state is BrokerState.UNKNOWN
+    first._store.close()
+    metadata_b = replace(metadata_a, broker_boot="boot-b")
+    config_b = TrustedStoreConfig(root, "state.json", metadata_b, TestStateAuthenticator())
+    second = create_production_broker(config_b, Signer(), Provider(), Clock())
+    assert second.request(unknown.request_id).state is BrokerState.UNKNOWN
+    second.prepare(binding(idempotency="pending-on-b"))
+    second._store.close()
+    third = create_production_broker(config_b, Signer(), Provider(), Clock())
+    assert third.request(unknown.request_id).state is BrokerState.UNKNOWN
+    with pytest.raises(BrokerError):
+        third.execute(unknown.request_id)
+    third._store.close()
