@@ -2,6 +2,30 @@
 
 ## Operação rápida
 
+### Skill operacional — 0.3.2
+
+A versão 0.3.2 adiciona `skills/plane-mcp-operations/`, também incluída no wheel.
+Ela documenta o MCP atual: descoberta, leitura fresca, mutações, ADMIT/estado,
+comentários, idempotência, readback e recuperação, sem impor gates do conector legado.
+Não altera o protocolo de operações da 0.3.1.
+
+Instalação global, a partir deste repositório:
+
+```sh
+python scripts/install_operating_skill.py --check
+python scripts/install_operating_skill.py --apply
+```
+
+Destino: `~/.agents/skills/plane-mcp-operations/`. A fonte versionada está no
+repositório; o instalador verifica hashes e guarda backup se substituir uma cópia.
+Configure a descoberta do cliente para esse diretório e carregue
+`plane-mcp-operations`. No Hermes, inclua-o em `skills.external_dirs` preservando
+as entradas existentes; não duplique a skill em `~/.hermes/skills`.
+O teste `tests/test_operating_skill.py` confere estrutura, instalação e contrato
+das ferramentas offline; não é um benchmark de comportamento de modelos.
+O relatório das 12 skills Plane revisadas está em
+`skills/plane-mcp-operations/references/skill-family-audit.md`.
+
 MCP local stdio para Plane: catálogo completo, leitura e escrita com alvo,
 payload, idempotência e readback. Sem confirmação MCP redundante, sem overlay
 e sem dependência do runtime Hermes para executar uma operação.
