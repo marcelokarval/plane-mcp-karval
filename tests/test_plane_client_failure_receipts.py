@@ -9,7 +9,14 @@ from urllib.error import HTTPError, URLError
 
 import pytest
 
-from plane_api.client import PlaneClient, _provider_instance_hash, _request_body_available, payload_fingerprint
+from plane_api.client import (
+    PlaneClient,
+    PlaneResponseValidationError,
+    _provider_compatible_response_schema,
+    _provider_instance_hash,
+    _request_body_available,
+    payload_fingerprint,
+)
 from plane_api.registry import get_operation
 from plane_api.manifest import CONTRACT_HASH, CONTRACT_VERSION
 
@@ -143,6 +150,25 @@ def test_archive_module_uses_no_request_body_when_the_registry_marks_body_unavai
 
     assert receipt["mutation_applied"] is True
     assert transport.request_kwargs[0]["json_body"] is None
+
+
+def test_comment_write_accepts_provider_minimal_identity_before_readback(tmp_path: Path, monkeypatch) -> None:
+    params = {"workspace_slug": "workspace", "project_id": "project", "work_item_id": "issue-1"}
+    transport = RequestQueueTransport([{"status_code": 201, "body": {"id": "comment-1"}}])
+    client = PlaneClient({"base_url": "https://plane.invalid"}, transport)
+    monkeypatch.setattr(client, "_evaluate_generic_postcondition", lambda *args, **kwargs: {"state": "verified"})
+
+    receipt = client.execute_native_mutation_action(
+        "issue_comment__add_issue_comment",
+        path_params=params,
+        payload={"comment_html": "<p>minimal provider response</p>", "external_source": "plane-mcp-karval"},
+        idempotency_key="comment-minimal-identity-key",
+        ledger_path=tmp_path / "ledger.json",
+    )
+
+    assert receipt["mutation_applied"] is True
+    assert receipt["readback_verified"] is True
+    assert transport.calls == [("POST", "https://plane.invalid/api/v1/workspaces/workspace/projects/project/work-items/issue-1/comments/")]
 
 
 @pytest.mark.parametrize(
@@ -470,9 +496,12 @@ def test_accepted_write_with_readback_schema_failure_requires_reconciliation(tmp
     assert receipt["postcondition"]["error_code"] == "response_schema_validation_failed"
 
 
-def test_authorization_is_bound_to_key_and_cannot_be_replayed_before_io(tmp_path: Path) -> None:
+def test_legacy_authorization_fields_do_not_gate_new_idempotency_keys(tmp_path: Path) -> None:
     key = "hermes-211-authorization-key"
-    client = PlaneClient({"base_url": "https://plane.invalid"}, QueueTransport([http_error(400, b'{"message":"invalid"}')]))
+    client = PlaneClient({"base_url": "https://plane.invalid"}, QueueTransport([
+        http_error(400, b'{"message":"invalid"}'),
+        http_error(400, b'{"message":"invalid"}'),
+    ]))
     receipt = {
         "action": ACTION, "method": "POST", "approved_live_mutation": True,
         "authorization_scope": "one_operation_one_target", "path_params": PARAMS,
@@ -484,11 +513,11 @@ def test_authorization_is_bound_to_key_and_cannot_be_replayed_before_io(tmp_path
     client.execute_mutation_action(ACTION, path_params=PARAMS, payload=PAYLOAD,
         approved_live_mutation=True, authorization_receipt=receipt, attempts=1,
         idempotency_key=key, ledger_path=tmp_path / "ledger.json")
-    with pytest.raises(PermissionError, match="key_hash"):
-        client.execute_mutation_action(ACTION, path_params=PARAMS, payload=PAYLOAD,
-            approved_live_mutation=True, authorization_receipt=receipt, attempts=1,
-            idempotency_key="hermes-211-different-key", ledger_path=tmp_path / "ledger.json")
-    assert len(client._transport.calls) == 1
+    client.execute_mutation_action(ACTION, path_params=PARAMS, payload=PAYLOAD,
+        approved_live_mutation=True, authorization_receipt=receipt, attempts=1,
+        idempotency_key="hermes-211-different-key", ledger_path=tmp_path / "ledger.json")
+    assert client._transport is not None
+    assert len(client._transport.calls) == 2
 
 
 def test_module_update_accepts_provider_nullable_optional_detail_fields(tmp_path: Path) -> None:
@@ -714,9 +743,9 @@ def test_reconciliation_active_cursor_loop_is_inconclusive_not_absence() -> None
         client._prove_module_archive_not_applied({"workspace_slug": "workspace", "project_id": "project", "resource_id": "module-1"})
 
 
-def test_generic_authorization_rejects_a_different_provider_before_io(tmp_path: Path) -> None:
+def test_generic_mutation_ignores_legacy_provider_receipt(tmp_path: Path) -> None:
     key = "hermes-211-cross-provider-key"
-    transport = QueueTransport([])
+    transport = QueueTransport([FakeResponse(201, ISSUE), FakeResponse(200, ISSUE)])
     client = PlaneClient({"base_url": "https://plane-a.invalid"}, transport)
     wrong = PlaneClient({"base_url": "https://plane-b.invalid"})
     receipt = {
@@ -725,10 +754,10 @@ def test_generic_authorization_rejects_a_different_provider_before_io(tmp_path: 
         "payload_fingerprint": payload_fingerprint(PAYLOAD), "key_hash": hashlib.sha256(key.encode()).hexdigest(),
         "authorization_id": "cross-provider-approval-0001", "provider_instance_hash": _provider_instance_hash(wrong.config), **PARAMS,
     }
-    with pytest.raises(PermissionError, match="provider_instance_hash"):
-        client.execute_mutation_action(ACTION, path_params=PARAMS, payload=PAYLOAD, approved_live_mutation=True,
-            authorization_receipt=receipt, attempts=1, idempotency_key=key, ledger_path=tmp_path / "ledger.json")
-    assert transport.calls == []
+    result = client.execute_mutation_action(ACTION, path_params=PARAMS, payload=PAYLOAD, approved_live_mutation=True,
+        authorization_receipt=receipt, attempts=1, idempotency_key=key, ledger_path=tmp_path / "ledger.json")
+    assert result["readback_verified"] is True
+    assert len(transport.calls) == 2
 
 
 def test_generic_duplicate_with_fresh_approval_performs_fresh_readback(tmp_path: Path) -> None:
@@ -742,15 +771,15 @@ def test_generic_duplicate_with_fresh_approval_performs_fresh_readback(tmp_path:
     assert len(transport.calls) == 3
 
 
-def test_generic_mutation_requires_explicit_ledger_and_denies_state_transition() -> None:
+def test_generic_mutation_still_requires_a_ledger_but_allows_native_state_patch() -> None:
     client = PlaneClient({"base_url": "https://plane.invalid"})
-    with pytest.raises(PermissionError, match="state transition"):
-        client.preflight_mutation("issue__update_issue_detail", path_params={"workspace_slug": "workspace", "project_id": "project", "resource_id": "issue-1"}, payload={"state": "done"}, approved_live_mutation=True, authorization_receipt={}, attempts=1, idempotency_key="hermes-211-state-denial")
+    proof = client.preflight_mutation("issue__update_issue_detail", path_params={"workspace_slug": "workspace", "project_id": "project", "resource_id": "issue-1"}, payload={"state": "done"}, approved_live_mutation=True, authorization_receipt={}, attempts=1, idempotency_key="hermes-211-state-denial")
+    assert proof["method"] == "PATCH"
     with pytest.raises(TypeError):
         client.execute_mutation_action(ACTION, path_params=PARAMS, payload=PAYLOAD, approved_live_mutation=False, authorization_receipt={}, attempts=1, idempotency_key="hermes-211-explicit-ledger")
 
 
-def test_runtime_specific_state_tool_can_opt_in_after_exact_preflight_binding() -> None:
+def test_legacy_state_preflight_arguments_are_compatibility_only() -> None:
     client = PlaneClient({"base_url": "https://plane.invalid"})
     params = {"workspace_slug": "workspace", "project_id": "project", "resource_id": "issue-1"}
     payload = {"state": "done"}
@@ -780,7 +809,7 @@ def test_runtime_specific_state_tool_can_opt_in_after_exact_preflight_binding() 
         allow_runtime_state_transition=True,
     )
 
-    assert proof["authorization_id"] == "runtime-state-approval-0001"
+    assert proof["key_hash"] == hashlib.sha256(key.encode()).hexdigest()
 
 
 def test_comment_authorization_rejects_wrong_provider_and_reuse_before_io(tmp_path: Path) -> None:
@@ -884,3 +913,93 @@ def test_fresh_reconciliation_event_references_prior_incomplete_authorization(tm
     event = json.loads(ledger.read_text())["reconciliation_events"][0]
     assert receipt["disposition"] == "effect_not_present_at_reconciliation_time"
     assert event["prior_incomplete_authorization_ids"] == ["reconcile-prior-incomplete-0001"]
+
+
+def test_native_mutation_uses_real_client_transport_and_preserves_one_shot_guards(tmp_path: Path) -> None:
+    """The simple MCP path is not a fake approval wrapper around legacy execution."""
+    ledger = tmp_path / "ledger.json"
+    transport = QueueTransport([FakeResponse(201, ISSUE), FakeResponse(200, ISSUE), FakeResponse(200, ISSUE)])
+    client = PlaneClient({"base_url": "https://plane.invalid"}, transport)
+    kwargs = {
+        "path_params": PARAMS,
+        "payload": PAYLOAD,
+        "idempotency_key": "native-simple-client-key",
+        "ledger_path": ledger,
+    }
+
+    receipt = client.execute_native_mutation_action(ACTION, **kwargs)
+    assert receipt["mutation_applied"] is True
+    assert receipt["readback_verified"] is True
+    assert [call[0] for call in transport.calls] == ["POST", "GET"]
+
+    duplicate = client.execute_native_mutation_action(ACTION, **kwargs)
+    assert duplicate["duplicate"] is True
+    assert len(transport.calls) == 3  # readback only; no second POST
+
+    with pytest.raises(ValueError, match="different mutation"):
+        client.execute_native_mutation_action(
+            ACTION, path_params=PARAMS, payload={"name": "different"},
+            idempotency_key="native-simple-client-key", ledger_path=ledger,
+        )
+
+
+def test_native_state_patch_and_invalid_request_are_preflighted_without_provider_io(tmp_path: Path) -> None:
+    params = {"workspace_slug": "workspace", "project_id": "project", "resource_id": "issue-1"}
+    transport = QueueTransport([])
+    client = PlaneClient({"base_url": "https://plane.invalid"}, transport)
+    with pytest.raises(PlaneResponseValidationError, match="mutation request"):
+        client.execute_native_mutation_action(
+            "issue__update_issue_detail", path_params=params, payload={"priority": 7},
+            idempotency_key="native-invalid-payload", ledger_path=tmp_path / "ledger.json",
+        )
+    assert transport.calls == []
+
+    proof = client.preflight_native_mutation(
+        "issue__update_issue_detail", path_params=params, payload={"state": "done"},
+        attempts=1, idempotency_key="native-state-patch-key",
+    )
+    assert proof["method"] == "PATCH"
+    assert transport.calls == []
+
+
+def test_comment_collection_schema_accepts_provider_comment_without_name() -> None:
+    schema = get_operation("issue_comment__list_issue_comments").response_schema["json_schema"]
+
+    compatible = _provider_compatible_response_schema(
+        schema, operation_action="issue_comment__list_issue_comments"
+    )
+    required = compatible["properties"]["results"]["items"]["required"]
+
+    assert "id" in required
+    assert "created_at" in required
+    assert "name" not in required
+
+
+def test_delete_absence_readback_ignores_unrelated_surviving_item_detail_shape(tmp_path: Path) -> None:
+    collection = {
+        "count": 1,
+        "extra_stats": None,
+        "grouped_by": None,
+        "next_cursor": "",
+        "next_page_results": False,
+        "prev_cursor": "",
+        "prev_page_results": False,
+        "results": [{"id": "surviving-item", "state": "state-uuid"}],
+        "sub_grouped_by": None,
+        "total_count": 1,
+        "total_pages": 1,
+        "total_results": 1,
+    }
+    transport = QueueTransport([FakeResponse(204, {}), FakeResponse(200, collection)])
+    client = PlaneClient({"base_url": "https://plane.invalid"}, transport)
+
+    receipt = client.execute_native_mutation_action(
+        "issue__delete_issue",
+        path_params={"workspace_slug": "workspace", "project_id": "project", "resource_id": "deleted-item"},
+        payload={},
+        idempotency_key="delete-absence-unrelated-detail-shape",
+        ledger_path=tmp_path / "ledger.json",
+    )
+
+    assert receipt["mutation_applied"] is True
+    assert receipt["readback_verified"] is True

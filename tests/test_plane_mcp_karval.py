@@ -6,6 +6,7 @@ from pathlib import Path
 from typing import Any
 
 from fastmcp import Client
+import pytest
 
 import plane_mcp_karval.server as server_module
 from plane_api import HTTP_OPERATION_COUNT, METHOD_COUNTS, MUTATION_COUNT, OPERATION_COUNT
@@ -59,8 +60,8 @@ class FakePlaneClient:
         self.calls.append(("search_work_items", {"workspace_slug": workspace_slug, **query}))
         return {"results": []}
 
-    def execute_mutation_action(self, operation: str, **kwargs: Any) -> dict[str, Any]:
-        self.calls.append(("mutation", {"operation": operation, **kwargs}))
+    def execute_native_mutation_action(self, operation: str, **kwargs: Any) -> dict[str, Any]:
+        self.calls.append(("native_mutation", {"operation": operation, **kwargs}))
         return {
             "action": operation,
             "mutation_applied": True,
@@ -206,8 +207,12 @@ def test_mcp_lists_registry_first_tools() -> None:
                 "plane_catalog",
                 "plane_action_descriptor",
                 "plane_read_action",
+                "plane_capture_state_catalog",
+                "plane_lifecycle_transition",
+                "plane_reconcile_mutation",
                 "plane_validate_work_item_contract",
                 "plane_render_lifecycle_comment",
+                "plane_add_comment",
                 "plane_add_lifecycle_comment",
                 "plane_validate_title_contract",
                 "plane_normalize_title",
@@ -288,6 +293,32 @@ def test_read_and_shortcut_tools_use_owned_client(monkeypatch) -> None:
     assert fake.calls[1] == ("list_projects", {"workspace_slug": "karval", "per_page": 20})
 
 
+def test_descriptor_is_provider_free_and_does_not_reflect_payload_values(monkeypatch) -> None:
+    monkeypatch.setattr(server_module, "_client", lambda: (_ for _ in ()).throw(AssertionError("no client")))
+
+    async def check() -> None:
+        async with Client(create_server()) as client:
+            descriptor = await client.call_tool(
+                "plane_action_descriptor",
+                {"operation": "issue__add_issue", "payload": {"name": "private issue title"}},
+            )
+            assert descriptor.data["provider_configuration"] == "unavailable_without_a_configured_client"
+            assert descriptor.data["payload_shape"] == {"name": "str"}
+            assert "private issue title" not in str(descriptor.data)
+
+    run(check())
+
+
+def test_ledger_selection_merges_empty_legacy_ledgers(monkeypatch, tmp_path: Path) -> None:
+    first, second = tmp_path / "hermes.json", tmp_path / "codex.json"
+    first.touch()
+    second.touch()
+    monkeypatch.delenv("PLANE_MUTATION_LEDGER", raising=False)
+    monkeypatch.setenv("XDG_STATE_HOME", str(tmp_path / "state"))
+    monkeypatch.setattr(server_module, "LEGACY_LEDGERS", (str(first), str(second)))
+    assert server_module._ledger_path() == tmp_path / "state" / "plane-mcp-karval" / "mutations.json"
+
+
 def test_semantic_gate_tools_are_read_only_and_deterministic() -> None:
     async def check() -> None:
         async with Client(create_server()) as client:
@@ -360,9 +391,10 @@ def test_semantic_gate_tools_are_read_only_and_deterministic() -> None:
     run(check())
 
 
-def test_mutation_tool_requires_registry_mutation_and_forwards_governed_fields(monkeypatch) -> None:
+def test_mutation_tool_uses_simple_native_contract_without_receipts(monkeypatch, tmp_path: Path) -> None:
     fake = FakePlaneClient()
     monkeypatch.setattr(server_module, "_client", lambda: fake)
+    monkeypatch.setenv("PLANE_MUTATION_LEDGER", str(tmp_path / "ledger.json"))
 
     async def check() -> None:
         async with Client(create_server()) as client:
@@ -371,18 +403,7 @@ def test_mutation_tool_requires_registry_mutation_and_forwards_governed_fields(m
                 {
                     "operation": "issue__add_issue",
                     "path_params": {"workspace_slug": "karval", "project_id": "project-1"},
-                    "payload": {"name": "create governed issue", "description_html": "<p>This execution-ready body contains the bounded objective, scope, non-goals, acceptance criteria, ownership disposition, priority rationale, dependencies, validation plan, and execution units required for governed intake.</p>"},
-                    "issue_readiness": issue_readiness(),
-                    "approved_live_mutation": True,
-                    "authorization_receipt": {
-                        "action": "issue__add_issue",
-                        "method": "POST",
-                        "approved_live_mutation": True,
-                        "authorization_scope": "one_operation_one_target",
-                        "path_params": {"workspace_slug": "karval", "project_id": "project-1"},
-                        "payload_fingerprint": "test-only",
-                        "issue_readiness_fingerprint": readiness_fingerprint(issue_readiness()),
-                    },
+                    "payload": {"name": "create simple issue"},
                     "idempotency_key": "test-key-123456789",
                     "attempts": 1,
                 },
@@ -392,25 +413,15 @@ def test_mutation_tool_requires_registry_mutation_and_forwards_governed_fields(m
     run(check())
     assert fake.calls == [
         (
-            "mutation",
+            "native_mutation",
             {
                 "operation": "issue__add_issue",
                 "path_params": {"workspace_slug": "karval", "project_id": "project-1"},
                 "query": {},
-                "payload": {"name": "create governed issue", "description_html": "<p>This execution-ready body contains the bounded objective, scope, non-goals, acceptance criteria, ownership disposition, priority rationale, dependencies, validation plan, and execution units required for governed intake.</p>"},
-                "approved_live_mutation": True,
-                "authorization_receipt": {
-                    "action": "issue__add_issue",
-                    "method": "POST",
-                    "approved_live_mutation": True,
-                    "authorization_scope": "one_operation_one_target",
-                    "path_params": {"workspace_slug": "karval", "project_id": "project-1"},
-                    "payload_fingerprint": "test-only",
-                    "issue_readiness_fingerprint": readiness_fingerprint(issue_readiness()),
-                },
+                "payload": {"name": "create simple issue"},
                 "idempotency_key": "test-key-123456789",
                 "attempts": 1,
-                "ledger_path": Path(server_module.DEFAULT_LEDGER).expanduser(),
+                "ledger_path": server_module._ledger_path(),
             },
         )
     ]
@@ -419,6 +430,7 @@ def test_mutation_tool_requires_registry_mutation_and_forwards_governed_fields(m
 def test_reconciliation_tool_is_narrow_and_forwards_only_its_governed_receipt(monkeypatch, tmp_path: Path) -> None:
     fake = FakePlaneClient()
     monkeypatch.setattr(server_module, "_client", lambda: fake)
+    monkeypatch.setenv("PLANE_MUTATION_LEDGER", str(tmp_path / "ledger.json"))
     params = {"workspace_slug": "karval", "project_id": "project-1", "resource_id": "module-1"}
 
     async def check() -> None:
@@ -444,12 +456,13 @@ def test_reconciliation_tool_is_narrow_and_forwards_only_its_governed_receipt(mo
     assert name == "reconcile_legacy_module_archive_attempt"
     assert forwarded["attempts"] == 1
     assert forwarded["authorization_receipt"]["authorization_scope"] == "one_legacy_attempt_one_target"
-    assert forwarded["ledger_path"] == Path(server_module.DEFAULT_LEDGER).expanduser()
+    assert forwarded["ledger_path"] == tmp_path / "ledger.json"
 
 
-def test_lifecycle_comment_tool_renders_and_forwards_governed_comment(monkeypatch) -> None:
+def test_lifecycle_comment_tool_renders_and_forwards_governed_comment(monkeypatch, tmp_path: Path) -> None:
     fake = FakePlaneClient()
     monkeypatch.setenv("PLANE_WORKSPACE_SLUG", "karval")
+    monkeypatch.setenv("PLANE_MUTATION_LEDGER", str(tmp_path / "ledger.json"))
     monkeypatch.setattr(server_module, "_client", lambda: fake)
 
     comment = {
@@ -488,31 +501,18 @@ def test_lifecycle_comment_tool_renders_and_forwards_governed_comment(monkeypatc
                     "project_id": "project-1",
                     "work_item_id": "issue-1",
                     "comment": comment,
-                    "approved_live_mutation": True,
-                    "authorization_scope": "one_work_item_one_operation",
-                    "authorized_workspace_slug": "karval",
-                        "authorized_project_id": "project-1",
-                        "authorized_work_item_id": "issue-1",
-                        "authorization_receipt": {
-                            "action": "add_work_item_comment",
-                            "method": "POST",
-                            "authorization_id": "comment-approval-0001",
-                            "key_hash": "test-only-key-hash",
-                            "provider_instance_hash": "test-only-provider-hash",
-                            "payload_fingerprint": "test-only-payload-fingerprint",
-                            "path_params": {"workspace_slug": "karval", "project_id": "project-1", "work_item_id": "issue-1"},
-                        },
                     "idempotency_key": "comment-key-123456789",
                     "attempts": 1,
                     "external_source": "codex",
                     "external_id": "HERMES-plane-mcp-gates-20260806:finish:1",
                 },
             )
-            assert result.data["comment_id"] == "comment-1"
+            assert result.data["mutation_applied"] is True
             assert result.data["readback_verified"] is True
 
     run(check())
-    assert fake.calls[0][0] == "comment"
+    assert fake.calls[0][0] == "native_mutation"
+    assert fake.calls[0][1]["operation"] == "issue_comment__add_issue_comment"
     payload = fake.calls[0][1]["payload"]
     assert "<code>session_id=codex-20260806-plane-gates</code>" in payload["comment_html"]
     assert "<code>model=gpt-5.6-terra</code>" in payload["comment_html"]

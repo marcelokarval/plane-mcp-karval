@@ -1,11 +1,12 @@
 [project]
 name = "plane-mcp-karval"
-version = "0.1.0"
+version = "0.3.1"
 description = "Karval-owned Plane MCP server with full registry coverage"
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
     "fastmcp>=2.13,<3",
+    "python-dotenv>=1.2,<2",
 ]
 
 [project.scripts]
