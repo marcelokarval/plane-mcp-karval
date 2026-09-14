@@ -1,0 +1,45 @@
+name: Contribution checks
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, edited, labeled, unlabeled]
+permissions:
+  contents: read
+  issues: read
+jobs:
+  issue-reference:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verify existing issue or maintainer attestation
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          python3 - <<'PY'
+          import json, os, re, subprocess
+          event=json.load(open(os.environ['GITHUB_EVENT_PATH']))
+          pr=event['pull_request']
+          labels={x['name'] for x in pr.get('labels', [])}
+          if 'issue-verified' in labels:
+              print('Maintainer attests verified private source issue; public identifiers omitted.')
+          else:
+              repo=os.environ['GH_REPO']
+              ids=re.findall(r'https://github.com/'+re.escape(repo)+r'/issues/(\d+)\b',pr.get('body') or '')
+              assert ids, 'An existing same-repository issue is mandatory'
+              for number in ids:
+                  item=json.loads(subprocess.check_output(['gh','api',f'repos/{repo}/issues/{number}']))
+                  assert 'pull_request' not in item, 'A PR is not an issue'
+                  assert item['created_at'] <= pr['created_at'], 'Issue must predate PR'
+          PY
+  offline-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - run: python -m pip install uv==0.8.15
+      - run: uv sync --frozen
+      - run: uv run --frozen pytest -q
+      - run: uv lock --check && git diff --check

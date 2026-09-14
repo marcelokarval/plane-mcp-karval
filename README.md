@@ -33,48 +33,11 @@ MCP local stdio para Plane: catálogo completo, leitura e escrita com alvo,
 payload, idempotência e readback. Sem confirmação MCP redundante, sem overlay
 e sem dependência do runtime Hermes para executar uma operação.
 
-Projeto canônico: `/path/to/project`.
-Instale o ambiente de desenvolvimento com `uv sync --frozen`.
-Guarde as credenciais somente no `.env` local, ignorado pelo Git, modo `0600`.
-Execute `uv run --frozen plane-mcp-karval stdio` a partir deste diretório.
+## Contribuição e direitos
 
-### Instalação operacional 0.3.1
+Issue obrigatória antes da implementação; toda entrega termina em PR. Leia [CONTRIBUTING.md](CONTRIBUTING.md), [SECURITY.md](SECURITY.md), [LICENSE](LICENSE) e [THIRD_PARTY.md](THIRD_PARTY.md). Publicação permanece bloqueada até saneamento do histórico e resolução dos direitos de terceiros.
 
-- Release: `~/.local/share/plane-mcp-karval/releases/0.3.1-final-20260914/`.
-- Python instalado: `~/.local/share/plane-mcp-karval/venvs/0.3.1-final-20260914/bin/python`.
-- Entrada compartilhada: `launch.sh` dentro da release; inicia no diretório
-  canônico para carregar `.env`, sem importar código do checkout via PYTHONPATH.
-- Hermes: `mcp_servers.plane-mcp-karval` em `~/.hermes/config.yaml`.
-- Codex: `mcp_servers.plane` em `~/.codex/config.toml`.
-- OpenDesign: servidor `plane` em `~/.open-design/runtime-data/mcp-config.json`.
-- Codex/OpenDesign usam `~/.codex/bin/plane-mcp-karval-launcher.sh`, agora um
-  link para a mesma entrada da release. A instalação antiga não foi apagada.
-- Sessões já abertas podem manter ferramentas antigas em memória; reconecte o
-  MCP ou abra nova sessão. Não é necessário reiniciar serviços indiscriminadamente.
-
-### Verificação e recuperação
-
-`uv run --frozen python scripts/verify_configured_clients.py` testa os comandos
-exatos dos três clientes com descoberta e leitura autenticada. A configuração
-OpenDesign é lida da API do daemon. Não executa turnos de modelo nem mutações.
-
-O diretório da release guarda `clients-smoke.json`, `canary-reconciled.json`
-e o relatório final. Cobertura de catálogo não significa teste live de todas
-as operações. O canário cobre criação, estado, comentário e exclusão.
-
-Backup privado: `~/.local/share/plane-mcp-karval/backups/20260914-final/`.
-`manifest.json` mapeia cada arquivo original para sua cópia e SHA-256.
-Para reverter, restaure os arquivos afetados conforme o manifesto, removendo
-primeiro o link do launcher Codex (não escreva através do link). Use
-`hermes config` para restaurar as chaves MCP do Hermes ou restaure seu arquivo
-de configuração com o cliente parado. Não restaure configurações inteiras
-se outras alterações ocorreram depois: nesse caso reverta apenas o bloco Plane.
-Nunca reverta ou apague o ledger de mutações. Rollback restaura a instalação
-anterior, inclusive seus defeitos conhecidos; não desfaz dados do Plane.
-
-Antes de atualizar: testes, wheel novo, ambiente limpo com dependências do
-`uv.lock`, hash, backup e smoke dos comandos configurados. Não promover wheel
-anterior a uma correção, não usar overlays nem branches móveis como release.
+Use `uv sync --frozen` e execute a partir do checkout. Credenciais ficam somente no `.env` local ignorado, modo `0600`. Instalações e backups particulares não pertencem à documentação distribuída.
 
 Karval-owned Plane MCP server with full registry coverage.
 
@@ -205,21 +168,21 @@ freezes FastMCP at 2.14.7. No container is required. Installation alone does not
 migrate credentials, launchers or runtime state.
 
 ```sh
-uv run --directory /path/to/project \
+uv run --directory . \
   plane-mcp-karval stdio
 ```
 
 ## Tests
 
 ```sh
-uv run --directory /path/to/project \
+uv run --directory . \
   python -m pytest
 ```
 
 ## MCP smoke
 
 ```sh
-uv run --directory /path/to/project python - <<'PY'
+uv run --directory . python - <<'PY'
 import asyncio
 
 from fastmcp import Client
@@ -232,7 +195,7 @@ async def check():
         [
             "run",
             "--directory",
-            "/path/to/project",
+            ".",
             "plane-mcp-karval",
             "stdio",
         ],
