@@ -1,0 +1,29 @@
+name: Change request
+description: Required intake for every proposed change
+title: "[Change] "
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem and evidence
+    validations:
+      required: true
+  - type: textarea
+    id: scope
+    attributes:
+      label: Scope and non-goals
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria and verification
+    validations:
+      required: true
+  - type: checkboxes
+    id: privacy
+    attributes:
+      label: Privacy and rights
+      options:
+        - label: This request contains no credentials, private records or material I cannot disclose.
+          required: true
