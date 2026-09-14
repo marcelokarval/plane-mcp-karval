@@ -1,6 +1,6 @@
 [project]
 name = "plane-mcp-karval"
-version = "0.3.1"
+version = "0.3.2"
 description = "Karval-owned Plane MCP server with full registry coverage"
 readme = "README.md"
 requires-python = ">=3.11"
@@ -25,6 +25,7 @@ build-backend = "hatchling.build"
 packages = ["src/plane_mcp_karval", "src/plane_api"]
 
 [tool.hatch.build.targets.wheel.force-include]
+"skills/plane-mcp-operations" = "plane_mcp_karval/skills/plane-mcp-operations"
 "src/plane_api/operation_registry.json" = "plane_api/operation_registry.json"
 "src/plane_api/source_contract.json" = "plane_api/source_contract.json"
 "src/plane_mcp_karval/assets/icon-registry.v1.json" = "plane_mcp_karval/assets/icon-registry.v1.json"
