@@ -19,4 +19,8 @@ Preserve authentication, target/payload validation, durable idempotency, single-
 
 ## Rights and security
 
-Read LICENSE and SECURITY.md. Public visibility, if enabled later, is not an open-source license. Do not submit third-party material without documented permission; identify provenance and license obligations. Security reports must use a private maintainer channel, not a public issue containing exploit details or credentials.
+Read LICENSE, THIRD_PARTY.md and SECURITY.md. Project-owned contributions are
+distributed under MIT; third-party material retains its applicable terms.
+Do not submit third-party material without documented permission; identify
+provenance and license obligations. Security reports must use a private maintainer
+channel, not a public issue containing exploit details or credentials.
