@@ -3,6 +3,7 @@ name = "plane-mcp-karval"
 version = "0.3.2"
 description = "Karval-owned Plane MCP server with full registry coverage"
 readme = "README.md"
+license = "MIT"
 requires-python = ">=3.11"
 dependencies = [
     "fastmcp>=2.13,<3",
@@ -25,6 +26,8 @@ build-backend = "hatchling.build"
 packages = ["src/plane_mcp_karval", "src/plane_api"]
 
 [tool.hatch.build.targets.wheel.force-include]
+"THIRD_PARTY.md" = "plane_api/THIRD_PARTY.md"
+"licenses/Apache-2.0.txt" = "plane_api/licenses/Apache-2.0.txt"
 "skills/plane-mcp-operations" = "plane_mcp_karval/skills/plane-mcp-operations"
 "src/plane_api/operation_registry.json" = "plane_api/operation_registry.json"
 "src/plane_api/source_contract.json" = "plane_api/source_contract.json"
