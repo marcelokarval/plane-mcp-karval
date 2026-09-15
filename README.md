@@ -80,6 +80,8 @@ The MCP intentionally exposes a compact tool surface:
   lifecycle packet.
 - `plane_lifecycle_transition` - optional state/comment convenience workflow
   with before-read, per-step results, and no automatic compensation.
+- `plane_operator_lifecycle_transition` - stricter lifecycle contract v3 bound
+  to one explicitly authorized work item, transition and non-atomic attempt.
 - `plane_validate_title_contract` and `plane_normalize_title` - enforce the
   canonical title/icon contract before create or title mutation.
 - `plane_mutation_action` - execute a registered mutation for the trusted local
@@ -117,6 +119,13 @@ Secrets are only used for provider calls and are never returned by catalog,
 descriptor, or receipt payloads.
 
 ## Local MCP mutation contract (0.3.1)
+
+The operation registry and the operator lifecycle use different contract
+version namespaces. `plane_catalog.contract_version` remains `2` for the frozen
+225-operation HTTP registry. Release `0.3.1.post1` additionally exposes
+`plane_operator_lifecycle_transition`, whose request/receipt contract is `3`.
+Read `capability_contract_versions` in `plane_catalog` instead of treating the
+registry version as the version of every MCP capability.
 
 The trusted local MCP client supplies the operation, path parameters, payload
 and an idempotency key. The server does not ask for `ctx.elicit`, a second
