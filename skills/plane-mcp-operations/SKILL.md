@@ -1,7 +1,7 @@
 ---
 name: plane-mcp-operations
 description: Use when operating Plane through plane-mcp-karval. Discover tools, read current state, create/update/comment, transition Backlog to Ready, reconcile writes, or troubleshoot MCP client drift without legacy consent gates.
-license: Proprietary - Karval internal use
+license: MIT
 compatibility: MCP client configured with plane-mcp-karval 0.3.1 or newer; live operations require trusted local stdio and configured Plane credentials.
 metadata:
   version: "0.3.2"

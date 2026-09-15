@@ -3,9 +3,8 @@
 ## Objetivo e base
 
 MCP Plane simples de operar, completo no catálogo e correto nos resultados.
-Este checkout é a base exclusiva de desenvolvimento:
-`/path/to/project`.
-Instalações Hermes/Codex/OpenDesign são alvos de distribuição, não bases alternativas.
+O checkout do projeto é a base de desenvolvimento.
+Instalações nos clientes MCP são alvos de distribuição, não bases alternativas.
 Leia `README.md` para instalação, comandos, verificação e recuperação.
 Confirme configurações e runtime atuais; relatórios anteriores são históricos.
 
@@ -45,7 +44,7 @@ Confirme configurações e runtime atuais; relatórios anteriores são históric
 - `.env` pertence ao projeto, ignorado pelo Git, modo `0600`.
 - Não copiar credenciais para código, wheel, manifestos, relatórios ou logs.
 - Variáveis fornecidas pelo chamador têm precedência sobre `.env`.
-- O launcher do wheel inicia no diretório canônico para carregar `.env`.
+- Configure o diretório de trabalho do launcher para carregar o `.env` do projeto.
 - Distribuir wheel em ambiente isolado com dependências do `uv.lock`.
 - Não editar instalações legadas nem usar overlays/PYTHONPATH como atualização.
 - Preservar backup e instalações anteriores até verificar a promoção.
