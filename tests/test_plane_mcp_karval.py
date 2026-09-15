@@ -209,6 +209,7 @@ def test_mcp_lists_registry_first_tools() -> None:
                 "plane_read_action",
                 "plane_capture_state_catalog",
                 "plane_lifecycle_transition",
+                "plane_operator_lifecycle_transition",
                 "plane_reconcile_mutation",
                 "plane_validate_work_item_contract",
                 "plane_render_lifecycle_comment",
@@ -239,7 +240,13 @@ def test_catalog_tool_returns_full_contract_metadata() -> None:
             )
             data = result.data
             assert data["operation_denominator"] == 225
+            assert data["contract_version"] == 2
+            assert data["capability_contract_versions"] == {
+                "operation_catalog": 2,
+                "operator_lifecycle": 3,
+            }
             assert data["server"]["mutation_count"] == 134
+            assert data["server"]["operator_lifecycle_contract_version"] == 3
             assert all(row["method"] == "GET" for row in data["actions"])
 
     run(check())
