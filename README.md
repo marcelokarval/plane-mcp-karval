@@ -70,6 +70,9 @@ The MCP intentionally exposes a compact tool surface:
   lifecycle packet.
 - `plane_lifecycle_transition` - optional state/comment convenience workflow
   with before-read, per-step results, and no automatic compensation.
+- `plane_operator_lifecycle_transition` - contract-v3 state transition or
+  annotation bound to explicit caller approval, exact target, fresh state/revision,
+  canonical phase roles, one attempt, server receipt, and partial-outcome reporting.
 - `plane_validate_title_contract` and `plane_normalize_title` - enforce the
   canonical title/icon contract before create or title mutation.
 - `plane_mutation_action` - execute a registered mutation for the trusted local

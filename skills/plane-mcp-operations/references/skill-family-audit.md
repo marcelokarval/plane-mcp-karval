@@ -24,12 +24,15 @@ The new portable skill does not migrate the entire Hermes policy library.
 - `plane-api-tools` mixed shared MCP mutations with issued authorization receipts
   and operator-only state restrictions from the native connector.
 - `plane` described `plane_operator_lifecycle_transition` as the only route and
-  `plane_add_lifecycle_comment` as a compatibility tool that must fail closed.
+  `plane_add_lifecycle_comment` as a compatibility tool that must fail closed;
+  release 0.3.2 restores the operator route as an optional stricter v3 surface
+  while retaining the ordinary 0.3.1 trusted-stdio routes.
 - Its lifecycle, tool-boundary, family-map, workflow and retrospective references
-  could reintroduce the same obsolete mechanics after loading the root skill.
+  could make the optional v3 mechanics appear mandatory after loading the root skill.
 
-Local root/reference scope notices now route shared MCP 0.3.1+ mechanics to
-`plane-mcp-operations`; native connector rules are not silently changed. Business
+Local root/reference scope notices route shared MCP mechanics to
+`plane-mcp-operations`; v3-aware clients can select the operator-bound route without
+silently changing the ordinary mutation contract. Business
 readiness, explicit authorization, taxonomy and honest evidence remain intact.
 
 ## Reproduction and ownership

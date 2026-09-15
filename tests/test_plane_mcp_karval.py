@@ -209,6 +209,7 @@ def test_mcp_lists_registry_first_tools() -> None:
                 "plane_read_action",
                 "plane_capture_state_catalog",
                 "plane_lifecycle_transition",
+                "plane_operator_lifecycle_transition",
                 "plane_reconcile_mutation",
                 "plane_validate_work_item_contract",
                 "plane_render_lifecycle_comment",

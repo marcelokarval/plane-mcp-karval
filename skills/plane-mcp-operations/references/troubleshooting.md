@@ -4,8 +4,10 @@
 
 If a session says state PATCH is forbidden or requires `ctx.elicit`/an issued
 approval receipt, inspect the currently connected MCP tools. The current shared
-contract uses `plane_lifecycle_transition`, `plane_mutation_action`,
-`plane_add_comment` and `plane_reconcile_mutation`. Reconnect the MCP in that
+contract uses `plane_lifecycle_transition`, `plane_operator_lifecycle_transition`,
+`plane_mutation_action`, `plane_add_comment` and `plane_reconcile_mutation`. Use
+the operator tool only when the governing client requires its v3 target/approval
+binding; its presence does not invalidate the simpler trusted-stdio routes. Reconnect the MCP in that
 client; a server upgrade does not rewrite an existing session's cached catalog.
 Do not substitute a Hermes-native connector's restrictions for the shared MCP's
 capability. Do not bypass a real policy decision by selecting another transport.

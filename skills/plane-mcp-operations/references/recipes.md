@@ -63,6 +63,45 @@ Alternatively, `plane_mutation_action` with `operation=issue__update_issue_detai
 Neither route implements atomic compare-and-set. If atomicity is mandatory,
 report the provider limitation rather than claim the pre-read solves it.
 
+## Operator-bound lifecycle v3
+
+Use `plane_operator_lifecycle_transition` when client policy requires a v3
+lifecycle event. Pass the exact target twice: as the requested target and as the
+authorized target. The tool rejects mismatches before opening the provider.
+
+```json
+{
+  "workspace_slug": "<workspace>",
+  "project_id": "<project-id>",
+  "work_item_id": "<item-id>",
+  "expected_current_state_id": "<fresh-current-state-id>",
+  "expected_updated_at": "<fresh-provider-updated-at>",
+  "target_state_id": "<target-state-id>",
+  "comment": {
+    "contract_version": 3,
+    "phase": "START",
+    "state_before": "ready",
+    "state_after": "in_progress"
+  },
+  "approved_live_mutation": true,
+  "approved_non_atomic_operator_transition": true,
+  "authorization_basis": "explicit_human_operator_authorization",
+  "authorized_workspace_slug": "<workspace>",
+  "authorized_project_id": "<project-id>",
+  "authorized_work_item_id": "<item-id>",
+  "idempotency_key": "<unique-16-to-190-character-key>",
+  "attempts": 1,
+  "contract_version": 3
+}
+```
+
+State-changing pairs are ADMIT `backlog→ready`, START `ready→in_progress`,
+REVIEW `in_progress→review`, FINISH `review→done`, and CANCEL from any
+non-terminal canonical role to `cancelled`. PROGRESS and BLOCKED are comment-only
+annotations and require `in_progress→in_progress` plus identical provider state
+IDs. Inspect `receipt`, both subaction receipts and
+`manual_reconciliation_required`; never retry or compensate a partial result.
+
 ## Comment
 
 `plane_add_comment` takes `workspace_slug`, `project_id`, `work_item_id`,

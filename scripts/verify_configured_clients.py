@@ -23,7 +23,8 @@ async def main():
         async with Client({"mcpServers": {"plane": command}}) as client:
             tools = await client.list_tools()
             names = sorted(t.name for t in tools)
-            assert {"plane_mutation_action", "plane_add_comment", "plane_reconcile_mutation"} <= set(names)
+            assert {"plane_mutation_action", "plane_operator_lifecycle_transition",
+                    "plane_add_comment", "plane_reconcile_mutation"} <= set(names)
             result = await client.call_tool("get_current_user", {})
             assert not result.is_error and result.data.get("id")
             catalog = await client.call_tool("plane_catalog", {"limit": 1})
