@@ -3,7 +3,7 @@ name: plane-mcp-operations
 description: Use when operating Plane through plane-mcp-karval. Discover tools, read current state, create/update/comment, run simple or operator-bound v3 lifecycle transitions, reconcile writes, or troubleshoot MCP client drift.
 license: MIT
 metadata:
-  version: "0.3.2"
+  version: "0.3.3"
 ---
 
 # Plane MCP Operations
@@ -14,7 +14,7 @@ Operate the shared `plane-mcp-karval` MCP in Hermes, Codex, OpenDesign or anothe
 configured MCP client. This skill owns tool mechanics, not organizational policy.
 It does not require Hermes-native connectors, profile files or task-stack scripts.
 Use the actual tool names/schema advertised by the connected client; prefixes vary.
-The operator-bound lifecycle route requires plane-mcp-karval 0.3.2 or newer;
+The operator-bound lifecycle route requires plane-mcp-karval 0.3.3 or newer;
 live operations require trusted local stdio and configured Plane credentials.
 
 ## Fast path

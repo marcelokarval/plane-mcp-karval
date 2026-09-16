@@ -2,12 +2,13 @@
 
 ## Operação rápida
 
-### Skill operacional — 0.3.2
+### Skill operacional — 0.3.3
 
 Roadmap desta versão: [plugins de políticas por harness](ROADMAP.md).
 Proposta para scripts Hermes, OpenDesign e deepseek-harnss; ainda não implementados.
 
-A versão 0.3.2 adiciona `skills/plane-mcp-operations/`, também incluída no wheel.
+A versão 0.3.3 adiciona a transição de lifecycle v3 para operadores e preserva
+`skills/plane-mcp-operations/`, também incluída no wheel.
 Ela documenta o MCP atual: descoberta, leitura fresca, mutações, ADMIT/estado,
 comentários, idempotência, readback e recuperação, sem impor gates do conector legado.
 Não altera o protocolo de operações da 0.3.1.

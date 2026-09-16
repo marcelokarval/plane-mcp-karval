@@ -1,6 +1,6 @@
 [project]
 name = "plane-mcp-karval"
-version = "0.3.2"
+version = "0.3.3"
 description = "Karval-owned Plane MCP server with full registry coverage"
 readme = "README.md"
 license = "MIT"

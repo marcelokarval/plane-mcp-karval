@@ -26,7 +26,7 @@ def test_skill_structure_and_resource_links():
     text = (SKILL / "SKILL.md").read_text()
     metadata = yaml.safe_load(text.split("---", 2)[1])
     assert metadata["name"] == SKILL.name
-    assert metadata["metadata"]["version"] == "0.3.2"
+    assert metadata["metadata"]["version"] == "0.3.3"
     assert len(metadata["description"]) <= 1024
     assert len(text.splitlines()) < 220
     for link in re.findall(r"\]\((references/[^)]+)\)", text):
