@@ -1,4 +1,4 @@
-# Plane skill-family audit — 0.3.2
+# Plane skill-family audit — 0.3.3
 
 Scope: local skill source review, not live Plane records or provider-state audit.
 Twelve existing Plane skills were reviewed for ownership and stale MCP mechanics.
@@ -25,8 +25,8 @@ The new portable skill does not migrate the entire Hermes policy library.
   and operator-only state restrictions from the native connector.
 - `plane` described `plane_operator_lifecycle_transition` as the only route and
   `plane_add_lifecycle_comment` as a compatibility tool that must fail closed;
-  release 0.3.2 restores the operator route as an optional stricter v3 surface
-  while retaining the ordinary 0.3.1 trusted-stdio routes.
+  release 0.3.3 preserves the operator route as an optional stricter v3 surface
+  while retaining the ordinary trusted-stdio routes.
 - Its lifecycle, tool-boundary, family-map, workflow and retrospective references
   could make the optional v3 mechanics appear mandatory after loading the root skill.
 
