@@ -178,13 +178,13 @@ def test_mutation_descriptor_exposes_the_exact_payload_fingerprint_contract() ->
 def test_registry_denominator_is_full_plane_coverage() -> None:
     result = server_module._catalog_payload(limit=500)
 
-    assert OPERATION_COUNT == 225
-    assert HTTP_OPERATION_COUNT == 223
-    assert MUTATION_COUNT == 134
-    assert METHOD_COUNTS == {"DELETE": 44, "GET": 91, "PATCH": 38, "POST": 52}
-    assert result["operation_denominator"] == 225
-    assert result["unique_http_operations"] == 223
-    assert result["mutation_denominator"] == 134
+    assert OPERATION_COUNT == 233
+    assert HTTP_OPERATION_COUNT == 231
+    assert MUTATION_COUNT == 139
+    assert METHOD_COUNTS == {"DELETE": 45, "GET": 94, "PATCH": 39, "POST": 55}
+    assert result["operation_denominator"] == 233
+    assert result["unique_http_operations"] == 231
+    assert result["mutation_denominator"] == 139
     assert len(result["actions"]) == 50
     assert result["server"]["name"] == "plane-mcp-karval"
 
@@ -239,8 +239,8 @@ def test_catalog_tool_returns_full_contract_metadata() -> None:
                 {"method": "GET", "mutation": False, "limit": 10},
             )
             data = result.data
-            assert data["operation_denominator"] == 225
-            assert data["server"]["mutation_count"] == 134
+            assert data["operation_denominator"] == 233
+            assert data["server"]["mutation_count"] == 139
             assert all(row["method"] == "GET" for row in data["actions"])
 
     run(check())

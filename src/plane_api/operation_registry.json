@@ -1,11 +1,11 @@
 {
   "contract_version": 2,
-  "http_operation_count": 223,
+  "http_operation_count": 231,
   "method_counts": {
-    "DELETE": 44,
-    "GET": 91,
-    "PATCH": 38,
-    "POST": 52
+    "DELETE": 45,
+    "GET": 94,
+    "PATCH": 39,
+    "POST": 55
   },
   "mutation_contracts": [
     {
@@ -90964,27 +90964,2081 @@
         "parser_version": "plane-semantic-contract-parser-1"
       },
       "write_policy": "allow"
+    },
+    {
+      "action": "inbox_issue__add_inbox_issue",
+      "blocked_reason": null,
+      "candidate_graph": {
+        "candidate_count": 1,
+        "candidates": [
+          {
+            "action": "inbox_issue__list_inbox_issues",
+            "bindings": [
+              {
+                "mutation": "workspace_slug",
+                "normalized": "workspace_slug",
+                "readback": "workspace_slug",
+                "rule": "exact"
+              },
+              {
+                "mutation": "project_id",
+                "normalized": "project_id",
+                "readback": "project_id",
+                "rule": "exact"
+              }
+            ],
+            "blocked_reason": null,
+            "compatibility": {
+              "compatible": true,
+              "effect_kind": "write_create_or_associate",
+              "reasons": [],
+              "response_fields": [
+                "count",
+                "extra_stats",
+                "grouped_by",
+                "next_cursor",
+                "next_page_results",
+                "prev_cursor",
+                "prev_page_results",
+                "results",
+                "sub_grouped_by",
+                "total_count",
+                "total_pages",
+                "total_results"
+              ],
+              "response_shape": "collection"
+            },
+            "method": "GET",
+            "normalized_graph_key": "/api/v1/workspaces/{p0}/projects/{p1}/inbox-issues/",
+            "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/inbox-issues/",
+            "semantic_provenance": {
+              "alias_rule_hash": "09ee0797031181303a15da854cb54a792799b85f65c66cb37566ceda11cc4a4d",
+              "alias_rule_version": "plane-path-alias-v1",
+              "candidate_blob_sha": "5ebf8b32136638a3d705a350dd06db838e5889ed",
+              "candidate_byte_sha256": "95f2137c8f3033d676e9ef3c48aee56b68a4eda9bed95d769bce68641e315cdf",
+              "candidate_source_relative_path": "docs/api-reference/intake-issue/list-inbox-issues.md",
+              "mutation_source_relative_path": "docs/api-reference/intake-issue/add-intake-issue.md",
+              "response_evidence": {
+                "json": {
+                  "kind": "json_fence",
+                  "line_end": 24,
+                  "line_start": 4
+                },
+                "kind": "ResponsePanel",
+                "line_end": 152,
+                "line_start": 127
+              }
+            }
+          }
+        ],
+        "normalized_graph_key": "/api/v1/workspaces/{p0}/projects/{p1}/inbox-issues/",
+        "supported_count": 1
+      },
+      "candidates": [
+        {
+          "action": "inbox_issue__list_inbox_issues",
+          "bindings": [
+            {
+              "mutation": "workspace_slug",
+              "normalized": "workspace_slug",
+              "readback": "workspace_slug",
+              "rule": "exact"
+            },
+            {
+              "mutation": "project_id",
+              "normalized": "project_id",
+              "readback": "project_id",
+              "rule": "exact"
+            }
+          ],
+          "blocked_reason": null,
+          "compatibility": {
+            "compatible": true,
+            "effect_kind": "write_create_or_associate",
+            "reasons": [],
+            "response_fields": [
+              "count",
+              "extra_stats",
+              "grouped_by",
+              "next_cursor",
+              "next_page_results",
+              "prev_cursor",
+              "prev_page_results",
+              "results",
+              "sub_grouped_by",
+              "total_count",
+              "total_pages",
+              "total_results"
+            ],
+            "response_shape": "collection"
+          },
+          "method": "GET",
+          "normalized_graph_key": "/api/v1/workspaces/{p0}/projects/{p1}/inbox-issues/",
+          "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/inbox-issues/",
+          "semantic_provenance": {
+            "alias_rule_hash": "09ee0797031181303a15da854cb54a792799b85f65c66cb37566ceda11cc4a4d",
+            "alias_rule_version": "plane-path-alias-v1",
+            "candidate_blob_sha": "5ebf8b32136638a3d705a350dd06db838e5889ed",
+            "candidate_byte_sha256": "95f2137c8f3033d676e9ef3c48aee56b68a4eda9bed95d769bce68641e315cdf",
+            "candidate_source_relative_path": "docs/api-reference/intake-issue/list-inbox-issues.md",
+            "mutation_source_relative_path": "docs/api-reference/intake-issue/add-intake-issue.md",
+            "response_evidence": {
+              "json": {
+                "kind": "json_fence",
+                "line_end": 24,
+                "line_start": 4
+              },
+              "kind": "ResponsePanel",
+              "line_end": 152,
+              "line_start": 127
+            }
+          }
+        }
+      ],
+      "deny_evidence": null,
+      "effect": {
+        "available": true,
+        "evidence": {
+          "kind": "endpoint_badge",
+          "line": 9,
+          "method": "POST",
+          "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/inbox-issues/"
+        },
+        "http_method": "POST",
+        "kind": "write_create_or_associate"
+      },
+      "executor": "PlaneClient.execute_mutation_action",
+      "expected_terminal": "verified",
+      "normalized_graph_key": "/api/v1/workspaces/{p0}/projects/{p1}/inbox-issues/",
+      "postcondition": {
+        "bindings": [
+          {
+            "mutation": "workspace_slug",
+            "normalized": "workspace_slug",
+            "readback": "workspace_slug",
+            "rule": "exact"
+          },
+          {
+            "mutation": "project_id",
+            "normalized": "project_id",
+            "readback": "project_id",
+            "rule": "exact"
+          }
+        ],
+        "effects": {
+          "evidence": {
+            "kind": "endpoint_badge",
+            "line": 9,
+            "method": "POST",
+            "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/inbox-issues/"
+          },
+          "payload_fields": [],
+          "required_payload_effects": []
+        },
+        "evidence": {
+          "citation": {
+            "endpoint_badge": {
+              "kind": "endpoint_badge",
+              "line": 9,
+              "method": "POST",
+              "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/inbox-issues/"
+            },
+            "frontmatter": {
+              "kind": "frontmatter",
+              "line_start": 1,
+              "title": "Create an intake work item"
+            },
+            "request": {
+              "body": {
+                "available": true,
+                "evidence": {
+                  "kind": "ApiParam_section",
+                  "line_end": 57,
+                  "line_start": 42,
+                  "parameter_count": 1,
+                  "section": "Body Parameters"
+                }
+              },
+              "path": {
+                "available": true,
+                "evidence": {
+                  "kind": "ApiParam_section",
+                  "line_end": 42,
+                  "line_start": 21,
+                  "parameter_count": 2,
+                  "section": "Path Parameters"
+                }
+              },
+              "query": {
+                "available": false,
+                "evidence": {
+                  "kind": "section_absent"
+                }
+              }
+            },
+            "response": {
+              "panel_count": 1,
+              "status": 201
+            }
+          },
+          "documented_method": "POST",
+          "documented_response_shape": "detail",
+          "documented_status": 201,
+          "source_blob_sha": "40fc3d32302c14791a8780e2239d292d1f16a338",
+          "source_relative_path": "docs/api-reference/intake-issue/add-intake-issue.md"
+        },
+        "expected_status": 201,
+        "fixed_query": {},
+        "get_action": "inbox_issue__list_inbox_issues",
+        "kind": "membership_state",
+        "matcher": {
+          "evidence": "ResponsePanel JSON results",
+          "field": "id",
+          "type": "collection_relation"
+        },
+        "membership": {
+          "evidence": {
+            "citation": {
+              "endpoint_badge": {
+                "kind": "endpoint_badge",
+                "line": 9,
+                "method": "POST",
+                "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/inbox-issues/"
+              },
+              "frontmatter": {
+                "kind": "frontmatter",
+                "line_start": 1,
+                "title": "Create an intake work item"
+              },
+              "request": {
+                "body": {
+                  "available": true,
+                  "evidence": {
+                    "kind": "ApiParam_section",
+                    "line_end": 57,
+                    "line_start": 42,
+                    "parameter_count": 1,
+                    "section": "Body Parameters"
+                  }
+                },
+                "path": {
+                  "available": true,
+                  "evidence": {
+                    "kind": "ApiParam_section",
+                    "line_end": 42,
+                    "line_start": 21,
+                    "parameter_count": 2,
+                    "section": "Path Parameters"
+                  }
+                },
+                "query": {
+                  "available": false,
+                  "evidence": {
+                    "kind": "section_absent"
+                  }
+                }
+              },
+              "response": {
+                "panel_count": 1,
+                "status": 201
+              }
+            },
+            "documented_method": "POST",
+            "documented_response_shape": "detail",
+            "documented_status": 201,
+            "source_blob_sha": "40fc3d32302c14791a8780e2239d292d1f16a338",
+            "source_relative_path": "docs/api-reference/intake-issue/add-intake-issue.md"
+          },
+          "exhaustive_absence": false,
+          "target_presence": "present"
+        },
+        "method": "GET",
+        "pagination": {
+          "cursor_parameter": "cursor",
+          "exhaustive_absence": false,
+          "max_pages": 100,
+          "max_rows": 10000,
+          "mode": "cursor",
+          "next_page_flag": "next_page_results"
+        },
+        "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/inbox-issues/",
+        "readback_expected_status": 200,
+        "response_shape": "collection",
+        "strategy": "membership_state",
+        "targets": {
+          "evidence": {
+            "citation": {
+              "endpoint_badge": {
+                "kind": "endpoint_badge",
+                "line": 9,
+                "method": "POST",
+                "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/inbox-issues/"
+              },
+              "frontmatter": {
+                "kind": "frontmatter",
+                "line_start": 1,
+                "title": "Create an intake work item"
+              },
+              "request": {
+                "body": {
+                  "available": true,
+                  "evidence": {
+                    "kind": "ApiParam_section",
+                    "line_end": 57,
+                    "line_start": 42,
+                    "parameter_count": 1,
+                    "section": "Body Parameters"
+                  }
+                },
+                "path": {
+                  "available": true,
+                  "evidence": {
+                    "kind": "ApiParam_section",
+                    "line_end": 42,
+                    "line_start": 21,
+                    "parameter_count": 2,
+                    "section": "Path Parameters"
+                  }
+                },
+                "query": {
+                  "available": false,
+                  "evidence": {
+                    "kind": "section_absent"
+                  }
+                }
+              },
+              "response": {
+                "panel_count": 1,
+                "status": 201
+              }
+            },
+            "documented_method": "POST",
+            "documented_response_shape": "detail",
+            "documented_status": 201,
+            "source_blob_sha": "40fc3d32302c14791a8780e2239d292d1f16a338",
+            "source_relative_path": "docs/api-reference/intake-issue/add-intake-issue.md"
+          },
+          "path_fields": [],
+          "payload_fields": [],
+          "selector": {
+            "field": "id",
+            "source": "write_response"
+          },
+          "write_response_fields": [
+            "id"
+          ]
+        },
+        "verification": "source_cited_membership_state"
+      },
+      "remediation": {
+        "kind": "documented_readback",
+        "reason": "registry contract is executable"
+      },
+      "request_schema": {
+        "available": true,
+        "provenance": {
+          "byte_sha256": "7b7082ed022b65400857cec3422f5ee0fe233ecd23a30b6ab37e8a1b9161f801",
+          "evidence": {
+            "body": {
+              "available": true,
+              "evidence": {
+                "kind": "ApiParam_section",
+                "line_end": 57,
+                "line_start": 42,
+                "parameter_count": 1,
+                "section": "Body Parameters"
+              }
+            },
+            "path": {
+              "available": true,
+              "evidence": {
+                "kind": "ApiParam_section",
+                "line_end": 42,
+                "line_start": 21,
+                "parameter_count": 2,
+                "section": "Path Parameters"
+              }
+            },
+            "query": {
+              "available": false,
+              "evidence": {
+                "kind": "section_absent"
+              }
+            }
+          },
+          "git_blob_sha": "40fc3d32302c14791a8780e2239d292d1f16a338",
+          "parser_version": "plane-semantic-contract-parser-1",
+          "source_relative_path": "docs/api-reference/intake-issue/add-intake-issue.md"
+        },
+        "schema": {
+          "available": true,
+          "body": {
+            "available": true,
+            "parameters": [
+              {
+                "description": "Issue data for the intake issue",
+                "enum": [],
+                "evidence": {
+                  "kind": "ApiParam",
+                  "line_end": 48,
+                  "line_start": 44,
+                  "section": "Body Parameters"
+                },
+                "name": "issue",
+                "required": true,
+                "type": "object"
+              }
+            ]
+          },
+          "evidence": {
+            "body": {
+              "available": true,
+              "evidence": {
+                "kind": "ApiParam_section",
+                "line_end": 57,
+                "line_start": 42,
+                "parameter_count": 1,
+                "section": "Body Parameters"
+              }
+            },
+            "path": {
+              "available": true,
+              "evidence": {
+                "kind": "ApiParam_section",
+                "line_end": 42,
+                "line_start": 21,
+                "parameter_count": 2,
+                "section": "Path Parameters"
+              }
+            },
+            "query": {
+              "available": false,
+              "evidence": {
+                "kind": "section_absent"
+              }
+            }
+          },
+          "json_schema": {
+            "properties": {
+              "issue": {
+                "type": "object"
+              },
+              "project_id": {
+                "type": "string"
+              },
+              "workspace_slug": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "issue",
+              "project_id",
+              "workspace_slug"
+            ],
+            "type": "object"
+          },
+          "path": {
+            "binding_arity": true,
+            "parameters": [
+              {
+                "binding_evidence": {
+                  "endpoint_name": "workspace_slug",
+                  "kind": "endpoint_badge_overrides_generic_ApiParam_name",
+                  "source_name": "project_id"
+                },
+                "description": "The unique identifier of the project.",
+                "enum": [],
+                "evidence": {
+                  "kind": "ApiParam",
+                  "line_end": 27,
+                  "line_start": 23,
+                  "section": "Path Parameters"
+                },
+                "name": "workspace_slug",
+                "required": true,
+                "source_name": "project_id",
+                "type": "string"
+              },
+              {
+                "binding_evidence": {
+                  "endpoint_name": "project_id",
+                  "kind": "endpoint_badge_overrides_generic_ApiParam_name",
+                  "source_name": "workspace_slug"
+                },
+                "description": "The workspace_slug represents the unique workspace identifier for a workspace in Plane. It can be found in the URL. For example, in the URL `https://app.plane.so/my-team/projects/`, the workspace slug is `my-team`.",
+                "enum": [],
+                "evidence": {
+                  "kind": "ApiParam",
+                  "line_end": 33,
+                  "line_start": 27,
+                  "section": "Path Parameters"
+                },
+                "name": "project_id",
+                "required": true,
+                "source_name": "workspace_slug",
+                "type": "string"
+              }
+            ],
+            "template_names": [
+              "workspace_slug",
+              "project_id"
+            ]
+          },
+          "query": {
+            "parameters": []
+          }
+        }
+      },
+      "response_schema": {
+        "available": true,
+        "provenance": {
+          "byte_sha256": "95f2137c8f3033d676e9ef3c48aee56b68a4eda9bed95d769bce68641e315cdf",
+          "evidence": {
+            "panel_count": 1,
+            "status": 200
+          },
+          "git_blob_sha": "5ebf8b32136638a3d705a350dd06db838e5889ed",
+          "parser_version": "plane-semantic-contract-parser-1",
+          "source_relative_path": "docs/api-reference/intake-issue/list-inbox-issues.md"
+        },
+        "schema": {
+          "available": true,
+          "compatibility_overrides": [
+            {
+              "evidence": "plane_provider_2026_08_11",
+              "field": "grouped_by",
+              "kind": "observed_nullable_collection_metadata"
+            },
+            {
+              "evidence": "plane_provider_2026_08_11",
+              "field": "sub_grouped_by",
+              "kind": "observed_nullable_collection_metadata"
+            }
+          ],
+          "evidence": {
+            "json": {
+              "kind": "json_fence",
+              "line_end": 24,
+              "line_start": 4
+            },
+            "kind": "ResponsePanel",
+            "line_end": 152,
+            "line_start": 127
+          },
+          "example": {
+            "count": 20,
+            "extra_stats": null,
+            "grouped_by": "state",
+            "next_cursor": "20:1:0",
+            "next_page_results": true,
+            "prev_cursor": "20:0:0",
+            "prev_page_results": false,
+            "results": [
+              {
+                "created_at": "2024-01-01T00:00:00Z",
+                "id": "550e8400-e29b-41d4-a716-446655440000",
+                "name": "Example Name"
+              }
+            ],
+            "sub_grouped_by": "priority",
+            "total_count": 150,
+            "total_pages": 8,
+            "total_results": 150
+          },
+          "json_schema": {
+            "properties": {
+              "count": {
+                "type": "integer"
+              },
+              "extra_stats": {
+                "type": "null"
+              },
+              "grouped_by": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "next_cursor": {
+                "type": "string"
+              },
+              "next_page_results": {
+                "type": "boolean"
+              },
+              "prev_cursor": {
+                "type": "string"
+              },
+              "prev_page_results": {
+                "type": "boolean"
+              },
+              "results": {
+                "items": {
+                  "properties": {
+                    "created_at": {
+                      "type": "string"
+                    },
+                    "id": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "created_at",
+                    "id",
+                    "name"
+                  ],
+                  "type": "object"
+                },
+                "type": "array"
+              },
+              "sub_grouped_by": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "total_count": {
+                "type": "integer"
+              },
+              "total_pages": {
+                "type": "integer"
+              },
+              "total_results": {
+                "type": "integer"
+              }
+            },
+            "required": [
+              "count",
+              "extra_stats",
+              "grouped_by",
+              "next_cursor",
+              "next_page_results",
+              "prev_cursor",
+              "prev_page_results",
+              "results",
+              "sub_grouped_by",
+              "total_count",
+              "total_pages",
+              "total_results"
+            ],
+            "type": "object"
+          },
+          "pagination": {
+            "cursor_parameter": "cursor",
+            "mode": "cursor",
+            "next_page_flag": "next_page_results"
+          },
+          "panels": [
+            {
+              "evidence": {
+                "json": {
+                  "kind": "json_fence",
+                  "line_end": 24,
+                  "line_start": 4
+                },
+                "kind": "ResponsePanel",
+                "line_end": 152,
+                "line_start": 127
+              },
+              "shape": "collection",
+              "status": 200
+            }
+          ],
+          "semantic": {
+            "available": true,
+            "evidence": {
+              "json": {
+                "kind": "json_fence",
+                "line_end": 24,
+                "line_start": 4
+              },
+              "kind": "ResponsePanel",
+              "line_end": 152,
+              "line_start": 127
+            },
+            "provenance": {
+              "derived_from": "ResponsePanel JSON/status"
+            }
+          },
+          "shape": "collection",
+          "status": 200
+        }
+      },
+      "schema_availability": {
+        "effect": true,
+        "request": true,
+        "response": true
+      },
+      "schema_hash": "be0b38d125970a5414435a0fde948f507d5dc60054d8e4f30c546413e420da42",
+      "semantic_provenance": {
+        "alias_rule_hash": "09ee0797031181303a15da854cb54a792799b85f65c66cb37566ceda11cc4a4d",
+        "alias_rule_version": "plane-path-alias-v1",
+        "derivation_rule": "normalized_path_candidate_then_source_response_compatibility",
+        "mutation_byte_sha256": "7b7082ed022b65400857cec3422f5ee0fe233ecd23a30b6ab37e8a1b9161f801",
+        "mutation_evidence": {
+          "endpoint_badge": {
+            "kind": "endpoint_badge",
+            "line": 9,
+            "method": "POST",
+            "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/inbox-issues/"
+          },
+          "frontmatter": {
+            "kind": "frontmatter",
+            "line_start": 1,
+            "title": "Create an intake work item"
+          },
+          "request": {
+            "body": {
+              "available": true,
+              "evidence": {
+                "kind": "ApiParam_section",
+                "line_end": 57,
+                "line_start": 42,
+                "parameter_count": 1,
+                "section": "Body Parameters"
+              }
+            },
+            "path": {
+              "available": true,
+              "evidence": {
+                "kind": "ApiParam_section",
+                "line_end": 42,
+                "line_start": 21,
+                "parameter_count": 2,
+                "section": "Path Parameters"
+              }
+            },
+            "query": {
+              "available": false,
+              "evidence": {
+                "kind": "section_absent"
+              }
+            }
+          },
+          "response": {
+            "panel_count": 1,
+            "status": 201
+          }
+        },
+        "mutation_git_blob_sha": "40fc3d32302c14791a8780e2239d292d1f16a338",
+        "mutation_source_relative_path": "docs/api-reference/intake-issue/add-intake-issue.md",
+        "parser_version": "plane-semantic-contract-parser-1"
+      },
+      "write_policy": "allow",
+      "schema_provenance": {
+        "source": "official-plane-developer-docs",
+        "url": "https://developers.plane.so",
+        "parser": "plane-v034-manual-contract-1"
+      }
+    },
+    {
+      "action": "inbox_issue__delete_inbox_issue",
+      "blocked_reason": null,
+      "candidate_graph": {
+        "candidate_count": 1,
+        "candidates": [
+          {
+            "action": "inbox_issue__list_inbox_issues",
+            "bindings": [
+              {
+                "mutation": "workspace_slug",
+                "normalized": "workspace_slug",
+                "readback": "workspace_slug",
+                "rule": "exact"
+              },
+              {
+                "mutation": "project_id",
+                "normalized": "project_id",
+                "readback": "project_id",
+                "rule": "exact"
+              }
+            ],
+            "blocked_reason": null,
+            "compatibility": {
+              "compatible": true,
+              "effect_kind": "write_delete",
+              "reasons": [],
+              "response_fields": [],
+              "response_shape": "collection"
+            },
+            "method": "GET",
+            "normalized_graph_key": "/api/v1/workspaces/{p0}/projects/{p1}/inbox-issues/{p2}/",
+            "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/inbox-issues/",
+            "semantic_provenance": {
+              "candidate_source_relative_path": "docs/api-reference/intake-issue/list-inbox-issues.md",
+              "mutation_source_relative_path": "docs/api-reference/intake-issue/delete-intake-issue.md",
+              "remediation": "documented_path_prefix_readback"
+            }
+          }
+        ],
+        "normalized_graph_key": "/api/v1/workspaces/{p0}/projects/{p1}/inbox-issues/{p2}/",
+        "supported_count": 1
+      },
+      "candidates": [
+        {
+          "action": "inbox_issue__list_inbox_issues",
+          "bindings": [
+            {
+              "mutation": "workspace_slug",
+              "normalized": "workspace_slug",
+              "readback": "workspace_slug",
+              "rule": "exact"
+            },
+            {
+              "mutation": "project_id",
+              "normalized": "project_id",
+              "readback": "project_id",
+              "rule": "exact"
+            }
+          ],
+          "blocked_reason": null,
+          "compatibility": {
+            "compatible": true,
+            "effect_kind": "write_delete",
+            "reasons": [],
+            "response_fields": [],
+            "response_shape": "collection"
+          },
+          "method": "GET",
+          "normalized_graph_key": "/api/v1/workspaces/{p0}/projects/{p1}/inbox-issues/{p2}/",
+          "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/inbox-issues/",
+          "semantic_provenance": {
+            "candidate_source_relative_path": "docs/api-reference/intake-issue/list-inbox-issues.md",
+            "mutation_source_relative_path": "docs/api-reference/intake-issue/delete-intake-issue.md",
+            "remediation": "documented_path_prefix_readback"
+          }
+        }
+      ],
+      "deny_evidence": null,
+      "effect": {
+        "available": true,
+        "evidence": {
+          "kind": "endpoint_badge",
+          "line": 9,
+          "method": "DELETE",
+          "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/inbox-issues/{issue_id}/"
+        },
+        "http_method": "DELETE",
+        "kind": "write_delete"
+      },
+      "executor": "PlaneClient.execute_mutation_action",
+      "expected_terminal": "verified_absence",
+      "normalized_graph_key": "/api/v1/workspaces/{p0}/projects/{p1}/inbox-issues/{p2}/",
+      "postcondition": {
+        "bindings": [
+          {
+            "mutation": "workspace_slug",
+            "normalized": "workspace_slug",
+            "readback": "workspace_slug",
+            "rule": "exact"
+          },
+          {
+            "mutation": "project_id",
+            "normalized": "project_id",
+            "readback": "project_id",
+            "rule": "exact"
+          }
+        ],
+        "effects": {
+          "evidence": {
+            "kind": "endpoint_badge",
+            "line": 9,
+            "method": "DELETE",
+            "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/inbox-issues/{issue_id}/"
+          },
+          "payload_fields": [],
+          "required_payload_effects": []
+        },
+        "evidence": {
+          "citation": {
+            "endpoint_badge": {
+              "kind": "endpoint_badge",
+              "line": 9,
+              "method": "DELETE",
+              "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/inbox-issues/{issue_id}/"
+            },
+            "frontmatter": {
+              "kind": "frontmatter",
+              "line_start": 1,
+              "title": "Delete an intake work item"
+            },
+            "request": {
+              "body": {
+                "available": false,
+                "evidence": {
+                  "kind": "section_absent"
+                }
+              },
+              "path": {
+                "available": true,
+                "evidence": {
+                  "kind": "ApiParam_section",
+                  "line_end": 48,
+                  "line_start": 21,
+                  "parameter_count": 3,
+                  "section": "Path Parameters"
+                }
+              },
+              "query": {
+                "available": false,
+                "evidence": {
+                  "kind": "section_absent"
+                }
+              }
+            },
+            "response": {
+              "panel_count": 1,
+              "status": 204
+            }
+          },
+          "documented_method": "DELETE",
+          "documented_response_shape": "empty",
+          "documented_status": 204,
+          "source_blob_sha": "808bf809f3fa9f9aa3fbaca5ba8afc2de98a8ff7",
+          "source_relative_path": "docs/api-reference/intake-issue/delete-intake-issue.md"
+        },
+        "expected_status": 204,
+        "fixed_query": {},
+        "get_action": "inbox_issue__list_inbox_issues",
+        "kind": "membership_state",
+        "matcher": {
+          "evidence": "documented response id/results",
+          "field": "id",
+          "type": "collection_relation"
+        },
+        "membership": {
+          "evidence": {
+            "citation": {
+              "endpoint_badge": {
+                "kind": "endpoint_badge",
+                "line": 9,
+                "method": "DELETE",
+                "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/inbox-issues/{issue_id}/"
+              },
+              "frontmatter": {
+                "kind": "frontmatter",
+                "line_start": 1,
+                "title": "Delete an intake work item"
+              },
+              "request": {
+                "body": {
+                  "available": false,
+                  "evidence": {
+                    "kind": "section_absent"
+                  }
+                },
+                "path": {
+                  "available": true,
+                  "evidence": {
+                    "kind": "ApiParam_section",
+                    "line_end": 48,
+                    "line_start": 21,
+                    "parameter_count": 3,
+                    "section": "Path Parameters"
+                  }
+                },
+                "query": {
+                  "available": false,
+                  "evidence": {
+                    "kind": "section_absent"
+                  }
+                }
+              },
+              "response": {
+                "panel_count": 1,
+                "status": 204
+              }
+            },
+            "documented_method": "DELETE",
+            "documented_response_shape": "empty",
+            "documented_status": 204,
+            "source_blob_sha": "808bf809f3fa9f9aa3fbaca5ba8afc2de98a8ff7",
+            "source_relative_path": "docs/api-reference/intake-issue/delete-intake-issue.md"
+          },
+          "exhaustive_absence": true,
+          "target_presence": "absent"
+        },
+        "method": "GET",
+        "pagination": {
+          "cursor_parameter": "cursor",
+          "exhaustive_absence": true,
+          "max_pages": 100,
+          "max_rows": 10000,
+          "mode": "cursor",
+          "next_page_flag": "next_page_results"
+        },
+        "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/inbox-issues/",
+        "readback_expected_status": 200,
+        "response_shape": "collection",
+        "strategy": "membership_state",
+        "targets": {
+          "evidence": {
+            "citation": {
+              "endpoint_badge": {
+                "kind": "endpoint_badge",
+                "line": 9,
+                "method": "DELETE",
+                "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/inbox-issues/{issue_id}/"
+              },
+              "frontmatter": {
+                "kind": "frontmatter",
+                "line_start": 1,
+                "title": "Delete an intake work item"
+              },
+              "request": {
+                "body": {
+                  "available": false,
+                  "evidence": {
+                    "kind": "section_absent"
+                  }
+                },
+                "path": {
+                  "available": true,
+                  "evidence": {
+                    "kind": "ApiParam_section",
+                    "line_end": 48,
+                    "line_start": 21,
+                    "parameter_count": 3,
+                    "section": "Path Parameters"
+                  }
+                },
+                "query": {
+                  "available": false,
+                  "evidence": {
+                    "kind": "section_absent"
+                  }
+                }
+              },
+              "response": {
+                "panel_count": 1,
+                "status": 204
+              }
+            },
+            "documented_method": "DELETE",
+            "documented_response_shape": "empty",
+            "documented_status": 204,
+            "source_blob_sha": "808bf809f3fa9f9aa3fbaca5ba8afc2de98a8ff7",
+            "source_relative_path": "docs/api-reference/intake-issue/delete-intake-issue.md"
+          },
+          "path_fields": [
+            "issue_id"
+          ],
+          "payload_fields": [],
+          "selector": {
+            "field": "issue_id",
+            "source": "path"
+          },
+          "write_response_fields": []
+        },
+        "verification": "source_cited_membership_state"
+      },
+      "remediation": {
+        "kind": "documented_path_prefix_readback",
+        "reason": "previous graph classifier rejected a documented resource-family readback; explicit path bindings are retained"
+      },
+      "request_schema": {
+        "available": true,
+        "provenance": {
+          "byte_sha256": "a34ba9d1d684fb56ab10e08f77ed25ee2e7ce8a4abea1619ad6dc65d343496fe",
+          "evidence": {
+            "body": {
+              "available": false,
+              "evidence": {
+                "kind": "section_absent"
+              }
+            },
+            "path": {
+              "available": true,
+              "evidence": {
+                "kind": "ApiParam_section",
+                "line_end": 48,
+                "line_start": 21,
+                "parameter_count": 3,
+                "section": "Path Parameters"
+              }
+            },
+            "query": {
+              "available": false,
+              "evidence": {
+                "kind": "section_absent"
+              }
+            }
+          },
+          "git_blob_sha": "808bf809f3fa9f9aa3fbaca5ba8afc2de98a8ff7",
+          "parser_version": "plane-semantic-contract-parser-1",
+          "source_relative_path": "docs/api-reference/intake-issue/delete-intake-issue.md"
+        },
+        "schema": {
+          "available": true,
+          "body": {
+            "available": false,
+            "parameters": []
+          },
+          "evidence": {
+            "body": {
+              "available": false,
+              "evidence": {
+                "kind": "section_absent"
+              }
+            },
+            "path": {
+              "available": true,
+              "evidence": {
+                "kind": "ApiParam_section",
+                "line_end": 48,
+                "line_start": 21,
+                "parameter_count": 3,
+                "section": "Path Parameters"
+              }
+            },
+            "query": {
+              "available": false,
+              "evidence": {
+                "kind": "section_absent"
+              }
+            }
+          },
+          "json_schema": {
+            "properties": {
+              "project_id": {
+                "type": "string"
+              },
+              "issue_id": {
+                "type": "string"
+              },
+              "workspace_slug": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "project_id",
+              "issue_id",
+              "workspace_slug"
+            ],
+            "type": "object"
+          },
+          "path": {
+            "binding_arity": true,
+            "parameters": [
+              {
+                "binding_evidence": {
+                  "endpoint_name": "workspace_slug",
+                  "kind": "endpoint_badge_overrides_generic_ApiParam_name",
+                  "source_name": "issue_id"
+                },
+                "description": "The unique identifier of the work item.",
+                "enum": [],
+                "evidence": {
+                  "kind": "ApiParam",
+                  "line_end": 27,
+                  "line_start": 23,
+                  "section": "Path Parameters"
+                },
+                "name": "workspace_slug",
+                "required": true,
+                "source_name": "issue_id",
+                "type": "string"
+              },
+              {
+                "description": "The unique identifier of the project.",
+                "enum": [],
+                "evidence": {
+                  "kind": "ApiParam",
+                  "line_end": 33,
+                  "line_start": 27,
+                  "section": "Path Parameters"
+                },
+                "name": "project_id",
+                "required": true,
+                "type": "string"
+              },
+              {
+                "binding_evidence": {
+                  "endpoint_name": "issue_id",
+                  "kind": "endpoint_badge_overrides_generic_ApiParam_name",
+                  "source_name": "workspace_slug"
+                },
+                "description": "The workspace_slug represents the unique workspace identifier for a workspace in Plane. It can be found in the URL. For example, in the URL `https://app.plane.so/my-team/projects/`, the workspace slug is `my-team`.",
+                "enum": [],
+                "evidence": {
+                  "kind": "ApiParam",
+                  "line_end": 39,
+                  "line_start": 33,
+                  "section": "Path Parameters"
+                },
+                "name": "issue_id",
+                "required": true,
+                "source_name": "workspace_slug",
+                "type": "string"
+              }
+            ],
+            "template_names": [
+              "workspace_slug",
+              "project_id",
+              "issue_id"
+            ]
+          },
+          "query": {
+            "parameters": []
+          }
+        }
+      },
+      "response_schema": null,
+      "schema_availability": {
+        "effect": true,
+        "request": true,
+        "response": false
+      },
+      "schema_hash": "b67cd440210f0d371a5c43e88428e69e8925b22547419b9da6811afcc99e7b6d",
+      "semantic_provenance": {
+        "alias_rule_hash": "09ee0797031181303a15da854cb54a792799b85f65c66cb37566ceda11cc4a4d",
+        "alias_rule_version": "plane-path-alias-v1",
+        "derivation_rule": "normalized_path_candidate_then_source_response_compatibility",
+        "mutation_byte_sha256": "a34ba9d1d684fb56ab10e08f77ed25ee2e7ce8a4abea1619ad6dc65d343496fe",
+        "mutation_evidence": {
+          "endpoint_badge": {
+            "kind": "endpoint_badge",
+            "line": 9,
+            "method": "DELETE",
+            "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/inbox-issues/{issue_id}/"
+          },
+          "frontmatter": {
+            "kind": "frontmatter",
+            "line_start": 1,
+            "title": "Delete an intake work item"
+          },
+          "request": {
+            "body": {
+              "available": false,
+              "evidence": {
+                "kind": "section_absent"
+              }
+            },
+            "path": {
+              "available": true,
+              "evidence": {
+                "kind": "ApiParam_section",
+                "line_end": 48,
+                "line_start": 21,
+                "parameter_count": 3,
+                "section": "Path Parameters"
+              }
+            },
+            "query": {
+              "available": false,
+              "evidence": {
+                "kind": "section_absent"
+              }
+            }
+          },
+          "response": {
+            "panel_count": 1,
+            "status": 204
+          }
+        },
+        "mutation_git_blob_sha": "808bf809f3fa9f9aa3fbaca5ba8afc2de98a8ff7",
+        "mutation_source_relative_path": "docs/api-reference/intake-issue/delete-intake-issue.md",
+        "parser_version": "plane-semantic-contract-parser-1"
+      },
+      "write_policy": "allow",
+      "schema_provenance": {
+        "source": "official-plane-developer-docs",
+        "url": "https://developers.plane.so",
+        "parser": "plane-v034-manual-contract-1"
+      }
+    },
+    {
+      "action": "inbox_issue__update_inbox_issue_detail",
+      "blocked_reason": null,
+      "candidate_graph": {
+        "candidate_count": 1,
+        "candidates": [
+          {
+            "action": "inbox_issue__get_inbox_issue_detail",
+            "bindings": [
+              {
+                "mutation": "workspace_slug",
+                "normalized": "workspace_slug",
+                "readback": "workspace_slug",
+                "rule": "exact"
+              },
+              {
+                "mutation": "project_id",
+                "normalized": "project_id",
+                "readback": "project_id",
+                "rule": "exact"
+              },
+              {
+                "mutation": "issue_id",
+                "normalized": "issue_id",
+                "readback": "issue_id",
+                "rule": "exact"
+              }
+            ],
+            "blocked_reason": null,
+            "compatibility": {
+              "compatible": true,
+              "effect_kind": "write_update",
+              "reasons": [],
+              "response_fields": [
+                "created_at",
+                "id",
+                "issue",
+                "source",
+                "status",
+                "updated_at"
+              ],
+              "response_shape": "detail"
+            },
+            "method": "GET",
+            "normalized_graph_key": "/api/v1/workspaces/{p0}/projects/{p1}/inbox-issues/{p2}/",
+            "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/inbox-issues/{issue_id}/",
+            "semantic_provenance": {
+              "alias_rule_hash": "09ee0797031181303a15da854cb54a792799b85f65c66cb37566ceda11cc4a4d",
+              "alias_rule_version": "plane-path-alias-v1",
+              "candidate_blob_sha": "d5dc317fc6024e698e5f2ddc46cbeb33bde6ceda",
+              "candidate_byte_sha256": "8f43e110ecefe44ff692fc8f62b909b4e671233c41dabbefffa7547f958b3df2",
+              "candidate_source_relative_path": "docs/api-reference/intake-issue/get-intake-issue-detail.md",
+              "mutation_source_relative_path": "docs/api-reference/intake-issue/update-intake-issue-detail.md",
+              "response_evidence": {
+                "json": {
+                  "kind": "json_fence",
+                  "line_end": 18,
+                  "line_start": 4
+                },
+                "kind": "ResponsePanel",
+                "line_end": 119,
+                "line_start": 100
+              }
+            }
+          }
+        ],
+        "normalized_graph_key": "/api/v1/workspaces/{p0}/projects/{p1}/inbox-issues/{p2}/",
+        "supported_count": 1
+      },
+      "candidates": [
+        {
+          "action": "inbox_issue__get_inbox_issue_detail",
+          "bindings": [
+            {
+              "mutation": "workspace_slug",
+              "normalized": "workspace_slug",
+              "readback": "workspace_slug",
+              "rule": "exact"
+            },
+            {
+              "mutation": "project_id",
+              "normalized": "project_id",
+              "readback": "project_id",
+              "rule": "exact"
+            },
+            {
+              "mutation": "issue_id",
+              "normalized": "issue_id",
+              "readback": "issue_id",
+              "rule": "exact"
+            }
+          ],
+          "blocked_reason": null,
+          "compatibility": {
+            "compatible": true,
+            "effect_kind": "write_update",
+            "reasons": [],
+            "response_fields": [
+              "created_at",
+              "id",
+              "issue",
+              "source",
+              "status",
+              "updated_at"
+            ],
+            "response_shape": "detail"
+          },
+          "method": "GET",
+          "normalized_graph_key": "/api/v1/workspaces/{p0}/projects/{p1}/inbox-issues/{p2}/",
+          "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/inbox-issues/{issue_id}/",
+          "semantic_provenance": {
+            "alias_rule_hash": "09ee0797031181303a15da854cb54a792799b85f65c66cb37566ceda11cc4a4d",
+            "alias_rule_version": "plane-path-alias-v1",
+            "candidate_blob_sha": "d5dc317fc6024e698e5f2ddc46cbeb33bde6ceda",
+            "candidate_byte_sha256": "8f43e110ecefe44ff692fc8f62b909b4e671233c41dabbefffa7547f958b3df2",
+            "candidate_source_relative_path": "docs/api-reference/intake-issue/get-intake-issue-detail.md",
+            "mutation_source_relative_path": "docs/api-reference/intake-issue/update-intake-issue-detail.md",
+            "response_evidence": {
+              "json": {
+                "kind": "json_fence",
+                "line_end": 18,
+                "line_start": 4
+              },
+              "kind": "ResponsePanel",
+              "line_end": 119,
+              "line_start": 100
+            }
+          }
+        }
+      ],
+      "deny_evidence": null,
+      "effect": {
+        "available": true,
+        "evidence": {
+          "kind": "endpoint_badge",
+          "line": 9,
+          "method": "PATCH",
+          "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/inbox-issues/{issue_id}/"
+        },
+        "http_method": "PATCH",
+        "kind": "write_update"
+      },
+      "executor": "PlaneClient.execute_mutation_action",
+      "expected_terminal": "verified",
+      "normalized_graph_key": "/api/v1/workspaces/{p0}/projects/{p1}/inbox-issues/{p2}/",
+      "postcondition": {
+        "bindings": [],
+        "effects": {
+          "evidence": {
+            "kind": "endpoint_badge",
+            "line": 9,
+            "method": "PATCH",
+            "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/inbox-issues/{issue_id}/"
+          },
+          "payload_fields": [],
+          "required_payload_effects": []
+        },
+        "evidence": {
+          "citation": {
+            "endpoint_badge": {
+              "kind": "endpoint_badge",
+              "line": 9,
+              "method": "PATCH",
+              "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/inbox-issues/{issue_id}/"
+            },
+            "frontmatter": {
+              "kind": "frontmatter",
+              "line_start": 1,
+              "title": "Update an intake work item"
+            },
+            "request": {
+              "body": {
+                "available": true,
+                "evidence": {
+                  "kind": "ApiParam_section",
+                  "line_end": 97,
+                  "line_start": 48,
+                  "parameter_count": 6,
+                  "section": "Body Parameters"
+                }
+              },
+              "path": {
+                "available": true,
+                "evidence": {
+                  "kind": "ApiParam_section",
+                  "line_end": 48,
+                  "line_start": 21,
+                  "parameter_count": 3,
+                  "section": "Path Parameters"
+                }
+              },
+              "query": {
+                "available": false,
+                "evidence": {
+                  "kind": "section_absent"
+                }
+              }
+            },
+            "response": {
+              "panel_count": 1,
+              "status": 200
+            }
+          },
+          "documented_method": "PATCH",
+          "documented_response_shape": "detail",
+          "documented_status": 200,
+          "source_blob_sha": "a1fc4d3b8aeb26edbd6bd174545188b0ebefe984",
+          "source_relative_path": "docs/api-reference/intake-issue/update-intake-issue-detail.md"
+        },
+        "expected_status": 200,
+        "fixed_query": {},
+        "get_action": "inbox_issue__get_inbox_issue_detail",
+        "kind": "detail_state",
+        "matcher": {
+          "expected": 200,
+          "field": "status_code",
+          "type": "provider_acknowledgement"
+        },
+        "method": "PATCH",
+        "pagination": {
+          "cursor_parameter": null,
+          "mode": "none",
+          "next_page_flag": null
+        },
+        "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/inbox-issues/{issue_id}/",
+        "provider_ack": {
+          "empty_body": false,
+          "evidence": {
+            "citation": {
+              "endpoint_badge": {
+                "kind": "endpoint_badge",
+                "line": 9,
+                "method": "PATCH",
+                "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/inbox-issues/{issue_id}/"
+              },
+              "frontmatter": {
+                "kind": "frontmatter",
+                "line_start": 1,
+                "title": "Update an intake work item"
+              },
+              "request": {
+                "body": {
+                  "available": true,
+                  "evidence": {
+                    "kind": "ApiParam_section",
+                    "line_end": 97,
+                    "line_start": 48,
+                    "parameter_count": 6,
+                    "section": "Body Parameters"
+                  }
+                },
+                "path": {
+                  "available": true,
+                  "evidence": {
+                    "kind": "ApiParam_section",
+                    "line_end": 48,
+                    "line_start": 21,
+                    "parameter_count": 3,
+                    "section": "Path Parameters"
+                  }
+                },
+                "query": {
+                  "available": false,
+                  "evidence": {
+                    "kind": "section_absent"
+                  }
+                }
+              },
+              "response": {
+                "panel_count": 1,
+                "status": 200
+              }
+            },
+            "documented_method": "PATCH",
+            "documented_response_shape": "detail",
+            "documented_status": 200,
+            "source_blob_sha": "a1fc4d3b8aeb26edbd6bd174545188b0ebefe984",
+            "source_relative_path": "docs/api-reference/intake-issue/update-intake-issue-detail.md"
+          },
+          "required": true,
+          "response_shape": "detail",
+          "status": 200
+        },
+        "readback_expected_status": 200,
+        "response_shape": "detail",
+        "strategy": "detail_state",
+        "targets": {
+          "path_fields": [
+            "issue_id"
+          ],
+          "payload_fields": [],
+          "write_response_fields": [],
+          "selector": {
+            "source": "path",
+            "field": "issue_id"
+          },
+          "evidence": {
+            "source": "official-plane-developer-docs",
+            "url": "https://developers.plane.so/api-reference/inbox-issue/update-inbox-issue-detail",
+            "parser": "plane-v034-manual-contract-1"
+          }
+        },
+        "verification": "source_cited_provider_acknowledgement",
+        "detail": {
+          "effect_fields": []
+        }
+      },
+      "remediation": {
+        "kind": "documented_readback",
+        "reason": "registry contract is executable"
+      },
+      "request_schema": {
+        "available": true,
+        "provenance": {
+          "byte_sha256": "c93e7889bdbbad3b846e6b7285d1c9ebe5e371d7b0519ad90c7e43483e431abc",
+          "evidence": {
+            "body": {
+              "available": true,
+              "evidence": {
+                "kind": "ApiParam_section",
+                "line_end": 97,
+                "line_start": 48,
+                "parameter_count": 6,
+                "section": "Body Parameters"
+              }
+            },
+            "path": {
+              "available": true,
+              "evidence": {
+                "kind": "ApiParam_section",
+                "line_end": 48,
+                "line_start": 21,
+                "parameter_count": 3,
+                "section": "Path Parameters"
+              }
+            },
+            "query": {
+              "available": false,
+              "evidence": {
+                "kind": "section_absent"
+              }
+            }
+          },
+          "git_blob_sha": "a1fc4d3b8aeb26edbd6bd174545188b0ebefe984",
+          "parser_version": "plane-semantic-contract-parser-1",
+          "source_relative_path": "docs/api-reference/intake-issue/update-intake-issue-detail.md"
+        },
+        "schema": {
+          "available": true,
+          "body": {
+            "available": true,
+            "parameters": [
+              {
+                "description": "- `-2` - Pending - `-1` - Rejected - `0` - Snoozed - `1` - Accepted - `2` - Duplicate",
+                "enum": [
+                  "-2",
+                  "-1",
+                  "0",
+                  "1",
+                  "2"
+                ],
+                "evidence": {
+                  "kind": "ApiParam",
+                  "line_end": 58,
+                  "line_start": 50,
+                  "section": "Body Parameters"
+                },
+                "name": "status",
+                "required": false,
+                "type": "integer"
+              },
+              {
+                "description": "Snoozed till.",
+                "enum": [],
+                "evidence": {
+                  "kind": "ApiParam",
+                  "line_end": 64,
+                  "line_start": 58,
+                  "section": "Body Parameters"
+                },
+                "name": "snoozed_till",
+                "required": false,
+                "type": "string"
+              },
+              {
+                "description": "Duplicate to.",
+                "enum": [],
+                "evidence": {
+                  "kind": "ApiParam",
+                  "line_end": 70,
+                  "line_start": 64,
+                  "section": "Body Parameters"
+                },
+                "name": "duplicate_to",
+                "required": false,
+                "type": "string"
+              },
+              {
+                "description": "Source.",
+                "enum": [],
+                "evidence": {
+                  "kind": "ApiParam",
+                  "line_end": 76,
+                  "line_start": 70,
+                  "section": "Body Parameters"
+                },
+                "name": "source",
+                "required": false,
+                "type": "string"
+              },
+              {
+                "description": "Source email.",
+                "enum": [],
+                "evidence": {
+                  "kind": "ApiParam",
+                  "line_end": 82,
+                  "line_start": 76,
+                  "section": "Body Parameters"
+                },
+                "name": "source_email",
+                "required": false,
+                "type": "string"
+              },
+              {
+                "description": "Issue data to update in the intake issue",
+                "enum": [],
+                "evidence": {
+                  "kind": "ApiParam",
+                  "line_end": 88,
+                  "line_start": 82,
+                  "section": "Body Parameters"
+                },
+                "name": "issue",
+                "required": false,
+                "type": "object"
+              }
+            ]
+          },
+          "evidence": {
+            "body": {
+              "available": true,
+              "evidence": {
+                "kind": "ApiParam_section",
+                "line_end": 97,
+                "line_start": 48,
+                "parameter_count": 6,
+                "section": "Body Parameters"
+              }
+            },
+            "path": {
+              "available": true,
+              "evidence": {
+                "kind": "ApiParam_section",
+                "line_end": 48,
+                "line_start": 21,
+                "parameter_count": 3,
+                "section": "Path Parameters"
+              }
+            },
+            "query": {
+              "available": false,
+              "evidence": {
+                "kind": "section_absent"
+              }
+            }
+          },
+          "json_schema": {
+            "properties": {
+              "duplicate_to": {
+                "type": "string"
+              },
+              "issue": {
+                "type": "object"
+              },
+              "project_id": {
+                "type": "string"
+              },
+              "snoozed_till": {
+                "type": "string"
+              },
+              "source": {
+                "type": "string"
+              },
+              "source_email": {
+                "type": "string"
+              },
+              "status": {
+                "enum": [
+                  "-2",
+                  "-1",
+                  "0",
+                  "1",
+                  "2"
+                ],
+                "type": "integer"
+              },
+              "issue_id": {
+                "type": "string"
+              },
+              "workspace_slug": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "project_id",
+              "issue_id",
+              "workspace_slug"
+            ],
+            "type": "object"
+          },
+          "path": {
+            "binding_arity": true,
+            "parameters": [
+              {
+                "binding_evidence": {
+                  "endpoint_name": "workspace_slug",
+                  "kind": "endpoint_badge_overrides_generic_ApiParam_name",
+                  "source_name": "issue_id"
+                },
+                "description": "The unique identifier of the work item.",
+                "enum": [],
+                "evidence": {
+                  "kind": "ApiParam",
+                  "line_end": 27,
+                  "line_start": 23,
+                  "section": "Path Parameters"
+                },
+                "name": "workspace_slug",
+                "required": true,
+                "source_name": "issue_id",
+                "type": "string"
+              },
+              {
+                "description": "The unique identifier of the project.",
+                "enum": [],
+                "evidence": {
+                  "kind": "ApiParam",
+                  "line_end": 33,
+                  "line_start": 27,
+                  "section": "Path Parameters"
+                },
+                "name": "project_id",
+                "required": true,
+                "type": "string"
+              },
+              {
+                "binding_evidence": {
+                  "endpoint_name": "issue_id",
+                  "kind": "endpoint_badge_overrides_generic_ApiParam_name",
+                  "source_name": "workspace_slug"
+                },
+                "description": "The workspace_slug represents the unique workspace identifier for a workspace in Plane. It can be found in the URL. For example, in the URL `https://app.plane.so/my-team/projects/`, the workspace slug is `my-team`.",
+                "enum": [],
+                "evidence": {
+                  "kind": "ApiParam",
+                  "line_end": 39,
+                  "line_start": 33,
+                  "section": "Path Parameters"
+                },
+                "name": "issue_id",
+                "required": true,
+                "source_name": "workspace_slug",
+                "type": "string"
+              }
+            ],
+            "template_names": [
+              "workspace_slug",
+              "project_id",
+              "issue_id"
+            ]
+          },
+          "query": {
+            "parameters": []
+          }
+        }
+      },
+      "response_schema": null,
+      "schema_availability": {
+        "effect": true,
+        "request": true,
+        "response": true
+      },
+      "schema_hash": "eb74e84ecd7efd4936a88df9d5ca7384758467df0e1c46ebe3ddcfd81474f637",
+      "semantic_provenance": {
+        "alias_rule_hash": "09ee0797031181303a15da854cb54a792799b85f65c66cb37566ceda11cc4a4d",
+        "alias_rule_version": "plane-path-alias-v1",
+        "derivation_rule": "normalized_path_candidate_then_source_response_compatibility",
+        "mutation_byte_sha256": "c93e7889bdbbad3b846e6b7285d1c9ebe5e371d7b0519ad90c7e43483e431abc",
+        "mutation_evidence": {
+          "endpoint_badge": {
+            "kind": "endpoint_badge",
+            "line": 9,
+            "method": "PATCH",
+            "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/inbox-issues/{issue_id}/"
+          },
+          "frontmatter": {
+            "kind": "frontmatter",
+            "line_start": 1,
+            "title": "Update an intake work item"
+          },
+          "request": {
+            "body": {
+              "available": true,
+              "evidence": {
+                "kind": "ApiParam_section",
+                "line_end": 97,
+                "line_start": 48,
+                "parameter_count": 6,
+                "section": "Body Parameters"
+              }
+            },
+            "path": {
+              "available": true,
+              "evidence": {
+                "kind": "ApiParam_section",
+                "line_end": 48,
+                "line_start": 21,
+                "parameter_count": 3,
+                "section": "Path Parameters"
+              }
+            },
+            "query": {
+              "available": false,
+              "evidence": {
+                "kind": "section_absent"
+              }
+            }
+          },
+          "response": {
+            "panel_count": 1,
+            "status": 200
+          }
+        },
+        "mutation_git_blob_sha": "a1fc4d3b8aeb26edbd6bd174545188b0ebefe984",
+        "mutation_source_relative_path": "docs/api-reference/intake-issue/update-intake-issue-detail.md",
+        "parser_version": "plane-semantic-contract-parser-1"
+      },
+      "write_policy": "allow",
+      "schema_provenance": {
+        "source": "official-plane-developer-docs",
+        "url": "https://developers.plane.so",
+        "parser": "plane-v034-manual-contract-1"
+      }
+    },
+    {
+      "action": "work_item_relation__create_work_item_relation",
+      "write_policy": "allow",
+      "expected_terminal": "verified",
+      "executor": "PlaneClient.execute_mutation_action",
+      "effect": {
+        "http_method": "POST",
+        "kind": "write_create_or_associate"
+      },
+      "postcondition": {
+        "kind": "membership_state",
+        "strategy": "membership_state",
+        "method": "GET",
+        "get_action": "work_item_relation__list_work_item_relations",
+        "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/work-items/{work_item_id}/relations/",
+        "expected_status": 201,
+        "readback_expected_status": 200,
+        "response_shape": "relation_map",
+        "bindings": [
+          {
+            "mutation": "workspace_slug",
+            "readback": "workspace_slug",
+            "rule": "exact"
+          },
+          {
+            "mutation": "project_id",
+            "readback": "project_id",
+            "rule": "exact"
+          },
+          {
+            "mutation": "work_item_id",
+            "readback": "work_item_id",
+            "rule": "exact"
+          }
+        ],
+        "targets": {
+          "path_fields": [],
+          "payload_fields": [
+            "issues"
+          ],
+          "write_response_fields": [],
+          "selector": {
+            "source": "payload",
+            "field": "issues"
+          },
+          "evidence": {
+            "source": "official-plane-developer-docs",
+            "url": "https://developers.plane.so/api-reference/work-item-relations/create-work-item-relation",
+            "parser": "plane-v034-manual-contract-1"
+          }
+        },
+        "membership": {
+          "target_presence": "present",
+          "relation_type_source": "payload"
+        },
+        "matcher": {
+          "field": "id",
+          "type": "relation_map"
+        },
+        "pagination": {
+          "mode": "none",
+          "max_pages": 1,
+          "max_rows": 10000
+        },
+        "effects": {
+          "payload_fields": [],
+          "required_payload_effects": []
+        },
+        "verification": "source_cited_relation_map_membership"
+      }
+    },
+    {
+      "action": "work_item_relation__remove_work_item_relation",
+      "write_policy": "allow",
+      "expected_terminal": "verified_absence",
+      "executor": "PlaneClient.execute_mutation_action",
+      "effect": {
+        "http_method": "POST",
+        "kind": "write_delete"
+      },
+      "postcondition": {
+        "kind": "membership_state",
+        "strategy": "membership_state",
+        "method": "GET",
+        "get_action": "work_item_relation__list_work_item_relations",
+        "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/work-items/{work_item_id}/relations/",
+        "expected_status": 204,
+        "readback_expected_status": 200,
+        "response_shape": "relation_map",
+        "bindings": [
+          {
+            "mutation": "workspace_slug",
+            "readback": "workspace_slug",
+            "rule": "exact"
+          },
+          {
+            "mutation": "project_id",
+            "readback": "project_id",
+            "rule": "exact"
+          },
+          {
+            "mutation": "work_item_id",
+            "readback": "work_item_id",
+            "rule": "exact"
+          }
+        ],
+        "targets": {
+          "path_fields": [],
+          "payload_fields": [
+            "related_issue"
+          ],
+          "write_response_fields": [],
+          "selector": {
+            "source": "payload",
+            "field": "related_issue"
+          },
+          "evidence": {
+            "source": "official-plane-developer-docs",
+            "url": "https://developers.plane.so/api-reference/work-item-relations/remove-work-item-relation",
+            "parser": "plane-v034-manual-contract-1"
+          }
+        },
+        "membership": {
+          "target_presence": "absent"
+        },
+        "matcher": {
+          "field": "id",
+          "type": "relation_map"
+        },
+        "pagination": {
+          "mode": "none",
+          "max_pages": 1,
+          "max_rows": 10000
+        },
+        "effects": {
+          "payload_fields": [],
+          "required_payload_effects": []
+        },
+        "verification": "source_cited_relation_map_absence"
+      }
     }
   ],
   "mutation_inventory": {
-    "contract_policy_counts": {
-      "allow": 134,
-      "deny": 0
-    },
-    "denominator": 134,
-    "graph_reconciliation": {
-      "ambiguous_candidate_count": 0,
-      "candidate_count": 122,
-      "incompatible_schema_count": 0,
-      "remediated_readback_count": 133,
-      "rule": "normalized_path_candidate_then_source_response_compatibility",
-      "zero_candidate_count": 12
-    },
-    "strategy_counts": {
-      "detail_state": 5,
-      "membership_state": 77,
-      "provider_ack": 52
-    },
+    "denominator": 139,
+    "supported_count": 139,
+    "unsupported_count": 0,
     "supported_actions": [
       "assets__create_user_asset_upload",
       "assets__create_workspace_asset_upload",
@@ -91028,6 +93082,9 @@
       "idp_group_sync__update_group_sync_config",
       "idp_group_sync__update_project_mapping",
       "idp_group_sync__update_workspace_mapping",
+      "inbox_issue__add_inbox_issue",
+      "inbox_issue__delete_inbox_issue",
+      "inbox_issue__update_inbox_issue_detail",
       "initiative__add_epics_to_initiative",
       "initiative__add_initiative",
       "initiative__add_initiative_label",
@@ -91113,6 +93170,8 @@
       "values__update_property_value",
       "work_item_pages__add_work_item_page",
       "work_item_pages__delete_work_item_page",
+      "work_item_relation__create_work_item_relation",
+      "work_item_relation__remove_work_item_relation",
       "worklogs__create_worklog",
       "worklogs__delete_worklog",
       "worklogs__update_worklog",
@@ -91121,14 +93180,29 @@
       "workspace_invitations__delete_workspace_invitation",
       "workspace_invitations__update_workspace_invitation"
     ],
-    "supported_count": 134,
+    "unsupported_actions": [],
+    "contract_policy_counts": {
+      "allow": 139,
+      "deny": 0
+    },
     "terminal_counts": {
       "provider_acknowledged": 52,
-      "verified": 51,
-      "verified_absence": 31
+      "verified": 54,
+      "verified_absence": 33
     },
-    "unsupported_actions": [],
-    "unsupported_count": 0
+    "strategy_counts": {
+      "detail_state": 6,
+      "membership_state": 81,
+      "provider_ack": 52
+    },
+    "graph_reconciliation": {
+      "rule": "normalized_path_candidate_then_source_response_compatibility",
+      "candidate_count": 139,
+      "ambiguous_candidate_count": 0,
+      "zero_candidate_count": 0,
+      "incompatible_schema_count": 0,
+      "remediated_readback_count": 139
+    }
   },
   "mutation_metadata": {
     "alias_rule_hash": "09ee0797031181303a15da854cb54a792799b85f65c66cb37566ceda11cc4a4d",
@@ -91136,16 +93210,16 @@
     "contract_schema": "postcondition-v2",
     "contract_version": 2,
     "frozen_denominator": {
-      "http_operations": 223,
-      "mutations": 134,
-      "operations": 225
+      "operations": 233,
+      "http_operations": 231,
+      "mutations": 139
     },
     "parser_version": "plane-semantic-contract-parser-1",
-    "recomputed_supported": 134,
+    "recomputed_supported": 139,
     "recomputed_unsupported": 0,
     "snapshot_manifest_sha256": "133f524ea30d530869a3ab294fea5d2e87f0b65df03a797837871ec91fc6b4d9"
   },
-  "operation_count": 225,
+  "operation_count": 233,
   "operations": [
     {
       "action": "assets__delete_user_asset",
@@ -182757,6 +184831,1990 @@
       },
       "summary": "Advanced search work items",
       "surface": "issue"
+    },
+    {
+      "action": "inbox_issue__add_inbox_issue",
+      "docs_path": "/api-reference/inbox-issue/add-inbox-issue",
+      "effect": {
+        "available": true,
+        "evidence": {
+          "kind": "endpoint_badge",
+          "line": 9,
+          "method": "POST",
+          "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/inbox-issues/"
+        },
+        "http_method": "POST",
+        "kind": "write_create_or_associate"
+      },
+      "frontmatter": {
+        "description": "Create an intake work item via Plane API. HTTP request format, parameters, scopes, and example responses for create an intake work item.",
+        "keywords": "plane, plane api, rest api, api integration, inbox issue, create an intake work item",
+        "title": "Create an intake work item"
+      },
+      "method": "POST",
+      "mode": "descriptor",
+      "mutation": true,
+      "normalized_graph_key": "/api/v1/workspaces/{p0}/projects/{p1}/inbox-issues/",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/inbox-issues/",
+      "request_schema": {
+        "available": true,
+        "body": {
+          "available": true,
+          "parameters": [
+            {
+              "description": "Issue data for the inbox issue",
+              "enum": [],
+              "evidence": {
+                "kind": "ApiParam",
+                "line_end": 48,
+                "line_start": 44,
+                "section": "Body Parameters"
+              },
+              "name": "issue",
+              "required": true,
+              "type": "object"
+            }
+          ]
+        },
+        "evidence": {
+          "body": {
+            "available": true,
+            "evidence": {
+              "kind": "ApiParam_section",
+              "line_end": 57,
+              "line_start": 42,
+              "parameter_count": 1,
+              "section": "Body Parameters"
+            }
+          },
+          "path": {
+            "available": true,
+            "evidence": {
+              "kind": "ApiParam_section",
+              "line_end": 42,
+              "line_start": 21,
+              "parameter_count": 2,
+              "section": "Path Parameters"
+            }
+          },
+          "query": {
+            "available": false,
+            "evidence": {
+              "kind": "section_absent"
+            }
+          }
+        },
+        "json_schema": {
+          "properties": {
+            "issue": {
+              "type": "object"
+            },
+            "project_id": {
+              "type": "string"
+            },
+            "workspace_slug": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "issue",
+            "project_id",
+            "workspace_slug"
+          ],
+          "type": "object"
+        },
+        "path": {
+          "binding_arity": true,
+          "parameters": [
+            {
+              "binding_evidence": {
+                "endpoint_name": "workspace_slug",
+                "kind": "endpoint_badge_overrides_generic_ApiParam_name",
+                "source_name": "project_id"
+              },
+              "description": "The unique identifier of the project.",
+              "enum": [],
+              "evidence": {
+                "kind": "ApiParam",
+                "line_end": 27,
+                "line_start": 23,
+                "section": "Path Parameters"
+              },
+              "name": "workspace_slug",
+              "required": true,
+              "source_name": "project_id",
+              "type": "string"
+            },
+            {
+              "binding_evidence": {
+                "endpoint_name": "project_id",
+                "kind": "endpoint_badge_overrides_generic_ApiParam_name",
+                "source_name": "workspace_slug"
+              },
+              "description": "The workspace_slug represents the unique workspace identifier for a workspace in Plane. It can be found in the URL. For example, in the URL `https://app.plane.so/my-team/projects/`, the workspace slug is `my-team`.",
+              "enum": [],
+              "evidence": {
+                "kind": "ApiParam",
+                "line_end": 33,
+                "line_start": 27,
+                "section": "Path Parameters"
+              },
+              "name": "project_id",
+              "required": true,
+              "source_name": "workspace_slug",
+              "type": "string"
+            }
+          ],
+          "template_names": [
+            "workspace_slug",
+            "project_id"
+          ]
+        },
+        "query": {
+          "parameters": []
+        }
+      },
+      "response_schema": {
+        "available": true,
+        "evidence": {
+          "json": {
+            "kind": "json_fence",
+            "line_end": 18,
+            "line_start": 4
+          },
+          "kind": "ResponsePanel",
+          "line_end": 151,
+          "line_start": 132
+        },
+        "example": {
+          "created_at": "2024-01-01T00:00:00Z",
+          "id": "550e8400-e29b-41d4-a716-446655440000",
+          "issue": {
+            "description": "Example description",
+            "id": "550e8400-e29b-41d4-a716-446655440000",
+            "name": "Example Name",
+            "priority": "medium",
+            "sequence_id": 124
+          },
+          "source": "in_app",
+          "status": 0,
+          "updated_at": "2024-01-01T00:00:00Z"
+        },
+        "json_schema": {
+          "properties": {
+            "created_at": {
+              "type": "string"
+            },
+            "id": {
+              "type": "string"
+            },
+            "issue": {
+              "properties": {
+                "description": {
+                  "type": "string"
+                },
+                "id": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "priority": {
+                  "type": "string"
+                },
+                "sequence_id": {
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "description",
+                "id",
+                "name",
+                "priority",
+                "sequence_id"
+              ],
+              "type": "object"
+            },
+            "source": {
+              "type": "string"
+            },
+            "status": {
+              "type": "integer"
+            },
+            "updated_at": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "created_at",
+            "id",
+            "issue",
+            "source",
+            "status",
+            "updated_at"
+          ],
+          "type": "object"
+        },
+        "pagination": {
+          "cursor_parameter": null,
+          "mode": "none",
+          "next_page_flag": null
+        },
+        "panels": [
+          {
+            "evidence": {
+              "json": {
+                "kind": "json_fence",
+                "line_end": 18,
+                "line_start": 4
+              },
+              "kind": "ResponsePanel",
+              "line_end": 151,
+              "line_start": 132
+            },
+            "shape": "detail",
+            "status": 201
+          }
+        ],
+        "semantic": {
+          "available": true,
+          "evidence": {
+            "json": {
+              "kind": "json_fence",
+              "line_end": 18,
+              "line_start": 4
+            },
+            "kind": "ResponsePanel",
+            "line_end": 151,
+            "line_start": 132
+          },
+          "provenance": {
+            "derived_from": "ResponsePanel JSON/status"
+          }
+        },
+        "shape": "detail",
+        "status": 201
+      },
+      "schema_availability": {
+        "effect": true,
+        "request": true,
+        "response": true
+      },
+      "schema_hash": "e651a521e2e9a5600654a8b2e916641393755a0c722b8f4fde7cb26c5c312b1b",
+      "schema_provenance": {
+        "source": "official-plane-developer-docs",
+        "url": "https://developers.plane.so/api-reference/inbox-issue/add-inbox-issue",
+        "parser": "plane-v034-manual-contract-1"
+      },
+      "semantic_provenance": {
+        "source": "official-plane-developer-docs",
+        "url": "https://developers.plane.so/api-reference/inbox-issue/add-inbox-issue",
+        "parser": "plane-v034-manual-contract-1"
+      },
+      "summary": "Add Inbox Issue",
+      "surface": "intake-issue"
+    },
+    {
+      "action": "inbox_issue__delete_inbox_issue",
+      "docs_path": "/api-reference/inbox-issue/delete-inbox-issue",
+      "effect": {
+        "available": true,
+        "evidence": {
+          "kind": "endpoint_badge",
+          "line": 9,
+          "method": "DELETE",
+          "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/inbox-issues/{issue_id}/"
+        },
+        "http_method": "DELETE",
+        "kind": "write_delete"
+      },
+      "frontmatter": {
+        "description": "Delete an intake work item via Plane API. HTTP request format, parameters, scopes, and example responses for delete an intake work item.",
+        "keywords": "plane, plane api, rest api, api integration, inbox issue, delete an intake work item",
+        "title": "Delete an intake work item"
+      },
+      "method": "DELETE",
+      "mode": "descriptor",
+      "mutation": true,
+      "normalized_graph_key": "/api/v1/workspaces/{p0}/projects/{p1}/inbox-issues/{p2}/",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/inbox-issues/{issue_id}/",
+      "request_schema": {
+        "available": true,
+        "body": {
+          "available": false,
+          "parameters": []
+        },
+        "evidence": {
+          "body": {
+            "available": false,
+            "evidence": {
+              "kind": "section_absent"
+            }
+          },
+          "path": {
+            "available": true,
+            "evidence": {
+              "kind": "ApiParam_section",
+              "line_end": 48,
+              "line_start": 21,
+              "parameter_count": 3,
+              "section": "Path Parameters"
+            }
+          },
+          "query": {
+            "available": false,
+            "evidence": {
+              "kind": "section_absent"
+            }
+          }
+        },
+        "json_schema": {
+          "properties": {
+            "project_id": {
+              "type": "string"
+            },
+            "issue_id": {
+              "type": "string"
+            },
+            "workspace_slug": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "project_id",
+            "issue_id",
+            "workspace_slug"
+          ],
+          "type": "object"
+        },
+        "path": {
+          "binding_arity": true,
+          "parameters": [
+            {
+              "binding_evidence": {
+                "endpoint_name": "workspace_slug",
+                "kind": "endpoint_badge_overrides_generic_ApiParam_name",
+                "source_name": "issue_id"
+              },
+              "description": "The unique identifier of the work item.",
+              "enum": [],
+              "evidence": {
+                "kind": "ApiParam",
+                "line_end": 27,
+                "line_start": 23,
+                "section": "Path Parameters"
+              },
+              "name": "workspace_slug",
+              "required": true,
+              "source_name": "issue_id",
+              "type": "string"
+            },
+            {
+              "description": "The unique identifier of the project.",
+              "enum": [],
+              "evidence": {
+                "kind": "ApiParam",
+                "line_end": 33,
+                "line_start": 27,
+                "section": "Path Parameters"
+              },
+              "name": "project_id",
+              "required": true,
+              "type": "string"
+            },
+            {
+              "binding_evidence": {
+                "endpoint_name": "issue_id",
+                "kind": "endpoint_badge_overrides_generic_ApiParam_name",
+                "source_name": "workspace_slug"
+              },
+              "description": "The workspace_slug represents the unique workspace identifier for a workspace in Plane. It can be found in the URL. For example, in the URL `https://app.plane.so/my-team/projects/`, the workspace slug is `my-team`.",
+              "enum": [],
+              "evidence": {
+                "kind": "ApiParam",
+                "line_end": 39,
+                "line_start": 33,
+                "section": "Path Parameters"
+              },
+              "name": "issue_id",
+              "required": true,
+              "source_name": "workspace_slug",
+              "type": "string"
+            }
+          ],
+          "template_names": [
+            "workspace_slug",
+            "project_id",
+            "issue_id"
+          ]
+        },
+        "query": {
+          "parameters": []
+        }
+      },
+      "response_schema": {
+        "available": false,
+        "evidence": {
+          "json": {
+            "kind": "missing_json_fence"
+          },
+          "kind": "ResponsePanel",
+          "line_end": 104,
+          "line_start": 100
+        },
+        "example": null,
+        "json_schema": null,
+        "pagination": {
+          "cursor_parameter": null,
+          "mode": "none",
+          "next_page_flag": null
+        },
+        "panels": [
+          {
+            "evidence": {
+              "json": {
+                "kind": "missing_json_fence"
+              },
+              "kind": "ResponsePanel",
+              "line_end": 104,
+              "line_start": 100
+            },
+            "shape": "empty",
+            "status": 204
+          }
+        ],
+        "semantic": {
+          "available": false,
+          "evidence": {
+            "json": {
+              "kind": "missing_json_fence"
+            },
+            "kind": "ResponsePanel",
+            "line_end": 104,
+            "line_start": 100
+          },
+          "provenance": {
+            "derived_from": "ResponsePanel JSON/status"
+          }
+        },
+        "shape": "empty",
+        "status": 204
+      },
+      "schema_availability": {
+        "effect": true,
+        "request": true,
+        "response": false
+      },
+      "schema_hash": "c998a703677fde20ee38bc1432b6ee67a9ea90937b4658fc93b83aa16a943fec",
+      "schema_provenance": {
+        "source": "official-plane-developer-docs",
+        "url": "https://developers.plane.so/api-reference/inbox-issue/delete-inbox-issue",
+        "parser": "plane-v034-manual-contract-1"
+      },
+      "semantic_provenance": {
+        "source": "official-plane-developer-docs",
+        "url": "https://developers.plane.so/api-reference/inbox-issue/delete-inbox-issue",
+        "parser": "plane-v034-manual-contract-1"
+      },
+      "summary": "Delete Inbox Issue",
+      "surface": "intake-issue"
+    },
+    {
+      "action": "inbox_issue__get_inbox_issue_detail",
+      "docs_path": "/api-reference/inbox-issue/get-inbox-issue-detail",
+      "effect": {
+        "available": false,
+        "evidence": {
+          "kind": "endpoint_badge",
+          "line": 9,
+          "method": "GET",
+          "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/inbox-issues/{issue_id}/"
+        },
+        "http_method": "GET",
+        "kind": "read"
+      },
+      "frontmatter": {
+        "description": "Retrieve an intake work item via Plane API. HTTP request format, parameters, scopes, and example responses for retrieve an intake work item.",
+        "keywords": "plane, plane api, rest api, api integration, inbox issue, retrieve an intake work item",
+        "title": "Retrieve an intake work item"
+      },
+      "method": "GET",
+      "mode": "read",
+      "mutation": false,
+      "normalized_graph_key": "/api/v1/workspaces/{p0}/projects/{p1}/inbox-issues/{p2}/",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/inbox-issues/{issue_id}/",
+      "request_schema": {
+        "available": true,
+        "body": {
+          "available": false,
+          "parameters": []
+        },
+        "evidence": {
+          "body": {
+            "available": false,
+            "evidence": {
+              "kind": "section_absent"
+            }
+          },
+          "path": {
+            "available": true,
+            "evidence": {
+              "kind": "ApiParam_section",
+              "line_end": 48,
+              "line_start": 21,
+              "parameter_count": 3,
+              "section": "Path Parameters"
+            }
+          },
+          "query": {
+            "available": false,
+            "evidence": {
+              "kind": "section_absent"
+            }
+          }
+        },
+        "json_schema": {
+          "properties": {
+            "project_id": {
+              "type": "string"
+            },
+            "issue_id": {
+              "type": "string"
+            },
+            "workspace_slug": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "project_id",
+            "issue_id",
+            "workspace_slug"
+          ],
+          "type": "object"
+        },
+        "path": {
+          "binding_arity": true,
+          "parameters": [
+            {
+              "binding_evidence": {
+                "endpoint_name": "workspace_slug",
+                "kind": "endpoint_badge_overrides_generic_ApiParam_name",
+                "source_name": "issue_id"
+              },
+              "description": "The unique identifier of the work item.",
+              "enum": [],
+              "evidence": {
+                "kind": "ApiParam",
+                "line_end": 27,
+                "line_start": 23,
+                "section": "Path Parameters"
+              },
+              "name": "workspace_slug",
+              "required": true,
+              "source_name": "issue_id",
+              "type": "string"
+            },
+            {
+              "description": "The unique identifier of the project.",
+              "enum": [],
+              "evidence": {
+                "kind": "ApiParam",
+                "line_end": 33,
+                "line_start": 27,
+                "section": "Path Parameters"
+              },
+              "name": "project_id",
+              "required": true,
+              "type": "string"
+            },
+            {
+              "binding_evidence": {
+                "endpoint_name": "issue_id",
+                "kind": "endpoint_badge_overrides_generic_ApiParam_name",
+                "source_name": "workspace_slug"
+              },
+              "description": "The workspace_slug represents the unique workspace identifier for a workspace in Plane. It can be found in the URL. For example, in the URL `https://app.plane.so/my-team/projects/`, the workspace slug is `my-team`.",
+              "enum": [],
+              "evidence": {
+                "kind": "ApiParam",
+                "line_end": 39,
+                "line_start": 33,
+                "section": "Path Parameters"
+              },
+              "name": "issue_id",
+              "required": true,
+              "source_name": "workspace_slug",
+              "type": "string"
+            }
+          ],
+          "template_names": [
+            "workspace_slug",
+            "project_id",
+            "issue_id"
+          ]
+        },
+        "query": {
+          "parameters": []
+        }
+      },
+      "response_schema": {
+        "available": true,
+        "evidence": {
+          "json": {
+            "kind": "json_fence",
+            "line_end": 18,
+            "line_start": 4
+          },
+          "kind": "ResponsePanel",
+          "line_end": 119,
+          "line_start": 100
+        },
+        "example": {
+          "created_at": "2024-01-01T00:00:00Z",
+          "id": "550e8400-e29b-41d4-a716-446655440000",
+          "issue": {
+            "description": "Example description",
+            "id": "550e8400-e29b-41d4-a716-446655440000",
+            "name": "Example Name",
+            "priority": "medium",
+            "sequence_id": 124
+          },
+          "source": "in_app",
+          "status": 0,
+          "updated_at": "2024-01-01T00:00:00Z"
+        },
+        "json_schema": {
+          "properties": {
+            "created_at": {
+              "type": "string"
+            },
+            "id": {
+              "type": "string"
+            },
+            "issue": {
+              "properties": {
+                "description": {
+                  "type": "string"
+                },
+                "id": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "priority": {
+                  "type": "string"
+                },
+                "sequence_id": {
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "description",
+                "id",
+                "name",
+                "priority",
+                "sequence_id"
+              ],
+              "type": "object"
+            },
+            "source": {
+              "type": "string"
+            },
+            "status": {
+              "type": "integer"
+            },
+            "updated_at": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "created_at",
+            "id",
+            "issue",
+            "source",
+            "status",
+            "updated_at"
+          ],
+          "type": "object"
+        },
+        "pagination": {
+          "cursor_parameter": null,
+          "mode": "none",
+          "next_page_flag": null
+        },
+        "panels": [
+          {
+            "evidence": {
+              "json": {
+                "kind": "json_fence",
+                "line_end": 18,
+                "line_start": 4
+              },
+              "kind": "ResponsePanel",
+              "line_end": 119,
+              "line_start": 100
+            },
+            "shape": "detail",
+            "status": 200
+          }
+        ],
+        "semantic": {
+          "available": true,
+          "evidence": {
+            "json": {
+              "kind": "json_fence",
+              "line_end": 18,
+              "line_start": 4
+            },
+            "kind": "ResponsePanel",
+            "line_end": 119,
+            "line_start": 100
+          },
+          "provenance": {
+            "derived_from": "ResponsePanel JSON/status"
+          }
+        },
+        "shape": "detail",
+        "status": 200
+      },
+      "schema_availability": {
+        "effect": true,
+        "request": true,
+        "response": true
+      },
+      "schema_hash": "4cde1d25f980c56cb4d2cc7e0f09f8707cf8ee4a21a9fc9e85d5d7ab04c11c74",
+      "schema_provenance": {
+        "source": "official-plane-developer-docs",
+        "url": "https://developers.plane.so/api-reference/inbox-issue/get-inbox-issue-detail",
+        "parser": "plane-v034-manual-contract-1"
+      },
+      "semantic_provenance": {
+        "source": "official-plane-developer-docs",
+        "url": "https://developers.plane.so/api-reference/inbox-issue/get-inbox-issue-detail",
+        "parser": "plane-v034-manual-contract-1"
+      },
+      "summary": "Get Inbox Issue detail",
+      "surface": "intake-issue"
+    },
+    {
+      "action": "inbox_issue__list_inbox_issues",
+      "docs_path": "/api-reference/inbox-issue/list-inbox-issues",
+      "effect": {
+        "available": false,
+        "evidence": {
+          "kind": "endpoint_badge",
+          "line": 9,
+          "method": "GET",
+          "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/inbox-issues/"
+        },
+        "http_method": "GET",
+        "kind": "read"
+      },
+      "frontmatter": {
+        "description": "List all intake work items via Plane API. HTTP request format, parameters, scopes, and example responses for list all intake work items.",
+        "keywords": "plane, plane api, rest api, api integration, inbox issue, list all intake work items",
+        "title": "List all intake work items"
+      },
+      "method": "GET",
+      "mode": "read",
+      "mutation": false,
+      "normalized_graph_key": "/api/v1/workspaces/{p0}/projects/{p1}/inbox-issues/",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/inbox-issues/",
+      "request_schema": {
+        "available": true,
+        "body": {
+          "available": false,
+          "parameters": []
+        },
+        "evidence": {
+          "body": {
+            "available": false,
+            "evidence": {
+              "kind": "section_absent"
+            }
+          },
+          "path": {
+            "available": true,
+            "evidence": {
+              "kind": "ApiParam_section",
+              "line_end": 42,
+              "line_start": 21,
+              "parameter_count": 2,
+              "section": "Path Parameters"
+            }
+          },
+          "query": {
+            "available": true,
+            "evidence": {
+              "kind": "ApiParam_section",
+              "line_end": 75,
+              "line_start": 42,
+              "parameter_count": 4,
+              "section": "Query Parameters"
+            }
+          }
+        },
+        "json_schema": {
+          "properties": {
+            "cursor": {
+              "type": "string"
+            },
+            "expand": {
+              "type": "string"
+            },
+            "fields": {
+              "type": "string"
+            },
+            "per_page": {
+              "type": "integer"
+            },
+            "project_id": {
+              "type": "string"
+            },
+            "workspace_slug": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "project_id",
+            "workspace_slug"
+          ],
+          "type": "object"
+        },
+        "path": {
+          "binding_arity": true,
+          "parameters": [
+            {
+              "binding_evidence": {
+                "endpoint_name": "workspace_slug",
+                "kind": "endpoint_badge_overrides_generic_ApiParam_name",
+                "source_name": "project_id"
+              },
+              "description": "The unique identifier of the project.",
+              "enum": [],
+              "evidence": {
+                "kind": "ApiParam",
+                "line_end": 27,
+                "line_start": 23,
+                "section": "Path Parameters"
+              },
+              "name": "workspace_slug",
+              "required": true,
+              "source_name": "project_id",
+              "type": "string"
+            },
+            {
+              "binding_evidence": {
+                "endpoint_name": "project_id",
+                "kind": "endpoint_badge_overrides_generic_ApiParam_name",
+                "source_name": "workspace_slug"
+              },
+              "description": "The workspace_slug represents the unique workspace identifier for a workspace in Plane. It can be found in the URL. For example, in the URL `https://app.plane.so/my-team/projects/`, the workspace slug is `my-team`.",
+              "enum": [],
+              "evidence": {
+                "kind": "ApiParam",
+                "line_end": 33,
+                "line_start": 27,
+                "section": "Path Parameters"
+              },
+              "name": "project_id",
+              "required": true,
+              "source_name": "workspace_slug",
+              "type": "string"
+            }
+          ],
+          "template_names": [
+            "workspace_slug",
+            "project_id"
+          ]
+        },
+        "query": {
+          "parameters": [
+            {
+              "description": "Pagination cursor for getting next set of results",
+              "enum": [],
+              "evidence": {
+                "kind": "ApiParam",
+                "line_end": 48,
+                "line_start": 44,
+                "section": "Query Parameters"
+              },
+              "name": "cursor",
+              "required": false,
+              "type": "string"
+            },
+            {
+              "description": "Comma-separated list of related fields to expand in response",
+              "enum": [],
+              "evidence": {
+                "kind": "ApiParam",
+                "line_end": 54,
+                "line_start": 48,
+                "section": "Query Parameters"
+              },
+              "name": "expand",
+              "required": false,
+              "type": "string"
+            },
+            {
+              "description": "Comma-separated list of fields to include in response",
+              "enum": [],
+              "evidence": {
+                "kind": "ApiParam",
+                "line_end": 60,
+                "line_start": 54,
+                "section": "Query Parameters"
+              },
+              "name": "fields",
+              "required": false,
+              "type": "string"
+            },
+            {
+              "description": "Number of results per page (default: 20, max: 100)",
+              "enum": [],
+              "evidence": {
+                "kind": "ApiParam",
+                "line_end": 66,
+                "line_start": 60,
+                "section": "Query Parameters"
+              },
+              "name": "per_page",
+              "required": false,
+              "type": "integer"
+            }
+          ]
+        }
+      },
+      "response_schema": {
+        "available": true,
+        "compatibility_overrides": [
+          {
+            "evidence": "plane_provider_2026_08_11",
+            "field": "grouped_by",
+            "kind": "observed_nullable_collection_metadata"
+          },
+          {
+            "evidence": "plane_provider_2026_08_11",
+            "field": "sub_grouped_by",
+            "kind": "observed_nullable_collection_metadata"
+          }
+        ],
+        "evidence": {
+          "json": {
+            "kind": "json_fence",
+            "line_end": 24,
+            "line_start": 4
+          },
+          "kind": "ResponsePanel",
+          "line_end": 152,
+          "line_start": 127
+        },
+        "example": {
+          "count": 20,
+          "extra_stats": null,
+          "grouped_by": "state",
+          "next_cursor": "20:1:0",
+          "next_page_results": true,
+          "prev_cursor": "20:0:0",
+          "prev_page_results": false,
+          "results": [
+            {
+              "created_at": "2024-01-01T00:00:00Z",
+              "id": "550e8400-e29b-41d4-a716-446655440000",
+              "name": "Example Name"
+            }
+          ],
+          "sub_grouped_by": "priority",
+          "total_count": 150,
+          "total_pages": 8,
+          "total_results": 150
+        },
+        "json_schema": {
+          "properties": {
+            "count": {
+              "type": "integer"
+            },
+            "extra_stats": {
+              "type": "null"
+            },
+            "grouped_by": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "next_cursor": {
+              "type": "string"
+            },
+            "next_page_results": {
+              "type": "boolean"
+            },
+            "prev_cursor": {
+              "type": "string"
+            },
+            "prev_page_results": {
+              "type": "boolean"
+            },
+            "results": {
+              "items": {
+                "properties": {
+                  "created_at": {
+                    "type": "string"
+                  },
+                  "id": {
+                    "type": "string"
+                  },
+                  "name": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "created_at",
+                  "id",
+                  "name"
+                ],
+                "type": "object"
+              },
+              "type": "array"
+            },
+            "sub_grouped_by": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "total_count": {
+              "type": "integer"
+            },
+            "total_pages": {
+              "type": "integer"
+            },
+            "total_results": {
+              "type": "integer"
+            }
+          },
+          "required": [
+            "count",
+            "extra_stats",
+            "grouped_by",
+            "next_cursor",
+            "next_page_results",
+            "prev_cursor",
+            "prev_page_results",
+            "results",
+            "sub_grouped_by",
+            "total_count",
+            "total_pages",
+            "total_results"
+          ],
+          "type": "object"
+        },
+        "pagination": {
+          "cursor_parameter": "cursor",
+          "mode": "cursor",
+          "next_page_flag": "next_page_results"
+        },
+        "panels": [
+          {
+            "evidence": {
+              "json": {
+                "kind": "json_fence",
+                "line_end": 24,
+                "line_start": 4
+              },
+              "kind": "ResponsePanel",
+              "line_end": 152,
+              "line_start": 127
+            },
+            "shape": "collection",
+            "status": 200
+          }
+        ],
+        "semantic": {
+          "available": true,
+          "evidence": {
+            "json": {
+              "kind": "json_fence",
+              "line_end": 24,
+              "line_start": 4
+            },
+            "kind": "ResponsePanel",
+            "line_end": 152,
+            "line_start": 127
+          },
+          "provenance": {
+            "derived_from": "ResponsePanel JSON/status"
+          }
+        },
+        "shape": "collection",
+        "status": 200
+      },
+      "schema_availability": {
+        "effect": true,
+        "request": true,
+        "response": true
+      },
+      "schema_hash": "e399d03dfb4250d17674dc7fab77ba85388cbe48f3af7b04e48baa4aa3cae86f",
+      "schema_provenance": {
+        "source": "official-plane-developer-docs",
+        "url": "https://developers.plane.so/api-reference/inbox-issue/list-inbox-issues",
+        "parser": "plane-v034-manual-contract-1"
+      },
+      "semantic_provenance": {
+        "source": "official-plane-developer-docs",
+        "url": "https://developers.plane.so/api-reference/inbox-issue/list-inbox-issues",
+        "parser": "plane-v034-manual-contract-1"
+      },
+      "summary": "List Inbox Issues",
+      "surface": "intake-issue"
+    },
+    {
+      "action": "inbox_issue__update_inbox_issue_detail",
+      "docs_path": "/api-reference/inbox-issue/update-inbox-issue-detail",
+      "effect": {
+        "available": true,
+        "evidence": {
+          "kind": "endpoint_badge",
+          "line": 9,
+          "method": "PATCH",
+          "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/inbox-issues/{issue_id}/"
+        },
+        "http_method": "PATCH",
+        "kind": "write_update"
+      },
+      "frontmatter": {
+        "description": "Update an intake work item via Plane API. HTTP request format, parameters, scopes, and example responses for update an intake work item.",
+        "keywords": "plane, plane api, rest api, api integration, inbox issue, update an intake work item",
+        "title": "Update an intake work item"
+      },
+      "method": "PATCH",
+      "mode": "descriptor",
+      "mutation": true,
+      "normalized_graph_key": "/api/v1/workspaces/{p0}/projects/{p1}/inbox-issues/{p2}/",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/inbox-issues/{issue_id}/",
+      "request_schema": {
+        "available": true,
+        "body": {
+          "available": true,
+          "parameters": [
+            {
+              "description": "- `-2` - Pending - `-1` - Rejected - `0` - Snoozed - `1` - Accepted - `2` - Duplicate",
+              "enum": [
+                "-2",
+                "-1",
+                "0",
+                "1",
+                "2"
+              ],
+              "evidence": {
+                "kind": "ApiParam",
+                "line_end": 58,
+                "line_start": 50,
+                "section": "Body Parameters"
+              },
+              "name": "status",
+              "required": false,
+              "type": "integer"
+            },
+            {
+              "description": "Snoozed till.",
+              "enum": [],
+              "evidence": {
+                "kind": "ApiParam",
+                "line_end": 64,
+                "line_start": 58,
+                "section": "Body Parameters"
+              },
+              "name": "snoozed_till",
+              "required": false,
+              "type": "string"
+            },
+            {
+              "description": "Duplicate to.",
+              "enum": [],
+              "evidence": {
+                "kind": "ApiParam",
+                "line_end": 70,
+                "line_start": 64,
+                "section": "Body Parameters"
+              },
+              "name": "duplicate_to",
+              "required": false,
+              "type": "string"
+            },
+            {
+              "description": "Source.",
+              "enum": [],
+              "evidence": {
+                "kind": "ApiParam",
+                "line_end": 76,
+                "line_start": 70,
+                "section": "Body Parameters"
+              },
+              "name": "source",
+              "required": false,
+              "type": "string"
+            },
+            {
+              "description": "Source email.",
+              "enum": [],
+              "evidence": {
+                "kind": "ApiParam",
+                "line_end": 82,
+                "line_start": 76,
+                "section": "Body Parameters"
+              },
+              "name": "source_email",
+              "required": false,
+              "type": "string"
+            },
+            {
+              "description": "Issue data to update in the inbox issue",
+              "enum": [],
+              "evidence": {
+                "kind": "ApiParam",
+                "line_end": 88,
+                "line_start": 82,
+                "section": "Body Parameters"
+              },
+              "name": "issue",
+              "required": false,
+              "type": "object"
+            }
+          ]
+        },
+        "evidence": {
+          "body": {
+            "available": true,
+            "evidence": {
+              "kind": "ApiParam_section",
+              "line_end": 97,
+              "line_start": 48,
+              "parameter_count": 6,
+              "section": "Body Parameters"
+            }
+          },
+          "path": {
+            "available": true,
+            "evidence": {
+              "kind": "ApiParam_section",
+              "line_end": 48,
+              "line_start": 21,
+              "parameter_count": 3,
+              "section": "Path Parameters"
+            }
+          },
+          "query": {
+            "available": false,
+            "evidence": {
+              "kind": "section_absent"
+            }
+          }
+        },
+        "json_schema": {
+          "properties": {
+            "duplicate_to": {
+              "type": "string"
+            },
+            "issue": {
+              "type": "object"
+            },
+            "project_id": {
+              "type": "string"
+            },
+            "snoozed_till": {
+              "type": "string"
+            },
+            "source": {
+              "type": "string"
+            },
+            "source_email": {
+              "type": "string"
+            },
+            "status": {
+              "enum": [
+                "-2",
+                "-1",
+                "0",
+                "1",
+                "2"
+              ],
+              "type": "integer"
+            },
+            "issue_id": {
+              "type": "string"
+            },
+            "workspace_slug": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "project_id",
+            "issue_id",
+            "workspace_slug"
+          ],
+          "type": "object"
+        },
+        "path": {
+          "binding_arity": true,
+          "parameters": [
+            {
+              "binding_evidence": {
+                "endpoint_name": "workspace_slug",
+                "kind": "endpoint_badge_overrides_generic_ApiParam_name",
+                "source_name": "issue_id"
+              },
+              "description": "The unique identifier of the work item.",
+              "enum": [],
+              "evidence": {
+                "kind": "ApiParam",
+                "line_end": 27,
+                "line_start": 23,
+                "section": "Path Parameters"
+              },
+              "name": "workspace_slug",
+              "required": true,
+              "source_name": "issue_id",
+              "type": "string"
+            },
+            {
+              "description": "The unique identifier of the project.",
+              "enum": [],
+              "evidence": {
+                "kind": "ApiParam",
+                "line_end": 33,
+                "line_start": 27,
+                "section": "Path Parameters"
+              },
+              "name": "project_id",
+              "required": true,
+              "type": "string"
+            },
+            {
+              "binding_evidence": {
+                "endpoint_name": "issue_id",
+                "kind": "endpoint_badge_overrides_generic_ApiParam_name",
+                "source_name": "workspace_slug"
+              },
+              "description": "The workspace_slug represents the unique workspace identifier for a workspace in Plane. It can be found in the URL. For example, in the URL `https://app.plane.so/my-team/projects/`, the workspace slug is `my-team`.",
+              "enum": [],
+              "evidence": {
+                "kind": "ApiParam",
+                "line_end": 39,
+                "line_start": 33,
+                "section": "Path Parameters"
+              },
+              "name": "issue_id",
+              "required": true,
+              "source_name": "workspace_slug",
+              "type": "string"
+            }
+          ],
+          "template_names": [
+            "workspace_slug",
+            "project_id",
+            "issue_id"
+          ]
+        },
+        "query": {
+          "parameters": []
+        }
+      },
+      "response_schema": {
+        "available": true,
+        "evidence": {
+          "json": {
+            "kind": "json_fence",
+            "line_end": 18,
+            "line_start": 4
+          },
+          "kind": "ResponsePanel",
+          "line_end": 194,
+          "line_start": 175
+        },
+        "example": {
+          "created_at": "2024-01-01T00:00:00Z",
+          "id": "550e8400-e29b-41d4-a716-446655440000",
+          "issue": {
+            "description": "Example description",
+            "id": "550e8400-e29b-41d4-a716-446655440000",
+            "name": "Example Name",
+            "priority": "medium",
+            "sequence_id": 124
+          },
+          "source": "in_app",
+          "status": 0,
+          "updated_at": "2024-01-01T00:00:00Z"
+        },
+        "json_schema": {
+          "properties": {
+            "created_at": {
+              "type": "string"
+            },
+            "id": {
+              "type": "string"
+            },
+            "issue": {
+              "properties": {
+                "description": {
+                  "type": "string"
+                },
+                "id": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "priority": {
+                  "type": "string"
+                },
+                "sequence_id": {
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "description",
+                "id",
+                "name",
+                "priority",
+                "sequence_id"
+              ],
+              "type": "object"
+            },
+            "source": {
+              "type": "string"
+            },
+            "status": {
+              "type": "integer"
+            },
+            "updated_at": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "created_at",
+            "id",
+            "issue",
+            "source",
+            "status",
+            "updated_at"
+          ],
+          "type": "object"
+        },
+        "pagination": {
+          "cursor_parameter": null,
+          "mode": "none",
+          "next_page_flag": null
+        },
+        "panels": [
+          {
+            "evidence": {
+              "json": {
+                "kind": "json_fence",
+                "line_end": 18,
+                "line_start": 4
+              },
+              "kind": "ResponsePanel",
+              "line_end": 194,
+              "line_start": 175
+            },
+            "shape": "detail",
+            "status": 200
+          }
+        ],
+        "semantic": {
+          "available": true,
+          "evidence": {
+            "json": {
+              "kind": "json_fence",
+              "line_end": 18,
+              "line_start": 4
+            },
+            "kind": "ResponsePanel",
+            "line_end": 194,
+            "line_start": 175
+          },
+          "provenance": {
+            "derived_from": "ResponsePanel JSON/status"
+          }
+        },
+        "shape": "detail",
+        "status": 200
+      },
+      "schema_availability": {
+        "effect": true,
+        "request": true,
+        "response": true
+      },
+      "schema_hash": "172a4d7ff5642332f80b744683cf3ba5ac4ad9fa660271da6b9e8294656242c0",
+      "schema_provenance": {
+        "source": "official-plane-developer-docs",
+        "url": "https://developers.plane.so/api-reference/inbox-issue/update-inbox-issue-detail",
+        "parser": "plane-v034-manual-contract-1"
+      },
+      "semantic_provenance": {
+        "source": "official-plane-developer-docs",
+        "url": "https://developers.plane.so/api-reference/inbox-issue/update-inbox-issue-detail",
+        "parser": "plane-v034-manual-contract-1"
+      },
+      "summary": "Update Inbox Issue detail",
+      "surface": "intake-issue"
+    },
+    {
+      "action": "work_item_relation__create_work_item_relation",
+      "method": "POST",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/work-items/{work_item_id}/relations/",
+      "summary": "Create work item relation",
+      "surface": "work-item-relations",
+      "mode": "mutation",
+      "mutation": true,
+      "docs_path": "/api-reference/work-item-relations/create-work-item-relation",
+      "normalized_graph_key": "/api/v1/workspaces/{p0}/projects/{p1}/work-items/{p2}/relations/",
+      "frontmatter": {
+        "title": "Create work item relation",
+        "source": {
+          "source": "official-plane-developer-docs",
+          "url": "https://developers.plane.so/api-reference/work-item-relations/create-work-item-relation",
+          "parser": "plane-v034-manual-contract-1"
+        }
+      },
+      "request_schema": {
+        "available": true,
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "workspace_slug": {
+              "type": "string"
+            },
+            "project_id": {
+              "type": "string"
+            },
+            "work_item_id": {
+              "type": "string"
+            },
+            "relation_type": {
+              "type": "string",
+              "enum": [
+                "blocking",
+                "blocked_by",
+                "duplicate",
+                "relates_to",
+                "start_before",
+                "start_after",
+                "finish_before",
+                "finish_after"
+              ]
+            },
+            "issues": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "required": [
+            "issues",
+            "project_id",
+            "relation_type",
+            "work_item_id",
+            "workspace_slug"
+          ]
+        },
+        "path": {
+          "parameters": []
+        },
+        "query": {
+          "parameters": []
+        },
+        "body": {
+          "available": true,
+          "parameters": [
+            {
+              "name": "relation_type",
+              "type": "string",
+              "required": true
+            },
+            {
+              "name": "issues",
+              "type": "array",
+              "required": true
+            }
+          ]
+        }
+      },
+      "response_schema": {
+        "available": true,
+        "status": 201,
+        "shape": "relation_create",
+        "json_schema": {
+          "type": "array",
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "sequence_id": {
+                  "type": "integer"
+                },
+                "project_id": {
+                  "type": "string"
+                },
+                "relation_type": {
+                  "type": "string"
+                },
+                "state_id": {
+                  "type": "string"
+                },
+                "priority": {
+                  "type": "string"
+                },
+                "type_id": {
+                  "type": "string"
+                },
+                "is_epic": {
+                  "type": "boolean"
+                },
+                "created_at": {
+                  "type": "string"
+                },
+                "updated_at": {
+                  "type": "string"
+                },
+                "created_by": {
+                  "type": "string"
+                },
+                "updated_by": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "id",
+                "name",
+                "sequence_id",
+                "project_id",
+                "relation_type",
+                "state_id",
+                "priority",
+                "type_id",
+                "is_epic",
+                "created_at",
+                "updated_at",
+                "created_by",
+                "updated_by"
+              ]
+            }
+          }
+        }
+      },
+      "effect": {
+        "available": true,
+        "http_method": "POST",
+        "kind": "write_create_or_associate",
+        "source": {
+          "source": "official-plane-developer-docs",
+          "url": "https://developers.plane.so/api-reference/work-item-relations/create-work-item-relation",
+          "parser": "plane-v034-manual-contract-1"
+        }
+      },
+      "schema_availability": {
+        "effect": true,
+        "request": true,
+        "response": true
+      },
+      "schema_provenance": {
+        "source": "official-plane-developer-docs",
+        "url": "https://developers.plane.so/api-reference/work-item-relations/create-work-item-relation",
+        "parser": "plane-v034-manual-contract-1"
+      },
+      "semantic_provenance": {
+        "source": "official-plane-developer-docs",
+        "url": "https://developers.plane.so/api-reference/work-item-relations/create-work-item-relation",
+        "parser": "plane-v034-manual-contract-1"
+      },
+      "schema_hash": "594c56cdc0b86207988e396b5eaf6eba064171d265b2fb3ec2348d36be0615d8"
+    },
+    {
+      "action": "work_item_relation__list_work_item_relations",
+      "method": "GET",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/work-items/{work_item_id}/relations/",
+      "summary": "List work item relations",
+      "surface": "work-item-relations",
+      "mode": "read",
+      "mutation": false,
+      "docs_path": "/api-reference/work-item-relations/list-work-item-relations",
+      "normalized_graph_key": "/api/v1/workspaces/{p0}/projects/{p1}/work-items/{p2}/relations/",
+      "frontmatter": {
+        "title": "List work item relations",
+        "source": {
+          "source": "official-plane-developer-docs",
+          "url": "https://developers.plane.so/api-reference/work-item-relations/list-work-item-relations",
+          "parser": "plane-v034-manual-contract-1"
+        }
+      },
+      "request_schema": {
+        "available": true,
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "workspace_slug": {
+              "type": "string"
+            },
+            "project_id": {
+              "type": "string"
+            },
+            "work_item_id": {
+              "type": "string"
+            },
+            "cursor": {
+              "type": "string"
+            },
+            "expand": {
+              "type": "string"
+            },
+            "fields": {
+              "type": "string"
+            },
+            "order_by": {
+              "type": "string"
+            },
+            "per_page": {
+              "type": "integer"
+            }
+          },
+          "required": [
+            "project_id",
+            "work_item_id",
+            "workspace_slug"
+          ]
+        },
+        "path": {
+          "parameters": []
+        },
+        "query": {
+          "parameters": [
+            {
+              "name": "cursor",
+              "type": "string"
+            },
+            {
+              "name": "expand",
+              "type": "string"
+            },
+            {
+              "name": "fields",
+              "type": "string"
+            },
+            {
+              "name": "order_by",
+              "type": "string"
+            },
+            {
+              "name": "per_page",
+              "type": "integer"
+            }
+          ]
+        },
+        "body": {
+          "available": false,
+          "parameters": []
+        }
+      },
+      "response_schema": {
+        "available": true,
+        "status": 200,
+        "shape": "relation_map",
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "blocking": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "blocked_by": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "duplicate": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "relates_to": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "start_after": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "start_before": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "finish_after": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "finish_before": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "required": [
+            "blocking",
+            "blocked_by",
+            "duplicate",
+            "relates_to",
+            "start_after",
+            "start_before",
+            "finish_after",
+            "finish_before"
+          ]
+        }
+      },
+      "effect": {
+        "available": true,
+        "http_method": "GET",
+        "kind": "read",
+        "source": {
+          "source": "official-plane-developer-docs",
+          "url": "https://developers.plane.so/api-reference/work-item-relations/list-work-item-relations",
+          "parser": "plane-v034-manual-contract-1"
+        }
+      },
+      "schema_availability": {
+        "effect": true,
+        "request": true,
+        "response": true
+      },
+      "schema_provenance": {
+        "source": "official-plane-developer-docs",
+        "url": "https://developers.plane.so/api-reference/work-item-relations/list-work-item-relations",
+        "parser": "plane-v034-manual-contract-1"
+      },
+      "semantic_provenance": {
+        "source": "official-plane-developer-docs",
+        "url": "https://developers.plane.so/api-reference/work-item-relations/list-work-item-relations",
+        "parser": "plane-v034-manual-contract-1"
+      },
+      "schema_hash": "0900201ca31a85f8c3b087cb1b766631efd1f60c0c79ef85217c1cb49d82a800"
+    },
+    {
+      "action": "work_item_relation__remove_work_item_relation",
+      "method": "POST",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/work-items/{work_item_id}/relations/remove/",
+      "summary": "Remove work item relation",
+      "surface": "work-item-relations",
+      "mode": "mutation",
+      "mutation": true,
+      "docs_path": "/api-reference/work-item-relations/remove-work-item-relation",
+      "normalized_graph_key": "/api/v1/workspaces/{p0}/projects/{p1}/work-items/{p2}/relations/remove/",
+      "frontmatter": {
+        "title": "Remove work item relation",
+        "source": {
+          "source": "official-plane-developer-docs",
+          "url": "https://developers.plane.so/api-reference/work-item-relations/remove-work-item-relation",
+          "parser": "plane-v034-manual-contract-1"
+        }
+      },
+      "request_schema": {
+        "available": true,
+        "json_schema": {
+          "type": "object",
+          "properties": {
+            "workspace_slug": {
+              "type": "string"
+            },
+            "project_id": {
+              "type": "string"
+            },
+            "work_item_id": {
+              "type": "string"
+            },
+            "related_issue": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "project_id",
+            "related_issue",
+            "work_item_id",
+            "workspace_slug"
+          ]
+        },
+        "path": {
+          "parameters": []
+        },
+        "query": {
+          "parameters": []
+        },
+        "body": {
+          "available": true,
+          "parameters": [
+            {
+              "name": "related_issue",
+              "type": "string",
+              "required": true
+            }
+          ]
+        }
+      },
+      "response_schema": {
+        "available": true,
+        "status": 204,
+        "shape": "empty",
+        "json_schema": {
+          "type": "object"
+        }
+      },
+      "effect": {
+        "available": true,
+        "http_method": "POST",
+        "kind": "write_delete",
+        "source": {
+          "source": "official-plane-developer-docs",
+          "url": "https://developers.plane.so/api-reference/work-item-relations/remove-work-item-relation",
+          "parser": "plane-v034-manual-contract-1"
+        }
+      },
+      "schema_availability": {
+        "effect": true,
+        "request": true,
+        "response": true
+      },
+      "schema_provenance": {
+        "source": "official-plane-developer-docs",
+        "url": "https://developers.plane.so/api-reference/work-item-relations/remove-work-item-relation",
+        "parser": "plane-v034-manual-contract-1"
+      },
+      "semantic_provenance": {
+        "source": "official-plane-developer-docs",
+        "url": "https://developers.plane.so/api-reference/work-item-relations/remove-work-item-relation",
+        "parser": "plane-v034-manual-contract-1"
+      },
+      "schema_hash": "aa0cd33f2fe79216e7f069022264037e10e81af17c03234527cdd5108d53c766"
     }
   ],
   "parser": {
@@ -182767,15 +186825,7 @@
   "snapshot": {
     "endpoint_page_count": 234,
     "excluded_pages": {
-      "/api-reference/inbox-issue/add-inbox-issue": "outside_frozen_225_operation_denominator",
-      "/api-reference/inbox-issue/delete-inbox-issue": "outside_frozen_225_operation_denominator",
-      "/api-reference/inbox-issue/get-inbox-issue-detail": "outside_frozen_225_operation_denominator",
-      "/api-reference/inbox-issue/list-inbox-issues": "outside_frozen_225_operation_denominator",
-      "/api-reference/inbox-issue/update-inbox-issue-detail": "outside_frozen_225_operation_denominator",
-      "/api-reference/issue-attachments/upload-file": "outside_frozen_225_operation_denominator",
-      "/api-reference/work-item-relations/create-work-item-relation": "outside_frozen_225_operation_denominator",
-      "/api-reference/work-item-relations/list-work-item-relations": "outside_frozen_225_operation_denominator",
-      "/api-reference/work-item-relations/remove-work-item-relation": "outside_frozen_225_operation_denominator"
+      "/api-reference/issue-attachments/upload-file": "outside_frozen_225_operation_denominator"
     },
     "file_count": 270,
     "manifest_path": "staged/official-docs/manifest.json",
@@ -182785,6 +186835,7 @@
     "source_relative_root": "docs/api-reference",
     "source_tree": "f09bb801f223b10bbca7159379b199073b9caadb"
   },
-  "source": "snapshot://official-plane-docs/docs/api-reference",
-  "source_pages": 225
+  "source": "official-plane-developer-docs+v0.3.4-contract-extension",
+  "source_pages": 233,
+  "source_contract_sha256": "d2794fd09541e3769e32ede64827f15935a82d54f0da4751f1f172f5a3fe5d3b"
 }

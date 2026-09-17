@@ -2,12 +2,13 @@
 
 ## Operação rápida
 
-### Skill operacional — 0.3.3
+### Skill operacional — 0.3.4
 
-Roadmap desta versão: [plugins de políticas por harness](ROADMAP.md).
-Proposta para scripts Hermes, OpenDesign e deepseek-harnss; ainda não implementados.
+Roadmap da linha atual e das próximas versões: [ROADMAP.md](ROADMAP.md).
 
-A versão 0.3.3 adiciona a transição de lifecycle v3 para operadores e preserva
+A versão 0.3.4 adiciona Inbox Issues, relações entre work items, readback de
+mapas de relação e gates de paridade/release. Ela preserva a transição de
+lifecycle v3 para operadores e
 `skills/plane-mcp-operations/`, também incluída no wheel.
 Ela documenta o MCP atual: descoberta, leitura fresca, mutações, ADMIT/estado,
 comentários, idempotência, readback e recuperação, sem impor gates do conector legado.
@@ -48,10 +49,10 @@ owned HTTP client.
 
 ## Coverage
 
-- 225 documented Plane actions.
-- 223 unique HTTP operations.
-- 91 GET reads.
-- 134 registered POST/PATCH/DELETE mutations. Catalog coverage is not a claim
+- 233 documented Plane actions.
+- 231 unique HTTP operations.
+- 94 GET reads.
+- 139 registered POST/PATCH/DELETE mutations. Catalog coverage is not a claim
   that every operation has been exercised against a production Plane instance.
 
 The MCP intentionally exposes a compact tool surface:

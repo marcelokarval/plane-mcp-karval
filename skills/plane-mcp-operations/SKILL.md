@@ -3,7 +3,7 @@ name: plane-mcp-operations
 description: Use when operating Plane through plane-mcp-karval. Discover tools, read current state, create/update/comment, run simple or operator-bound v3 lifecycle transitions, reconcile writes, or troubleshoot MCP client drift.
 license: MIT
 metadata:
-  version: "0.3.3"
+  version: "0.3.4"
 ---
 
 # Plane MCP Operations
