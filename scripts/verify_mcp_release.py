@@ -28,6 +28,7 @@ async def verify(args: argparse.Namespace) -> dict:
             "plane_catalog", "plane_action_descriptor", "plane_read_action",
             "plane_mutation_action", "plane_add_comment",
             "plane_capture_state_catalog", "plane_lifecycle_transition",
+            "plane_operator_lifecycle_transition",
             "plane_reconcile_mutation", "plane_add_lifecycle_comment",
             "get_current_user", "list_projects", "list_work_items",
             "get_work_item", "search_work_items",

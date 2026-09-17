@@ -1,26 +1,26 @@
 {
   "computed_counts": {
     "policy": {
-      "allow": 134,
+      "allow": 139,
       "deny": 0
     },
-    "strategy": {
-      "detail_state": 5,
-      "membership_state": 77,
-      "provider_ack": 52
-    },
-    "sum": 134,
     "terminal": {
       "provider_acknowledged": 52,
-      "verified": 51,
-      "verified_absence": 31
-    }
+      "verified": 54,
+      "verified_absence": 33
+    },
+    "strategy": {
+      "detail_state": 6,
+      "membership_state": 81,
+      "provider_ack": 52
+    },
+    "sum": 139
   },
   "contract_version": 2,
   "counts": {
-    "http_operations": 223,
-    "mutations": 134,
-    "operations": 225
+    "operations": 233,
+    "http_operations": 231,
+    "mutations": 139
   },
   "kind": "copied_registry_provenance_contract",
   "mutation_contracts": [
@@ -559,6 +559,26 @@
     {
       "action": "workspace_invitations__update_workspace_invitation",
       "contract_sha256": "efd79ae99b9c2e885141bf6b89c7dc26f7c0cbafaf30348daee174a75e3deccd"
+    },
+    {
+      "action": "inbox_issue__add_inbox_issue",
+      "contract_sha256": "26d2b7c759bd6016d34683fff0378c056b61b114b79683ae67322c90befb7d87"
+    },
+    {
+      "action": "inbox_issue__delete_inbox_issue",
+      "contract_sha256": "9b47c00e43dd022f91123656770bf3b2961426e75a9191ecb5cc26a04a3091e6"
+    },
+    {
+      "action": "inbox_issue__update_inbox_issue_detail",
+      "contract_sha256": "dac1a298e48a7dba8951e024015712c46b239ed64ebcb0162a05e00ea0b3e130"
+    },
+    {
+      "action": "work_item_relation__create_work_item_relation",
+      "contract_sha256": "ebbf53a5ef112e09d0639fbea17ebbc5a212177742b7dc15753e7a6585bcd0cf"
+    },
+    {
+      "action": "work_item_relation__remove_work_item_relation",
+      "contract_sha256": "7a5590bd8c61186ff07da238010b0112e06a8cba78b035e8a81334932c3c8676"
     }
   ],
   "operations": [
@@ -567,7 +587,7 @@
       "docs_path": "/api-reference/assets/delete-user-asset",
       "method": "DELETE",
       "mutation": true,
-      "operation_sha256": "1ffbeb42fe5ff003ff43a18397cd38da4951d97ad84203892dd1ae54ac3582ad",
+      "operation_sha256": "90c55b495396173d717dc44550fc9645ff24885d38f444fe62c14ccdc01da9c2",
       "path": "/api/v1/assets/user-assets/{asset_id}/",
       "schema_hash": "385462b0797637a6e0f7e019f4ed4f1778024f918fce949f3a9a88d1842000e8"
     },
@@ -576,7 +596,7 @@
       "docs_path": "/api-reference/epics/delete-epic",
       "method": "DELETE",
       "mutation": true,
-      "operation_sha256": "c2d0d708a8c15b77926fbd7ee298c46fe88bb43e022f9d86a9d0b9fe3fbee839",
+      "operation_sha256": "f966f30bdf44700f03f301145b999d6fb7f3e75da5060d61b08dbbd27326007c",
       "path": "/api/v1/workspaces/{slug}/projects/{project_id}/epics/{epic_id}/",
       "schema_hash": "3be11b11f711512fa7a691cbcc1eb28ccf7bd356481d237250f9dbe95b6afea3"
     },
@@ -585,7 +605,7 @@
       "docs_path": "/api-reference/customer/delete-customer-property",
       "method": "DELETE",
       "mutation": true,
-      "operation_sha256": "ea82d06fab3ec5515aa0f0f46409158ad0d91ae096da419206cd893734ff7cc5",
+      "operation_sha256": "5fd0c085ea584d5bfe9c3153cec28f91119588fb169a0afc07a11beaa87ec454",
       "path": "/api/v1/workspaces/{workspace_slug}/customer-properties/{property_id}/",
       "schema_hash": "d8769ef4ca13dc4cfba1873c7c6763f1ec2a3c56af281aa6d42f7e8d2103d1c1"
     },
@@ -594,7 +614,7 @@
       "docs_path": "/api-reference/customer/unlink-work-item-from-customer",
       "method": "DELETE",
       "mutation": true,
-      "operation_sha256": "c08c7e7f46d2b6ba9fdcbb128ef5eaafebad16ac94dbadc822efeeb05e46471c",
+      "operation_sha256": "9f36812af9143829f41aef5aa94e7c9e8266948559f625d95b6f4a0ff84b221b",
       "path": "/api/v1/workspaces/{workspace_slug}/customers/{customer_id}/issues/{work_item_id}/",
       "schema_hash": "3b7e198bdec9de6b090d4058c71da37f810b6b075e7e0ee837e6e64b4f629913"
     },
@@ -603,7 +623,7 @@
       "docs_path": "/api-reference/customer/delete-customer-request",
       "method": "DELETE",
       "mutation": true,
-      "operation_sha256": "42b23d147fb49eba95f679eecaa7ed1d7dea8e0c93dd5a78cdb0c0dbe495e07f",
+      "operation_sha256": "061236c44eb3c736aae293dcf810e5c94d92a2d61f76dc253db849256abd97c2",
       "path": "/api/v1/workspaces/{workspace_slug}/customers/{customer_id}/requests/{resource_id}/",
       "schema_hash": "49bff9db477cdc2cd3ff18def58af49fe02423d532dc48f90f48b9f47a5f5f59"
     },
@@ -612,7 +632,7 @@
       "docs_path": "/api-reference/customer/delete-customer",
       "method": "DELETE",
       "mutation": true,
-      "operation_sha256": "61dbc2f7c1708848c91eceea2cb1d2a6b2329537d5f7ed9bde107cf01850d651",
+      "operation_sha256": "0a76f27cf5e21cfd6fd20e002b456ae73d6f83d9faae0f96c7c54718a2079356",
       "path": "/api/v1/workspaces/{workspace_slug}/customers/{resource_id}/",
       "schema_hash": "5fed44ca0f9077e87aa259a32b9acd7f99439edb5bafa518e57c35fa101c9d6c"
     },
@@ -621,7 +641,7 @@
       "docs_path": "/api-reference/idp-group-sync/delete-project-mapping",
       "method": "DELETE",
       "mutation": true,
-      "operation_sha256": "f35b9c4579211519567f42b592a84e1995be49778d9f7aaeeb88805d658408c8",
+      "operation_sha256": "36b58408bad6ba58351637e297077c6f3c9de61642bc8c0e7a0f60101c5bfe47",
       "path": "/api/v1/workspaces/{workspace_slug}/group-sync/project-mappings/{mapping_id}/",
       "schema_hash": "be2fa624858b0416124e20fe5f64a4f2ac7d9db18ccdba6eb3fa74a74ba4c2c0"
     },
@@ -630,7 +650,7 @@
       "docs_path": "/api-reference/idp-group-sync/delete-workspace-mapping",
       "method": "DELETE",
       "mutation": true,
-      "operation_sha256": "e9aaf9b0828185f898925c71b17dc003fd20293ac39f1cca62ff8115b2bde884",
+      "operation_sha256": "da988117a09f9b3254528a70fa6c3fa0a74f9eaa79693ad327395ff4d66f3530",
       "path": "/api/v1/workspaces/{workspace_slug}/group-sync/workspace-mappings/{mapping_id}/",
       "schema_hash": "a7a40aa8741e061206548d602670059c9206642857c97e39ae56dcad851a2871"
     },
@@ -639,7 +659,7 @@
       "docs_path": "/api-reference/initiative/delete-initiative-label",
       "method": "DELETE",
       "mutation": true,
-      "operation_sha256": "dfd0a9eb6e7b0a5e865d93114cffd9eb88ba5e233fe9957e87f097932f2127fd",
+      "operation_sha256": "53b2f60b439c23c253c71c2a4eddc725c9880c7e2372f82861a603cff276b930",
       "path": "/api/v1/workspaces/{workspace_slug}/initiatives/labels/{label_id}/",
       "schema_hash": "3ba6ad2c2b921dfd816b6f1940a844b68552ecee0dcb14c71de605f3b25fe5f4"
     },
@@ -648,7 +668,7 @@
       "docs_path": "/api-reference/initiative/delete-initiative",
       "method": "DELETE",
       "mutation": true,
-      "operation_sha256": "c0dfd7107da3346334a9713964e6260c7ed751b7033b88b45fa154b6da894a8c",
+      "operation_sha256": "2aefa647c6a4ff21ff8ee0ac3f2ad9c6ec3d427b0191652495304eb09010bb69",
       "path": "/api/v1/workspaces/{workspace_slug}/initiatives/{initiative_id}/",
       "schema_hash": "add79f571e7362c1b89ed401eb1e0229d98662a689ce2260820a0f5002fb5553"
     },
@@ -657,7 +677,7 @@
       "docs_path": "/api-reference/initiative/remove-epics-from-initiative",
       "method": "DELETE",
       "mutation": true,
-      "operation_sha256": "d02fd6f5f87122302975f13692d45feca5f4dccf69fd9ce37c3fd25c61c86611",
+      "operation_sha256": "f87577518018fb2cafaabe76323e9068cb9bf7b22946c7aafd0214a76448be1e",
       "path": "/api/v1/workspaces/{workspace_slug}/initiatives/{initiative_id}/epics/",
       "schema_hash": "71ac58a0bbf6529075330de3887e9f19fa1c68c65c313dc9c0f390c62e5ac196"
     },
@@ -666,7 +686,7 @@
       "docs_path": "/api-reference/initiative/remove-labels-from-initiative",
       "method": "DELETE",
       "mutation": true,
-      "operation_sha256": "14c86339bf7dfe72d559b81a7d8ad816e17684169b99307b6dbebe22b7c8740c",
+      "operation_sha256": "7982085fa03070b00a724a721e7efd879ecf4eec7525b4fab07eea0718753d75",
       "path": "/api/v1/workspaces/{workspace_slug}/initiatives/{initiative_id}/labels/",
       "schema_hash": "e7e2b0c6a1bc122b2beed234bebffa1bb8ab6aa120dc35320522e9a792671ba9"
     },
@@ -675,7 +695,7 @@
       "docs_path": "/api-reference/initiative/remove-projects-from-initiative",
       "method": "DELETE",
       "mutation": true,
-      "operation_sha256": "a097efbebceac8037e75014555920194ec799ac3cb1bf994cb985d2b3e792c86",
+      "operation_sha256": "75e055857c1f8f905e0ba5e383c6697c37c899d9a7f99f72ec76d1801ad9edbf",
       "path": "/api/v1/workspaces/{workspace_slug}/initiatives/{initiative_id}/projects/",
       "schema_hash": "9fb23ba14afdff5e0cda920c4168a9dbd31acd24745e987b2dea583686abffee"
     },
@@ -684,7 +704,7 @@
       "docs_path": "/api-reference/workspace-invitations/delete-workspace-invitation",
       "method": "DELETE",
       "mutation": true,
-      "operation_sha256": "cc195465a1651b9653ba9030e0e04eaea466915749f4b9b50a694f53f6cbecd5",
+      "operation_sha256": "0f848a3ca9c7b69b9882b81187162a9e73a5ca9c453ea8001cac18da47acf923",
       "path": "/api/v1/workspaces/{workspace_slug}/invitations/{invitation_id}/",
       "schema_hash": "6190228f1feae835fc93030f9059f0a319722e772c7937db91e5aa2b764e29a7"
     },
@@ -693,7 +713,7 @@
       "docs_path": "/api-reference/project-labels/delete-project-label",
       "method": "DELETE",
       "mutation": true,
-      "operation_sha256": "5382f1486c1c9ac2beafc5d3297367c6f1d30a5bea3675518b6e519f8543a50f",
+      "operation_sha256": "78966ef73c5521cae9cf276e2a5debdd30df1ad97464f8e04c04613b21c8f245",
       "path": "/api/v1/workspaces/{workspace_slug}/project-labels/{label_id}/",
       "schema_hash": "0ea741630f4e6e0dd34d825792f08c47c0179bfcc8f1bc5e645d0f056c8668ef"
     },
@@ -702,7 +722,7 @@
       "docs_path": "/api-reference/project/unarchive-project",
       "method": "DELETE",
       "mutation": true,
-      "operation_sha256": "6601e0d04fc7085571952cc5fb9073a236f8e6093d4f007c8b30dfa73cb22d2c",
+      "operation_sha256": "ed3924aebbc3b956a3a3483390d9e56a478f0267f5e92d58d66da5b3360641d7",
       "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/archive/",
       "schema_hash": "aebd5b848daf8ae085411e6b495e07ab20bfe16e86ffb34c7e336b95bb5aa956"
     },
@@ -711,7 +731,7 @@
       "docs_path": "/api-reference/cycle/unarchive-cycle",
       "method": "DELETE",
       "mutation": true,
-      "operation_sha256": "b4691bd57244766bcc6134ea4623a3135b60e6b0d1feeb3453b2865fad848624",
+      "operation_sha256": "b75da7379c641a9bf0aa5db0f688bb77ea37ab7e6001629cd8d50de15bca616a",
       "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/archived-cycles/{cycle_id}/unarchive/",
       "schema_hash": "87fc90b00864e9f7de45b85925493ec47b0fecfea57e421a0ae2580fb1c49879"
     },
@@ -720,7 +740,7 @@
       "docs_path": "/api-reference/module/unarchive-module",
       "method": "DELETE",
       "mutation": true,
-      "operation_sha256": "2641ebe548be0b7f20281d911f0ff6352a5b15d2638488313468b0bd4a700828",
+      "operation_sha256": "f0d3d667eea2cf26bd6c64f8d9c967765b465ac467675517d66dad3aea052474",
       "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/archived-modules/{resource_id}/unarchive/",
       "schema_hash": "d9a0d6c808cd1cf7ad97c8598369f8131a2db68d74380120e91a01c8be456c45"
     },
@@ -729,7 +749,7 @@
       "docs_path": "/api-reference/cycle/remove-cycle-work-item",
       "method": "DELETE",
       "mutation": true,
-      "operation_sha256": "4a9b0c4288e88f00caafdda67b91cb2571a773b5577efb42e6d2b92b4a8d4205",
+      "operation_sha256": "4e5f8e1e546e7674834169725c27b6bb8617a2647620e07bee683348cdf32fd3",
       "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/cycles/{cycle_id}/cycle-issues/{work_item_id}/",
       "schema_hash": "ab75a85730b4e1bea8e73980e77906c19a4e54917206df17af0b3f6e84046c46"
     },
@@ -738,7 +758,7 @@
       "docs_path": "/api-reference/cycle/delete-cycle",
       "method": "DELETE",
       "mutation": true,
-      "operation_sha256": "4b90f1323860f79202791b5ed0af6c368017038a247a903c771c1acdd1727ee8",
+      "operation_sha256": "aae9265daa82aefffd8c7c3d19e955aacfc6e69557bd4befefb58d137240a4de",
       "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/cycles/{resource_id}/",
       "schema_hash": "7350e8870f569fb7ef8275e75a6624d7efbbac950bc440b1dc1160c556116517"
     },
@@ -747,7 +767,7 @@
       "docs_path": "/api-reference/estimate/delete-estimate",
       "method": "DELETE",
       "mutation": true,
-      "operation_sha256": "89a9b7586a6b4389c523ef43febf6c6752fbb803e107895df07e38abb62613da",
+      "operation_sha256": "e12c0eebc3f822b1c8bff90e9b61de946237387e21caaa38300e10b4de9f0d62",
       "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/estimates/",
       "schema_hash": "d041b42c8a6f87dda7d31d45d515627686eb6911bab5b43105656d62fb6a2680"
     },
@@ -756,7 +776,7 @@
       "docs_path": "/api-reference/estimate/delete-estimate-point",
       "method": "DELETE",
       "mutation": true,
-      "operation_sha256": "338cc9dd4a8999631e1ae2de4fde4829ac2b7a3b77fa2cf3404449c71e5ff99f",
+      "operation_sha256": "7b99f5cbf6669bae6f509c50e02c5d72395d2afc81273171252d66921c774602",
       "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/estimates/{estimate_id}/estimate-points/{estimate_point_id}/",
       "schema_hash": "faca68a37a0293c16c9c13cf21398e03ae447513d29ce8b318b442661d17c1de"
     },
@@ -765,7 +785,7 @@
       "docs_path": "/api-reference/intake-issue/delete-intake-issue",
       "method": "DELETE",
       "mutation": true,
-      "operation_sha256": "e20476083419bf7d5359705ceea85c3dd8f063b64f350cce8a725463aa1f6760",
+      "operation_sha256": "1c09b1779c703045bd9974cb51d926e7e8c1e47a376eb3572cee43b4da53948d",
       "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/intake-issues/{work_item_id}/",
       "schema_hash": "2d271c0626ee6782ec8c960551c46f63da327ddb389f640508d85f74197753fc"
     },
@@ -774,7 +794,7 @@
       "docs_path": "/api-reference/label/delete-label",
       "method": "DELETE",
       "mutation": true,
-      "operation_sha256": "d08596d841ae7239949c70a89dcb138702372f5f2b239b0115868148a442b4e9",
+      "operation_sha256": "10e3251c09a65a7e9fd63a696fbc4c97c2f87e1d3dbd8f05f3526a9b963ba34c",
       "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/labels/{label_id}/",
       "schema_hash": "bddad03a5d1fb81ea732b2ac218b683cec8942bab268537063a3a97de6bcaf43"
     },
@@ -783,7 +803,7 @@
       "docs_path": "/api-reference/milestones/delete-milestone",
       "method": "DELETE",
       "mutation": true,
-      "operation_sha256": "e60b6507e595e1611b983a9fd4ff87419e607abf4c5a08c6489af6949a7014ef",
+      "operation_sha256": "daea380462904907e65f385be4e73db1d9945c2bac47a3452fa01e97225b347c",
       "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/milestones/{milestone_id}/",
       "schema_hash": "48534b5b3e27ca4c87e521766c47e2562d53935ccf534c5546953866c9e88c74"
     },
@@ -792,7 +812,7 @@
       "docs_path": "/api-reference/module/remove-module-work-item",
       "method": "DELETE",
       "mutation": true,
-      "operation_sha256": "82774dc094b9efc2de20cb3fc0d04efe26cb2504e4c45c158320bacada1237b1",
+      "operation_sha256": "b6cc5df99d361825a3c5cdc3157d1c206ad9ccbf5b5032023cf3702b41bdd5b2",
       "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/modules/{module_id}/module-issues/{work_item_id}/",
       "schema_hash": "a35b531745a0524501cbc8e7cda13efec979a9858d17f3788cc11d823dcc314b"
     },
@@ -801,7 +821,7 @@
       "docs_path": "/api-reference/module/delete-module",
       "method": "DELETE",
       "mutation": true,
-      "operation_sha256": "12e1101a5335b9afa6499524b03b525fba6fcd9e132bf1a73379d8c9315a38c8",
+      "operation_sha256": "39b44f069ab98a7831729ca92c3243136dd86692ec009387fa5cd3f8c66ab8be",
       "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/modules/{resource_id}/",
       "schema_hash": "f5d5317412230f615523a2d144b019bdb9fc2a54ed832fdc568793afc0cb1903"
     },
@@ -810,7 +830,7 @@
       "docs_path": "/api-reference/members/delete-project-member",
       "method": "DELETE",
       "mutation": true,
-      "operation_sha256": "032bc11c4c62a59a64d43062783036ed0f37d75dd33782707f29d23ae0a8d784",
+      "operation_sha256": "f4804f12b5a762124e632456275a1263a59c9e61b118309a47e31f682837f911",
       "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/project-members/{member_id}/",
       "schema_hash": "e138181069dc2dce212ffebd89d9dedf6d9f3ce2931d31a6acc11d5d5bc889a7"
     },
@@ -819,7 +839,7 @@
       "docs_path": "/api-reference/state/delete-state",
       "method": "DELETE",
       "mutation": true,
-      "operation_sha256": "dd9cb39ffb0b6907f6d82ae61846b56b9d66c96dd3a8f35a1768c08369231763",
+      "operation_sha256": "bd437b95cf113589c60501ed45f70d910c3ad376a1b6fb908b568686522364ae",
       "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/states/{state_id}/",
       "schema_hash": "81f18816f0bbc32b8f4d2bfb4b87d84bdbb3fde67a93be7bf519f5e678526bac"
     },
@@ -828,7 +848,7 @@
       "docs_path": "/api-reference/issue-types/options/delete-dropdown-options",
       "method": "DELETE",
       "mutation": true,
-      "operation_sha256": "eb7a4c5b5749eee3f6b62663aced823b074399fa6eb887a0b8c70bfad79ba834",
+      "operation_sha256": "42fdd165ee21e6c95b83996dbd69c214df3d2c05b5392b4b5323990c63c93b0e",
       "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/work-item-properties/{property_id}/options/{option_id}/",
       "schema_hash": "bd565981cda39769f734a314674486178f0ec8f4847cac77dacfaee14b37ca98"
     },
@@ -837,7 +857,7 @@
       "docs_path": "/api-reference/issue-types/types/delete-issue-type",
       "method": "DELETE",
       "mutation": true,
-      "operation_sha256": "0e84058accb47dfbe000e2bbc9d89b59fff9f017126c622093dba71b85a63c33",
+      "operation_sha256": "c99b4f4e18a58dab0a906b749672705cbdbf0ce5b80898cb04a6f2578c17b917",
       "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/work-item-types/{type_id}/",
       "schema_hash": "1f542aebf44840eb9a80c4bcde059beea92eb498d3e5c78391920c6a983d91f2"
     },
@@ -846,7 +866,7 @@
       "docs_path": "/api-reference/issue-types/properties/delete-property",
       "method": "DELETE",
       "mutation": true,
-      "operation_sha256": "f584d6394041f48fa072131e532a13f50525d520a785245045d60c0ea8c69d0c",
+      "operation_sha256": "d225ec019f50c53bc3f30a2ea9c8076b1c7906f8475e2c2c8891b856e2bad0ac",
       "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/work-item-types/{type_id}/work-item-properties/{property_id}/",
       "schema_hash": "658ae6cc2849ad650ba163304cb42a1219aecbe833be2e1d314f2ca4c8a8fc3f"
     },
@@ -855,7 +875,7 @@
       "docs_path": "/api-reference/issue/delete-issue",
       "method": "DELETE",
       "mutation": true,
-      "operation_sha256": "27e86918ca5ab45e7914ae96804e2a54d1bddcec5a4e6a5b7261ee793951c742",
+      "operation_sha256": "c868962e10aaa4536212a90215eb6969ffa4953dd38a38f80b01190fa57a4ae2",
       "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/work-items/{resource_id}/",
       "schema_hash": "ab2923aff96824413f7b20d9484ef193b36a1a3c69d1a6effaa996278ef5b0bb"
     },
@@ -864,7 +884,7 @@
       "docs_path": "/api-reference/issue-attachments/delete-attachment",
       "method": "DELETE",
       "mutation": true,
-      "operation_sha256": "43bb2b79529fe455a3ffb95d71831817131b8891bcb67226e8819b448141f7bd",
+      "operation_sha256": "99acbb70e4ca66cd484ec18e09ccd0751052cc32d69b099d659ab554f1a21b4e",
       "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/work-items/{work_item_id}/attachments/{resource_id}/",
       "schema_hash": "3beddc8f77b222a8b04cf7b44b7b68bc8ab8ae958b5f8a08e2bd173b48fe7ac1"
     },
@@ -873,7 +893,7 @@
       "docs_path": "/api-reference/issue-comment/delete-issue-comment",
       "method": "DELETE",
       "mutation": true,
-      "operation_sha256": "21a5204eb01ca456b2f55bf7178ed993ea27ae238dd0ea0f3d7a62d0363eaded",
+      "operation_sha256": "34a7ae40e45c561896e262e9c8ba6336152b44f74697614e88f08debc188101a",
       "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/work-items/{work_item_id}/comments/{resource_id}/",
       "schema_hash": "2cb1b417211d936b80d1af36e571304d716fc53ab539136d58696125ef615fdf"
     },
@@ -882,7 +902,7 @@
       "docs_path": "/api-reference/link/delete-link",
       "method": "DELETE",
       "mutation": true,
-      "operation_sha256": "8ce722034bb2517594b8ec4dcd646c32d60be6c36dd7c47387dded53f57840dd",
+      "operation_sha256": "6fc4c9883b947cb98b0033a6762a365e2c88e080f7bb5153a9893fc6a9d0f5b7",
       "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/work-items/{work_item_id}/links/{resource_id}/",
       "schema_hash": "8fe684d11d860ed48aec416652bb043359865d58ad18401ec9cfa60a6b33c4ef"
     },
@@ -891,7 +911,7 @@
       "docs_path": "/api-reference/work-item-pages/delete-work-item-page",
       "method": "DELETE",
       "mutation": true,
-      "operation_sha256": "964d833267535ffe8df8c651cb217850526af27058adcd6494ae3f6b03267300",
+      "operation_sha256": "ba0f3877e2c049ec08610537440a9bed66a33b8eb3defdda0e84e8482fe6ace3",
       "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/work-items/{work_item_id}/pages/{page_id}/",
       "schema_hash": "7f44784c53268acb3206478d12f43d02d100e956c1af099fc6854d886dcec4ff"
     },
@@ -900,7 +920,7 @@
       "docs_path": "/api-reference/issue-types/values/delete-property-value",
       "method": "DELETE",
       "mutation": true,
-      "operation_sha256": "eced2fa54cbb9e250db3b3bae859658be64308d6dc53bc14a3f9c34d2cecbcf8",
+      "operation_sha256": "900c839b07a4461efb8585c5151d1198e57c8ab8b69e98a5dd56f8ad28736fc2",
       "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/work-items/{work_item_id}/work-item-properties/{property_id}/values/",
       "schema_hash": "71b89a3df46720ebea1ab8219a43c93ef19d4358af96e981dae71b8632b88294"
     },
@@ -909,7 +929,7 @@
       "docs_path": "/api-reference/worklogs/delete-worklog",
       "method": "DELETE",
       "mutation": true,
-      "operation_sha256": "1b938af3b76e998b51014bc1d784571a0912321e5ecd27de0b9123393bafbd5d",
+      "operation_sha256": "cebbf70cf4e7ba756c9fbaa3926527c8e8bb644adb5b4f9b126029faf7f36f28",
       "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/work-items/{work_item_id}/worklogs/{worklog_id}/",
       "schema_hash": "923f3e321a51b04d852d7fb73938f98a38d5d024e09ad3b841d46e172ea70196"
     },
@@ -918,7 +938,7 @@
       "docs_path": "/api-reference/project/delete-project",
       "method": "DELETE",
       "mutation": true,
-      "operation_sha256": "0bc66ae5846c670eccec0754e9c7fa5aebe7ba86de9597f632c633326981df14",
+      "operation_sha256": "243ad40fd4bbb7677b64620f2966a6da2bbca9c71ee3cba644b6c5fd7ecf1d73",
       "path": "/api/v1/workspaces/{workspace_slug}/projects/{resource_id}/",
       "schema_hash": "6bcc4a65939bfa279f89e4f5922cb022880d81e836f730c0900685332876cee3"
     },
@@ -927,7 +947,7 @@
       "docs_path": "/api-reference/sticky/delete-sticky",
       "method": "DELETE",
       "mutation": true,
-      "operation_sha256": "f16e66c44611433763c3dcbbd48adacfd776fa9968f9c83842b5a002ccb2588c",
+      "operation_sha256": "eba8e6fd78c4c63c27ff78f0564decc2d805725269e5dc4543236c611f74af4d",
       "path": "/api/v1/workspaces/{workspace_slug}/stickies/{resource_id}/",
       "schema_hash": "c6d684f9d4b5dd9bae6926ee24d84ed139f47b91efa54e6e93762ce9952197f7"
     },
@@ -936,7 +956,7 @@
       "docs_path": "/api-reference/teamspace/delete-teamspace",
       "method": "DELETE",
       "mutation": true,
-      "operation_sha256": "2598941096a596350659ea1eac32d6517013579e7a8e012dc72085d9ae777d35",
+      "operation_sha256": "9ee2f7dcd38d3904e2380416dda0e7492504ac77336f0f2f748f69c04de1b265",
       "path": "/api/v1/workspaces/{workspace_slug}/teamspaces/{resource_id}/",
       "schema_hash": "701bfa77a40fa10b515bf46a0d664646217635d73f1528dfefb67a6f107a0e93"
     },
@@ -945,7 +965,7 @@
       "docs_path": "/api-reference/teamspace/remove-teamspace-members",
       "method": "DELETE",
       "mutation": true,
-      "operation_sha256": "ac251f6c2b93dfce8c8b29a1a4995e1ccb0214f862c9f328c195c7256cb22b1c",
+      "operation_sha256": "e1ee4ca7e18dff24801b4380b9bfe650d7e0eaf3f2e2e7ca0cde879241fe7213",
       "path": "/api/v1/workspaces/{workspace_slug}/teamspaces/{teamspace_id}/members/",
       "schema_hash": "482cbbfe8ba03ff3a0cbfb013af160ae66105fa5e6673c88aa9fa5c575ee794b"
     },
@@ -954,7 +974,7 @@
       "docs_path": "/api-reference/teamspace/remove-projects-from-teamspace",
       "method": "DELETE",
       "mutation": true,
-      "operation_sha256": "298c72c42f1b1730fdc7d572178a58109a76145270ada54a313eb4cad781b3fe",
+      "operation_sha256": "b3c3e39c3767b29eaa01e28ff90693f3c22a6de827834b2524834ae312dade69",
       "path": "/api/v1/workspaces/{workspace_slug}/teamspaces/{teamspace_id}/projects/",
       "schema_hash": "556cabf4d1b021d90176ff356a2c3babe6efd5bb16657a3a03f2c6db4a756ea1"
     },
@@ -963,7 +983,7 @@
       "docs_path": "/api-reference/user/get-current-user",
       "method": "GET",
       "mutation": false,
-      "operation_sha256": "40d926ec50e3ba5598116d33e619d254cf36c857b4fa3ce2cf5247969b5aee35",
+      "operation_sha256": "03ce826d1b3e2c36cfae9c1c0c9530242e56e836d322a17d71cfbc8830aa5391",
       "path": "/api/v1/users/me/",
       "schema_hash": "09d75332968c4a64c01969a6196a73f45c7c1ceb99a7adf74288f484d7be3e76"
     },
@@ -972,7 +992,7 @@
       "docs_path": "/api-reference/epics/list-epic-work-items",
       "method": "GET",
       "mutation": false,
-      "operation_sha256": "68516fc6386f620a3bc3722afcbd80d5e758a359401a32b0dec304757bbb4fed",
+      "operation_sha256": "034244f80f501d097c8bb8ba80fa2837c7b506a377d0e78043956b0510075da4",
       "path": "/api/v1/workspaces/{slug}/projects/{project_id}/epics/{epic_id}/issues/",
       "schema_hash": "9a36857108b8cfad78afc9be6c0a071e51ef5e692f461242b183ab24740e6f9c"
     },
@@ -981,7 +1001,7 @@
       "docs_path": "/api-reference/assets/get-workspace-asset",
       "method": "GET",
       "mutation": false,
-      "operation_sha256": "11e7a493eed2df1361b1976066abe246a5bf512eaef00e5231ccbcb12e4106f4",
+      "operation_sha256": "d3bbe3a23ae5e7b610f56fe28fdf6d89d79333cfd13b5b4964189ebbdba3d1c3",
       "path": "/api/v1/workspaces/{workspace_slug}/assets/{asset_id}/",
       "schema_hash": "8d2904e8886565d8e096a59a231b4b3fc36c64a7a3c88ec9fde0fcb5a42cd1c4"
     },
@@ -990,7 +1010,7 @@
       "docs_path": "/api-reference/customer/list-customer-properties",
       "method": "GET",
       "mutation": false,
-      "operation_sha256": "51ba40ffa79269c1e69a74ff5091ab48452bd8a4caaf18b2ba25ec7034277320",
+      "operation_sha256": "c57e31af603c7960016b3923c918ca3f58e68c5db512e16a7474992efb3787a3",
       "path": "/api/v1/workspaces/{workspace_slug}/customer-properties/",
       "schema_hash": "2d100bc63e0361d945c3c1991c6ddfe30285643d70801e1f6318845bc865253e"
     },
@@ -999,7 +1019,7 @@
       "docs_path": "/api-reference/customer/get-customer-property-detail",
       "method": "GET",
       "mutation": false,
-      "operation_sha256": "27363b4902e0554eff3a4ce5e4cb3d9993d627467b540e81cd84e66d154f9539",
+      "operation_sha256": "f074ec3b7e0249ec5ded4146b2a013f26c0ab075e770c0477fe5332e2de0693e",
       "path": "/api/v1/workspaces/{workspace_slug}/customer-properties/{property_id}/",
       "schema_hash": "3b1e19fb7605def7b728dd2626f30d6e060d21277274a095c593edbbb04f8b71"
     },
@@ -1008,7 +1028,7 @@
       "docs_path": "/api-reference/customer/list-customers",
       "method": "GET",
       "mutation": false,
-      "operation_sha256": "9b8a8b1fbf9824be5c2e2c518b6268be35c78f7af131e1e0c6fab242a56cff47",
+      "operation_sha256": "f17dd999a9584e1e1c61f1f701888a39dcf4694ffa517938bc3b9baed6ee07a5",
       "path": "/api/v1/workspaces/{workspace_slug}/customers/",
       "schema_hash": "c561dad5baaec12e1f4c4c5aa85effb02746adced7171f4a460f706a9f54e74a"
     },
@@ -1017,7 +1037,7 @@
       "docs_path": "/api-reference/customer/list-customer-work-items",
       "method": "GET",
       "mutation": false,
-      "operation_sha256": "33500fd80c3fd6dc5f4887242731a9623d6f698d3cade5ac8f6be6db63c4b467",
+      "operation_sha256": "49d6f639481cddc34282798f11816053b74c99268cfe930688034ac38b9b0b41",
       "path": "/api/v1/workspaces/{workspace_slug}/customers/{customer_id}/issues/",
       "schema_hash": "f5d70010a22c874bdffc4d5f8fa634173b25db5f3f04cbff28c5dfc80943006e"
     },
@@ -1026,7 +1046,7 @@
       "docs_path": "/api-reference/customer/list-customer-property-values",
       "method": "GET",
       "mutation": false,
-      "operation_sha256": "67e2813f13d6176bcf07ed25b687d6bb1d6f97547e4c0bfae1e52a2f4b98ff7d",
+      "operation_sha256": "5a0d0c84a914c73d114636b63ca86777fd5dc738d49b416be8623bc0c0280a24",
       "path": "/api/v1/workspaces/{workspace_slug}/customers/{customer_id}/property-values/",
       "schema_hash": "8fc7125d55bd4ffbbb9d75a41e117d1a204ebb74256fd54def71a55b310734c8"
     },
@@ -1035,7 +1055,7 @@
       "docs_path": "/api-reference/customer/get-customer-property-value",
       "method": "GET",
       "mutation": false,
-      "operation_sha256": "15fa303da22903707a3ad2a03c07fe37c55ba50d3c58b441c5f5cb0ca59a9632",
+      "operation_sha256": "e7e3d6ae000dacaff4d4e75f5689e782d3fc8d4943034b8a3035ceb5f29071d6",
       "path": "/api/v1/workspaces/{workspace_slug}/customers/{customer_id}/property-values/{property_id}/",
       "schema_hash": "9dbbf8a372a473454d0b5f96d0ac63301c48f51c73879626f75a51dd59933b40"
     },
@@ -1044,7 +1064,7 @@
       "docs_path": "/api-reference/customer/list-customer-requests",
       "method": "GET",
       "mutation": false,
-      "operation_sha256": "40f4f2916ad0251e3d8c185a06f4bc162aa063045ea92171b85f6612c25ee463",
+      "operation_sha256": "26ade9d9d8c1683018527722c3cb70fdefb84dbfa1ee14bdce9f73df092b5b99",
       "path": "/api/v1/workspaces/{workspace_slug}/customers/{customer_id}/requests/",
       "schema_hash": "2acb28dfd9324c0b249880bf7312c0674ff34998ae987926ad9488396949f961"
     },
@@ -1053,7 +1073,7 @@
       "docs_path": "/api-reference/customer/get-customer-request-detail",
       "method": "GET",
       "mutation": false,
-      "operation_sha256": "e0a2844b0344c003ab94f198be4aa09d15cea7eb46bf94c2b96935bd496b9327",
+      "operation_sha256": "b43fd4f2c5b4989f756459db48a3065795def4301383b02926423db52e9c19a9",
       "path": "/api/v1/workspaces/{workspace_slug}/customers/{customer_id}/requests/{resource_id}/",
       "schema_hash": "9e03cb562ef8c3a6e19f555bd08b3a053ec1a85738c9509987668aba374eab6a"
     },
@@ -1062,7 +1082,7 @@
       "docs_path": "/api-reference/customer/get-customer-detail",
       "method": "GET",
       "mutation": false,
-      "operation_sha256": "e08d4beb59b8ddd465a19ef172526c4b118aeb5e788ececd57a2ca430543ca9d",
+      "operation_sha256": "d67bd021d66a29b6b390fb93f009dad0c33b841173b80409cc1de51f98413e03",
       "path": "/api/v1/workspaces/{workspace_slug}/customers/{resource_id}/",
       "schema_hash": "544fb9636bf0a1b20e8ea65ad6554b81c726025f0897192eac625084e4aff419"
     },
@@ -1071,7 +1091,7 @@
       "docs_path": "/api-reference/workspace-features/get-workspace-features",
       "method": "GET",
       "mutation": false,
-      "operation_sha256": "69614ca7a2e4ca8fb915d7da1cfd64746957afe6b8ff0258c1432ea2d7fdc402",
+      "operation_sha256": "13cd1e336df89f73e12fbd80afe6aa74646d3175e93aa6d32009e1451c5782c2",
       "path": "/api/v1/workspaces/{workspace_slug}/features/",
       "schema_hash": "faaf9fa7fc6fccf399c2b48b33f51adedcf2ead5d535b6bb0dd7e7ae4c3d95c6"
     },
@@ -1080,7 +1100,7 @@
       "docs_path": "/api-reference/idp-group-sync/get-group-sync-config",
       "method": "GET",
       "mutation": false,
-      "operation_sha256": "8d17a4f30dabed8ad060b07750c214faaee70d9c42935e605a2bb65504b54fdc",
+      "operation_sha256": "a79604968e13df7b30dd8fe255b53a80a84ab38fa6b2d776dd31b2f34907ed5e",
       "path": "/api/v1/workspaces/{workspace_slug}/group-sync/config/",
       "schema_hash": "3232d7019d5270de2595c0259e11ca0089fd01d7e56f13f01d43cdbf792d50f6"
     },
@@ -1089,7 +1109,7 @@
       "docs_path": "/api-reference/idp-group-sync/list-project-mappings",
       "method": "GET",
       "mutation": false,
-      "operation_sha256": "6b8f972f5f1ab6f4bee04253c7b0c96c81778a696eac29d0f6cee84fd63ddbec",
+      "operation_sha256": "82a5ff939971536dd4d2ccbe60dc62024d081f8158dffdd9dfc0976b303f28ad",
       "path": "/api/v1/workspaces/{workspace_slug}/group-sync/project-mappings/",
       "schema_hash": "df99f5e4ffd95fed6eef96b0525af298df1300dd5e7024838804422dcc6a9f4f"
     },
@@ -1098,7 +1118,7 @@
       "docs_path": "/api-reference/idp-group-sync/get-project-mapping",
       "method": "GET",
       "mutation": false,
-      "operation_sha256": "10b16a2ff2db65b969487d2974403b5c012ecbae89df519523d0aa0918b39586",
+      "operation_sha256": "f3f41073881f76b5deaf44152801fa63da9396f9f2fa03146cc2a8a28c216122",
       "path": "/api/v1/workspaces/{workspace_slug}/group-sync/project-mappings/{mapping_id}/",
       "schema_hash": "0d22c7700d3c8bdc6ad674e7c319933175ccba26b60b553c81decc0dce0f7b8b"
     },
@@ -1107,7 +1127,7 @@
       "docs_path": "/api-reference/idp-group-sync/list-workspace-mappings",
       "method": "GET",
       "mutation": false,
-      "operation_sha256": "7c88236a051755b4448ee7f031c977e096645e016888e784da6ef254bcbfafef",
+      "operation_sha256": "f0fdf0f7256e5751675309596d4d1cd3e0a021e8a759f72029097dc9f167f60b",
       "path": "/api/v1/workspaces/{workspace_slug}/group-sync/workspace-mappings/",
       "schema_hash": "3c435183b774ee15404c0ead04692910a00d0cfa1a6cd1ad33d52ec553eb3446"
     },
@@ -1116,7 +1136,7 @@
       "docs_path": "/api-reference/idp-group-sync/get-workspace-mapping",
       "method": "GET",
       "mutation": false,
-      "operation_sha256": "780864da0edfcd44102cd892e4d0f1cbabe2b169c3da2fcb81c8767417aaed69",
+      "operation_sha256": "cb6d899e8dd26a64e4ff242c5a2526235d781bfb8b111134973649c311a7c9a0",
       "path": "/api/v1/workspaces/{workspace_slug}/group-sync/workspace-mappings/{mapping_id}/",
       "schema_hash": "7c81945bd0f7d8a018857fb72d6adfab16b16977f0dee2c73927b2eeeec1acf8"
     },
@@ -1125,7 +1145,7 @@
       "docs_path": "/api-reference/initiative/list-initiatives",
       "method": "GET",
       "mutation": false,
-      "operation_sha256": "66224151e7f4992deb50317a5b65de19ea44ac6bdcd9638873c331cd02d5ab5a",
+      "operation_sha256": "8228157c90d0780dbb14512057ac521d0e35a9b0c55cfc22524c818c4654e9e3",
       "path": "/api/v1/workspaces/{workspace_slug}/initiatives/",
       "schema_hash": "109ac34aab18053285b7ec64ae4e6ce948249963ff211b5c8a04f54cae0ce65c"
     },
@@ -1134,7 +1154,7 @@
       "docs_path": "/api-reference/initiative/list-initiative-labels",
       "method": "GET",
       "mutation": false,
-      "operation_sha256": "d3187f8217ab53cf778ad62517b858c184c7725a1b25e806799609932f22c3bf",
+      "operation_sha256": "69cc1131e62a4840201e9dd722c1a3f95254e2ce652f209523b75196a8f50182",
       "path": "/api/v1/workspaces/{workspace_slug}/initiatives/labels/",
       "schema_hash": "7f4c5cf47c71b672c5f299733fed309d540e32499f4087133427148df1c4e492"
     },
@@ -1143,7 +1163,7 @@
       "docs_path": "/api-reference/initiative/get-initiative-label-detail",
       "method": "GET",
       "mutation": false,
-      "operation_sha256": "158fa77f148726a7510629c547317f2ff17f76b03cddd4ae9a80fa9277a8d60b",
+      "operation_sha256": "b6d254d7f822809e3e1c14cfe82d269d9e698389fa061f6c95aa0c414bc51165",
       "path": "/api/v1/workspaces/{workspace_slug}/initiatives/labels/{label_id}/",
       "schema_hash": "e82d6b3ce0c0268771a421ed4ac438e9e10b6a23818a5ad4fe001e7f4b9356c7"
     },
@@ -1152,7 +1172,7 @@
       "docs_path": "/api-reference/initiative/get-initiative-detail",
       "method": "GET",
       "mutation": false,
-      "operation_sha256": "24d16e53a276a5f728909f117ed1022dcae36a54703108598f109e044b5d582b",
+      "operation_sha256": "7c1d541a811053d3108ade9c192c69a42b3d26e18c6a63ed06110f4a18084260",
       "path": "/api/v1/workspaces/{workspace_slug}/initiatives/{initiative_id}/",
       "schema_hash": "43fe9b68e1dc072683e7fb2dc625024d543a6fbc5d2cdf8928df66f432140d59"
     },
@@ -1161,7 +1181,7 @@
       "docs_path": "/api-reference/initiative/list-initiative-epics",
       "method": "GET",
       "mutation": false,
-      "operation_sha256": "1aaf06844897fa941df2f58f76160f0595a7aa765d87b3acc76df66a9b7a13b0",
+      "operation_sha256": "8ea205d66df529613abbd5d35fbf9084c0edc610168b9f118ccbf08a7692653f",
       "path": "/api/v1/workspaces/{workspace_slug}/initiatives/{initiative_id}/epics/",
       "schema_hash": "5bde27b040a8173b7c0768ecc523546c07d158918bf28ba92d96da8fde0cf2b7"
     },
@@ -1170,7 +1190,7 @@
       "docs_path": "/api-reference/initiative/list-initiative-labels-for-initiative",
       "method": "GET",
       "mutation": false,
-      "operation_sha256": "43a0f37ee03d42d52e4cceb9f1b39d0934396da9bd33f700553031d367b83b6e",
+      "operation_sha256": "9876e82c1a71ff66ac0f20257faae8dd3416b212f754ac64b97727d0068e4a64",
       "path": "/api/v1/workspaces/{workspace_slug}/initiatives/{initiative_id}/labels/",
       "schema_hash": "4b688837dc72ffa32002088299d783eb8c3212e7f740867033430947e7305d3f"
     },
@@ -1179,7 +1199,7 @@
       "docs_path": "/api-reference/initiative/list-initiative-projects",
       "method": "GET",
       "mutation": false,
-      "operation_sha256": "2818c8388feb6e351acdb863025bb9f564673b88052c1273b7bec47300e7e77a",
+      "operation_sha256": "4137bcffe09c8d161e1c0566bf22acd799dd3e50e3f550577f7761f31902e5da",
       "path": "/api/v1/workspaces/{workspace_slug}/initiatives/{initiative_id}/projects/",
       "schema_hash": "5aace80f232c9003d27869cd4b2325a17c6d17b3e47793b927f0f36e345160f1"
     },
@@ -1188,7 +1208,7 @@
       "docs_path": "/api-reference/workspace-invitations/list-workspace-invitations",
       "method": "GET",
       "mutation": false,
-      "operation_sha256": "4cc030fa7a6fb9574b1c4b79f829c1a8dc601e58b982e137e53e665f763b47fc",
+      "operation_sha256": "3821e8cde2b610ac2f11b290bedc5d8bc3495b7d151f3459f10c12d5a283f08f",
       "path": "/api/v1/workspaces/{workspace_slug}/invitations/",
       "schema_hash": "507e091e6b9cca182c11382d30239cbf7ac8df708fb6e68971bca27c8c767f35"
     },
@@ -1197,7 +1217,7 @@
       "docs_path": "/api-reference/workspace-invitations/get-workspace-invitation-detail",
       "method": "GET",
       "mutation": false,
-      "operation_sha256": "44043db62facd1b4d925ce7e6dd496c6ec21096c93efd3aea030095e03c3d85b",
+      "operation_sha256": "99585f82ac18ec5b1d767a323f03cf91c07c1e6e6e96c7dbdb804063716ccc2e",
       "path": "/api/v1/workspaces/{workspace_slug}/invitations/{invitation_id}/",
       "schema_hash": "67baada5b72d7b09775a799419f4688875d28315972d6b52c4c7500d7629f580"
     },
@@ -1206,7 +1226,7 @@
       "docs_path": "/api-reference/members/get-workspace-members",
       "method": "GET",
       "mutation": false,
-      "operation_sha256": "2d370f0e6276782d89b29f32b6927993a778084f1c93c413abd0cba037f07497",
+      "operation_sha256": "34227cca3402a5d5417f40f6777379694794246910529431902cc50b3a6060c5",
       "path": "/api/v1/workspaces/{workspace_slug}/members/",
       "schema_hash": "a0154e7b173c8d061e19deed75c60c13dba0028173542fca21209659116a7fc7"
     },
@@ -1215,7 +1235,7 @@
       "docs_path": "/api-reference/page/list-workspace-pages",
       "method": "GET",
       "mutation": false,
-      "operation_sha256": "0b281cb6555c6c329c366889ef7630b7ad73e0650cfcc7c3ce427b7f74ddce85",
+      "operation_sha256": "9dff566247401e784e8d528095dbf25bbd58f64a7c0b48481d05d3afd309dd73",
       "path": "/api/v1/workspaces/{workspace_slug}/pages/",
       "schema_hash": "3c2f4b0da43485879eb50d9d57c2e416bf8d3f631ab1567a23a9b71f3274ad89"
     },
@@ -1224,7 +1244,7 @@
       "docs_path": "/api-reference/page/get-workspace-page",
       "method": "GET",
       "mutation": false,
-      "operation_sha256": "f4a26cfe5b2e1a3a5018bf0eb3fd1c0e9240ce24c9043a2c586528f66b84c29a",
+      "operation_sha256": "b6a1004f2989311492c61dc6fa5ff0e55c8f683ff8b5d127daac152be1ffb328",
       "path": "/api/v1/workspaces/{workspace_slug}/pages/{page_id}/",
       "schema_hash": "2b29958174d0c018ed0d8ece34896ad26ef3de89edf2321702f77f2e88557d04"
     },
@@ -1233,7 +1253,7 @@
       "docs_path": "/api-reference/project-labels/list-project-labels",
       "method": "GET",
       "mutation": false,
-      "operation_sha256": "739b2b9acbcba633d984014b895f95531dc231846e63d0e2102483a54143b58a",
+      "operation_sha256": "450a4ed9183be2ac6452e60fe9537b2edb0666d8b11e77c877dd4cd1d076a31f",
       "path": "/api/v1/workspaces/{workspace_slug}/project-labels/",
       "schema_hash": "3257868b3868ab870aa621454de8bb2535d9c83cf197b9fd1f60ad2ee7550186"
     },
@@ -1242,7 +1262,7 @@
       "docs_path": "/api-reference/project-labels/get-project-label-detail",
       "method": "GET",
       "mutation": false,
-      "operation_sha256": "92a73be4c9cf5bae9ddd48191d8da2e889f70388e79fbd9e29e91611491ba1c0",
+      "operation_sha256": "6bc4f153c33fae2ac4ff66d1b296c97e35420fda8bcf830f89aeb77d9475f20d",
       "path": "/api/v1/workspaces/{workspace_slug}/project-labels/{label_id}/",
       "schema_hash": "2065b569ca3a8dd51003b192fe84bb1ccf82d491070ddccab77cc911c61ce592"
     },
@@ -1251,7 +1271,7 @@
       "docs_path": "/api-reference/project/list-projects",
       "method": "GET",
       "mutation": false,
-      "operation_sha256": "011f4e2c5f7188cdb4fc4d83f8a8d4eee1ac33918db644cd961b0d3221b3833f",
+      "operation_sha256": "23393e76adb728e4cbb8ef794fa58c30291f215454b96515a0bd2bf221a7d1d6",
       "path": "/api/v1/workspaces/{workspace_slug}/projects/",
       "schema_hash": "86db28c5a753463379a65264bbe1adc8534ce4583d3b958350623585e3c32721"
     },
@@ -1260,7 +1280,7 @@
       "docs_path": "/api-reference/cycle/list-archived-cycles",
       "method": "GET",
       "mutation": false,
-      "operation_sha256": "6567315f94f37662d828b73653ddf74832e35c4c9264018c891e1db5f43d3224",
+      "operation_sha256": "dfa33aed29ae9e0fbb29053ae28cd860fdbae8a8a76317c3751f99f6b52f611c",
       "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/archived-cycles/",
       "schema_hash": "6d6488343978e27ab6868c63545013e0c616ef8c93d2c721454cc5fdc4b078fc"
     },
@@ -1269,7 +1289,7 @@
       "docs_path": "/api-reference/module/list-archived-modules",
       "method": "GET",
       "mutation": false,
-      "operation_sha256": "a1c516bd8849e972a37dfd1d4d2c5b70d4b826e69305bd818156cdb9f233be70",
+      "operation_sha256": "69e7a410a7e0b3fe8cc5dbab894c35f91474c332d4f7f7f57afcb06752f1d1a2",
       "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/archived-modules/",
       "schema_hash": "0633592585149cb6d7d98311918572a81bafe6255be60406932f672cd5557d27"
     },
@@ -1278,7 +1298,7 @@
       "docs_path": "/api-reference/cycle/list-cycles",
       "method": "GET",
       "mutation": false,
-      "operation_sha256": "ae1f5e5b589477cfd34cb8207b549dcc73778bc7652e1305ead380d8e652fafb",
+      "operation_sha256": "2787afaff9083e95ec3a606f2af2bf5d0d531bb574102d2260afed41ef737930",
       "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/cycles/",
       "schema_hash": "0604e2c5cf19b4284f2f856f18fd3efd2378a603e897b50a73823669f3df8c2c"
     },
@@ -1287,7 +1307,7 @@
       "docs_path": "/api-reference/cycle/list-cycle-work-items",
       "method": "GET",
       "mutation": false,
-      "operation_sha256": "dd17b606ba2d382f68ae362b8e649c384277c1bb3b128c75d3c05f013cf21586",
+      "operation_sha256": "0d5892ee2c1a724c372b81a539adf479ce7a4f92bf823742e11995e4052be80d",
       "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/cycles/{cycle_id}/cycle-issues/",
       "schema_hash": "af954bdc754e6046d03192ecf98408de22530d8d273652084e1be703f3db0482"
     },
@@ -1296,7 +1316,7 @@
       "docs_path": "/api-reference/cycle/get-cycle-detail",
       "method": "GET",
       "mutation": false,
-      "operation_sha256": "4f0130df69f9f2d51f99365ed0fb0a9af6ea965585cf65d463190e4021ba3c8d",
+      "operation_sha256": "aa1ab3f720329dd1d630223a461b1940137229745c98f0a01776625271ca28ba",
       "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/cycles/{resource_id}/",
       "schema_hash": "6130fa283b3679f70be8c02936ca8afeabd749f4257a7ed7aa048db0ad0317fe"
     },
@@ -1305,7 +1325,7 @@
       "docs_path": "/api-reference/epics/list-epics",
       "method": "GET",
       "mutation": false,
-      "operation_sha256": "095f6d8f693aabe565660242932503bf4a49a8042828ffa85bc33f6531bf62f8",
+      "operation_sha256": "9a8f33764666839f3cf56465b42396df122aacec20ef1e622d07ff1f8590e7f7",
       "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/epics/",
       "schema_hash": "21a31fdb4f6c290820f2f40bc1fbb5fda75560e5f9ecf702662885380915ada1"
     },
@@ -1314,7 +1334,7 @@
       "docs_path": "/api-reference/epics/get-epic-detail",
       "method": "GET",
       "mutation": false,
-      "operation_sha256": "e9be76bc06e943aeb31415eea0004eb77e67f9d0f627deab09d93ce704861a68",
+      "operation_sha256": "d5009337790ad5f11e8a77f9a23a787238b018d6ae4180efd14d3e30bb88e897",
       "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/epics/{resource_id}/",
       "schema_hash": "0e11fdb21a3f78f2a1ea580a5c40a8ad3bac48214d4e7ad782ed2a41a23e7063"
     },
@@ -1323,7 +1343,7 @@
       "docs_path": "/api-reference/estimate/get-estimate",
       "method": "GET",
       "mutation": false,
-      "operation_sha256": "c753c7788b2c7b35b287a59085533c1c203f27352a958b59ea4024b218749347",
+      "operation_sha256": "05dbdc9d5d04586eb023068f68583de471e4bcdc9728d1a0780439b7dc088fa1",
       "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/estimates/",
       "schema_hash": "2f9625d20e4f4bbd44545c1c91c7070a206f17377962d69bb731725f17bef3be"
     },
@@ -1332,7 +1352,7 @@
       "docs_path": "/api-reference/estimate/list-estimate-points",
       "method": "GET",
       "mutation": false,
-      "operation_sha256": "632711cebf28cd701c341468cadfaa32c1f36f1a1efeb9ed6eb33e44c4bdf654",
+      "operation_sha256": "47edbadb81c5256554a8df4aea7342eaf3a8c72f8f9396137c2564301e0852b1",
       "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/estimates/{estimate_id}/estimate-points/",
       "schema_hash": "31f41b20e046848a27ffc4e8fccf660aa0fd6545f3547eee2742892af75316a8"
     },
@@ -1341,7 +1361,7 @@
       "docs_path": "/api-reference/project-features/get-project-features",
       "method": "GET",
       "mutation": false,
-      "operation_sha256": "9af22b1c55d530e0ae1a4c038044b906ce77976e7cec3aecb5d91cc2e1266e9e",
+      "operation_sha256": "58d8e8b19707b33851e64073217cf65fbf46b0be5e3157870a4227fdbb90f43c",
       "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/features/",
       "schema_hash": "6e7b9185ebf6cfc5141e0ac3a7fb2e39c2b34ffb83f5f710bad69a90f389b51b"
     },
@@ -1350,7 +1370,7 @@
       "docs_path": "/api-reference/intake-issue/list-intake-issues",
       "method": "GET",
       "mutation": false,
-      "operation_sha256": "ebeab6000cdc44b16f2f3166c4eb1456cf79ba361d1a3bba9150ebc6f7f3e10a",
+      "operation_sha256": "e98255e593c8ac777128ba4c876dcdcb60fd85b39d11a333f6720ec1d11fddbf",
       "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/intake-issues/",
       "schema_hash": "1c5544833832293852d9ff215750d7492465f2854a2a64e0e1d38054c4c69d36"
     },
@@ -1359,7 +1379,7 @@
       "docs_path": "/api-reference/intake-issue/get-intake-issue-detail",
       "method": "GET",
       "mutation": false,
-      "operation_sha256": "b56b4a8eda7c0f63bc65ae1838a838356fbb544c08f0698a55d7a2535681b6cc",
+      "operation_sha256": "12ef36537ea2a93bf641afd71189df7787579cad9a41a3caa13694cc236256aa",
       "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/intake-issues/{work_item_id}/",
       "schema_hash": "1513eaacfbf00911dea9f1de3c30fa6f6f2abeff0c67a705762b2db0aab87c4c"
     },
@@ -1368,7 +1388,7 @@
       "docs_path": "/api-reference/label/list-labels",
       "method": "GET",
       "mutation": false,
-      "operation_sha256": "74c08ec75326ddfdc14b3c831be6a0730cae5939ce3fde90b6ee984f23138daa",
+      "operation_sha256": "edd7a5329aa37156b7b5e479b25abb59f4aa314fd1af8e8b5bb570b8068ae148",
       "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/labels/",
       "schema_hash": "f77f0de1113ef71893340f715e667b0cb578da00c7b6c4e39e7e3a42bb753afe"
     },
@@ -1377,7 +1397,7 @@
       "docs_path": "/api-reference/label/get-label-detail",
       "method": "GET",
       "mutation": false,
-      "operation_sha256": "26d528afef2719b3d4ddebdbf2c5070b5103b062b1c261028203c2bf98759b1f",
+      "operation_sha256": "73dff110b1294bce821467696231267382fa5b3bd37715f2c92fb4aa4371fc72",
       "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/labels/{label_id}/",
       "schema_hash": "345b469707d5ce5ecf2f1f5de4c382c1dc6716eb8df860c3630041641b22b960"
     },
@@ -1386,7 +1406,7 @@
       "docs_path": "/api-reference/milestones/list-milestones",
       "method": "GET",
       "mutation": false,
-      "operation_sha256": "274c2887985d99783118d7cd5ab9bb6cf5f462548fe41c273f8a0ebb38010f0e",
+      "operation_sha256": "23be1744d26e5f247477cac78e9ea8cb775088cd82d45f654929b25ae8683a57",
       "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/milestones/",
       "schema_hash": "f56197c501369394eb72f2dc8f13cd7d242269064eba8113858adfc189f3e938"
     },
@@ -1395,7 +1415,7 @@
       "docs_path": "/api-reference/milestones/get-milestone-detail",
       "method": "GET",
       "mutation": false,
-      "operation_sha256": "df71b4874b56bf0ff3c443a5e4f39872ef7199077bbaaff0addac227378bade5",
+      "operation_sha256": "da8c5ccaf34f17ef00710eb2d36e22f0286e2a58b18379b7915b0667613ffcf4",
       "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/milestones/{milestone_id}/",
       "schema_hash": "7956408efcf7e7a149309e66c89e3cd8f7e34b599cb7040b26ad9705cb40ff62"
     },
@@ -1404,7 +1424,7 @@
       "docs_path": "/api-reference/milestones/list-milestone-work-items",
       "method": "GET",
       "mutation": false,
-      "operation_sha256": "d194a07fd3733df2985dfe27cfca6f499b3f6677a84ae09ecf36558558b25c09",
+      "operation_sha256": "6f949635d587755a0a280c50a466e6c4ff0a1024199870fd564fb0fefe2a7bcd",
       "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/milestones/{milestone_id}/work-items/",
       "schema_hash": "4229228393be1aee02772923498365e2ed5de31ea8b233ffdb38d213fa8c52d3"
     },
@@ -1413,7 +1433,7 @@
       "docs_path": "/api-reference/module/list-modules",
       "method": "GET",
       "mutation": false,
-      "operation_sha256": "fa485e8972fcc102ce21a9de3ba2e56c52666089960915b9e965aace68dea6fa",
+      "operation_sha256": "e7a09c5f6eb6762c5a94b73e6f4c5c145613559141e24551905491d79f096805",
       "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/modules/",
       "schema_hash": "ba6c0c6bfcc8c413707b9d88a8503da1ea978bdca677081f2bb78de0b7b9c330"
     },
@@ -1422,7 +1442,7 @@
       "docs_path": "/api-reference/module/list-module-work-items",
       "method": "GET",
       "mutation": false,
-      "operation_sha256": "268e84b815ca28e9cb05e95d5c841f89e6ba89f858d7d85d584102df6d0ed708",
+      "operation_sha256": "825090ef3e39f393bb062d93aa3b77a8a39fe533f343e80af90c91e00e56544e",
       "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/modules/{module_id}/module-issues/",
       "schema_hash": "410b8444e6d0e42001952357404f233c35092afa0fc042ffa8a03db03fc37513"
     },
@@ -1431,7 +1451,7 @@
       "docs_path": "/api-reference/module/get-module-detail",
       "method": "GET",
       "mutation": false,
-      "operation_sha256": "b4523ba1e6f906b33fba26cb506ba96b855d7e61f77f44153fc771d0d6671a55",
+      "operation_sha256": "d5fa7fea21d49fceede9f9201ef59ea49f79e9cebcd6359a63ae6772f5ee989b",
       "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/modules/{resource_id}/",
       "schema_hash": "9df75a95cab4841d4f7ba37033e32151060cecc548ee100ee929b69cf56bdb75"
     },
@@ -1440,7 +1460,7 @@
       "docs_path": "/api-reference/page/list-project-pages",
       "method": "GET",
       "mutation": false,
-      "operation_sha256": "0a86963a173a4be5ccb4bafdcc60106100a1112e6bd198d5ceac8e0ae5eb2653",
+      "operation_sha256": "c06d7c2d2f3175e56032801b566a7782541dae82540b3aeb146f52c94b0ff627",
       "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/pages/",
       "schema_hash": "c1c6b204aaa5dfe32d222de3838220d0d6300a0a30a163163832186b04507655"
     },
@@ -1449,7 +1469,7 @@
       "docs_path": "/api-reference/page/get-project-page",
       "method": "GET",
       "mutation": false,
-      "operation_sha256": "2de40fff44cc1b728ab6a6aa1229ffd894a8dcad7912b3e483e9c925817e335b",
+      "operation_sha256": "faf508fa1047c6f2a7c041bfd1d004a02daa4f26793b0c6d6f2626d468f982d3",
       "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/pages/{page_id}/",
       "schema_hash": "a09648b861b591799fb534a12156a7a9c48c4e00d4e2db7cab6a1fe267b42906"
     },
@@ -1458,7 +1478,7 @@
       "docs_path": "/api-reference/members/get-project-members",
       "method": "GET",
       "mutation": false,
-      "operation_sha256": "6861f72eee38ac144894fe95902dde8c346ebd3e92fedf75ed4c5590b0b60923",
+      "operation_sha256": "60fc43ddfc7ee6f583c9761998b3b19f228aaac49a93f47aa640839d554cc313",
       "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/project-members/",
       "schema_hash": "eb7c68c003b91cf89dd308ae7dae25e409262a73ee9a13d3bf0ab581577760de"
     },
@@ -1467,7 +1487,7 @@
       "docs_path": "/api-reference/members/get-project-member-detail",
       "method": "GET",
       "mutation": false,
-      "operation_sha256": "7030daaa2304af0f87011dd16bea63dc538bc4200252e8e0780f16a86a96cb56",
+      "operation_sha256": "96eb1dd49cfb3955d3678edb3ecd64d8874cb0f9d110fa5ae9141a9275d6f372",
       "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/project-members/{member_id}/",
       "schema_hash": "17f80294e50fd7106d9a3b9b4a33b652a6991b76208f2c4e3ddfba3744675613"
     },
@@ -1476,7 +1496,7 @@
       "docs_path": "/api-reference/state/list-states",
       "method": "GET",
       "mutation": false,
-      "operation_sha256": "89353bdd3954ec5af394d37a9105d856621fcd15ab37d36dd463a9fede5118e4",
+      "operation_sha256": "b7ba48c220785e87fd92c4a36dc0d534e0a6f474301bed09976a5cdbf45d945d",
       "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/states/",
       "schema_hash": "a7a1fdb0525be4a56a0f91d36e76260e5dada44ea4cf505ac053620456138f1f"
     },
@@ -1485,7 +1505,7 @@
       "docs_path": "/api-reference/state/get-state-detail",
       "method": "GET",
       "mutation": false,
-      "operation_sha256": "a61ffc188e1a90793c03c4915528aac407916f6c9012db0cd958e0eb61876906",
+      "operation_sha256": "0adbaa0cc0714eada28b3bc8935d98ef7387a8c9dc8392488cef96042fba23a7",
       "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/states/{state_id}/",
       "schema_hash": "b35dc41a0f28f4dc31891e0ba045e14ccc670600903e78d4d56377bbfecef463"
     },
@@ -1494,7 +1514,7 @@
       "docs_path": "/api-reference/worklogs/get-total-time",
       "method": "GET",
       "mutation": false,
-      "operation_sha256": "d0c31fa784ee6fd6e79a795af02922b7d58de4d8a28e64ee89d897eda14245be",
+      "operation_sha256": "50926f898f5af7c474bcd763c8a88fa170b93f9e2684c2feca1cbfc973f8497a",
       "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/total-worklogs/",
       "schema_hash": "34ab959f59b1e95e6a3d8cd59fea2222677df8fab746925accf3fab2425c1d88"
     },
@@ -1503,7 +1523,7 @@
       "docs_path": "/api-reference/issue-types/options/list-dropdown-options",
       "method": "GET",
       "mutation": false,
-      "operation_sha256": "980194a9659c8eea1c974e4c036e18406fdd171e3a10f7b8852c48dbfdf36f41",
+      "operation_sha256": "e815067ab87227398f08090fd2d9002e6e6b7328b8f8b849ecb1f2030428d45c",
       "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/work-item-properties/{property_id}/options/",
       "schema_hash": "07e50d50b3a31ccd67680a5c167d7e68bd316f9e3024ab6963240c10d97ac8c6"
     },
@@ -1512,7 +1532,7 @@
       "docs_path": "/api-reference/issue-types/options/get-option-details",
       "method": "GET",
       "mutation": false,
-      "operation_sha256": "8b8a7884fe6adb663603cf4780f7f7aaff5f12ea3915b41e1e8e46d269671f64",
+      "operation_sha256": "b79c39aa888bf07d3c83e148aee44ab575bc0ce0439e6da1d7be9a26651d0b20",
       "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/work-item-properties/{property_id}/options/{option_id}/",
       "schema_hash": "0ff23832401c1775680fc05113fbff4e733b302d07d921256a16a8bdb33a3450"
     },
@@ -1521,7 +1541,7 @@
       "docs_path": "/api-reference/issue-types/types/list-issue-types",
       "method": "GET",
       "mutation": false,
-      "operation_sha256": "d9db8e61e46f5b992c95007891aebf78c76b408afd3aa9dd992a733370dc6006",
+      "operation_sha256": "e7f50451a5b8fab8faa4b98ebff529ea00dc24d0c3b3d4c9804f4ce085b44733",
       "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/work-item-types/",
       "schema_hash": "4cd44537a0b87524198ca830a4feaff4acc3afd5e98a92245b705444b21af9ae"
     },
@@ -1530,7 +1550,7 @@
       "docs_path": "/api-reference/issue-types/types/get-work-item-type-schema",
       "method": "GET",
       "mutation": false,
-      "operation_sha256": "69b67fe1ca8e9ed36aeecb9509face8238b543ffb3107026d16d52ddacd41786",
+      "operation_sha256": "1929f8457d91b21454b38b8298d47de2b32cbbffe3fb9ef4bf2329b01573e393",
       "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/work-item-types/schema/",
       "schema_hash": "e7e9a29add1204b911b14521b967f1ed86dc982e6f5be4b473c198adaa8203cc"
     },
@@ -1539,7 +1559,7 @@
       "docs_path": "/api-reference/issue-types/types/get-issue-type-details",
       "method": "GET",
       "mutation": false,
-      "operation_sha256": "6628d9806c602525a5b354df932e6ea48fa5e92579ea86bc5d1dbb4affcb68ee",
+      "operation_sha256": "4ce57a24c10b08a063c5ef7cd30f1e7e9a65af849e1371f9219a8ebcb0c458f1",
       "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/work-item-types/{type_id}/",
       "schema_hash": "45c087ba1d2792c3044ff7e679ebbb78b07516321eb6255d6004977da1371481"
     },
@@ -1548,7 +1568,7 @@
       "docs_path": "/api-reference/issue-types/properties/list-properties",
       "method": "GET",
       "mutation": false,
-      "operation_sha256": "701d6320c08b42e67e2a08b4b544a2ef84d4f16593bd4b26d3f036e5ba9e9485",
+      "operation_sha256": "8442e69c502038d3a172e061a89d4cb3d33b2697a46040dc7054873a6c079a0c",
       "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/work-item-types/{type_id}/work-item-properties/",
       "schema_hash": "0f0a364635ac2736b2c7d6e6165c95dc08ccbea2a0c5a9e94fd7ca4388468018"
     },
@@ -1557,7 +1577,7 @@
       "docs_path": "/api-reference/issue-types/properties/get-property-details",
       "method": "GET",
       "mutation": false,
-      "operation_sha256": "7ddf936e24a8ad96676ba0ecc89dea5007c304a3d0e1d5c2645b491ff926f156",
+      "operation_sha256": "3eff09b45771be25287b1cbdbf7a4f7eb92fe971354f538f770a838d87d66276",
       "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/work-item-types/{type_id}/work-item-properties/{property_id}/",
       "schema_hash": "44340e62345c1512511de2ae723bba76609e5567a3fb4fdb5963b5363fc4c0eb"
     },
@@ -1566,7 +1586,7 @@
       "docs_path": "/api-reference/issue/list-issues",
       "method": "GET",
       "mutation": false,
-      "operation_sha256": "747475ce291c3b6bcc9e3bef883f5dc504a20de43eca949c0bb8353f131764d6",
+      "operation_sha256": "25c215a0d8249fa4e681464441069ef8d10e70982d0321cd1db81d0190874db9",
       "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/work-items/",
       "schema_hash": "b914fd513641021c74e69736d749c2301891c314998ac7aa806c395cc2e78841"
     },
@@ -1575,7 +1595,7 @@
       "docs_path": "/api-reference/issue/get-issue-detail",
       "method": "GET",
       "mutation": false,
-      "operation_sha256": "2739dede9638793c6f0a5582cc2975e47cb7057a22a6722f6e7cd246c10e96a1",
+      "operation_sha256": "b25ff3d5d389fdc1a640e90b05dc5a53c54afce2356c063f691cc9960b34ba35",
       "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/work-items/{resource_id}/",
       "schema_hash": "84f9c7dfe0a9eaeaaddaf4ca95c1965f122eb1202e4d9b9191f0c2dfb57787b4"
     },
@@ -1584,7 +1604,7 @@
       "docs_path": "/api-reference/issue-activity/list-issue-activities",
       "method": "GET",
       "mutation": false,
-      "operation_sha256": "1136859af5d0e37f8811b4d64ca905451f04d817bc75cc67ba2e3ab7b9841d6c",
+      "operation_sha256": "cecdb13675cd65c48995779b98a2ecb5e0b4a9ec3a5d172651c20274c8371b46",
       "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/work-items/{work_item_id}/activities/",
       "schema_hash": "6e44cb5fd62096a6cbb7e4a461f92aaa1bccfe22e26018c241c487a0dc58d4d3"
     },
@@ -1593,7 +1613,7 @@
       "docs_path": "/api-reference/issue-activity/get-issue-activity-detail",
       "method": "GET",
       "mutation": false,
-      "operation_sha256": "4a0ffc98c78fdfa423e0c3b974a34c2b0ace7620be72582def898405e82eb7b9",
+      "operation_sha256": "6b38f55bff6f15ec987eea94af2c72130ce6f113d8ac10e2cfa4e66e65cdb5f7",
       "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/work-items/{work_item_id}/activities/{resource_id}/",
       "schema_hash": "34b2f68d0423e294c8feb51b7e9ac1527117a755d71731630a6d2b4b8db8e57b"
     },
@@ -1602,7 +1622,7 @@
       "docs_path": "/api-reference/issue-attachments/get-attachments",
       "method": "GET",
       "mutation": false,
-      "operation_sha256": "87403284207d18e36d7542b8762f086887f4672f90b8902c93e380e61bde9087",
+      "operation_sha256": "3ed4444208900fe2f29cfb488222be53dd942fda3f976c7d348b192965341d74",
       "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/work-items/{work_item_id}/attachments/",
       "schema_hash": "66a6ad26516d141217c9c86c8084e3f8c8dcfed13c066617d908f695aee1c1e6"
     },
@@ -1611,7 +1631,7 @@
       "docs_path": "/api-reference/issue-attachments/get-attachment-detail",
       "method": "GET",
       "mutation": false,
-      "operation_sha256": "9f0788c6d46249698aa92fc78cae83ee15c6116d087fdcc2050704c87415e60a",
+      "operation_sha256": "d54fb241b980d206b8f96e7d107ee8f155a4c1b0b58ecda2aad85948e73d8bfb",
       "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/work-items/{work_item_id}/attachments/{resource_id}/",
       "schema_hash": "c851faf7d3dbbc5d9887ab1ab00427bcd80aab145d89e23aee85742f9e7f4c17"
     },
@@ -1620,7 +1640,7 @@
       "docs_path": "/api-reference/issue-comment/list-issue-comments",
       "method": "GET",
       "mutation": false,
-      "operation_sha256": "a2736ebd1ca597e8d494e5b58a3568cd502624c685d1980d3e901654f4adbb28",
+      "operation_sha256": "19e38df56550d51078a1645286a949793e4c229f9d4f6ef6cc0541b287fb5e92",
       "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/work-items/{work_item_id}/comments/",
       "schema_hash": "29b45ae67cfd3cb237820558b7e2715ecd81370e7c164b717827a5e78394e6be"
     },
@@ -1629,7 +1649,7 @@
       "docs_path": "/api-reference/issue-comment/get-issue-comment-detail",
       "method": "GET",
       "mutation": false,
-      "operation_sha256": "82f37eb75ff579feea30a20b94cbf3068087a58d75dec2ff7c6a8c0f5b428381",
+      "operation_sha256": "b4d455a8cc3356dba1b218b6d8b99fe5897644ea04f25055d1222161b2e09d36",
       "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/work-items/{work_item_id}/comments/{resource_id}/",
       "schema_hash": "6ec2ce177527bd85fe1147b5b773e45e71cca6a6d5fc347a5ab4fda584378cd9"
     },
@@ -1638,7 +1658,7 @@
       "docs_path": "/api-reference/link/list-links",
       "method": "GET",
       "mutation": false,
-      "operation_sha256": "dd8722f8b9a548df72ec26a664165f1d808a666bdd35d409c001944ffcd93f6f",
+      "operation_sha256": "06d109cdfc26cb029f127a3b194a8ba599d00946e3e0e3bc698b6605b3878617",
       "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/work-items/{work_item_id}/links/",
       "schema_hash": "1916debd4200265aef0c5a85f4fd0f6ad7668b42c2b5fa1b933ee7e3f85b0b43"
     },
@@ -1647,7 +1667,7 @@
       "docs_path": "/api-reference/link/get-link-detail",
       "method": "GET",
       "mutation": false,
-      "operation_sha256": "93ed3631e3ce08a770eb81e5a7373de87853fca637e992dd8ed9ebf41023af0e",
+      "operation_sha256": "a85e67848d60cb57ebb87ec0a7c99b8a2305739934cdf8d35081dbcc805ed1ce",
       "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/work-items/{work_item_id}/links/{resource_id}/",
       "schema_hash": "96fd856ab3c250662d4a9bec90cc4a07e634be32b44f95135869b6e2fe286ec2"
     },
@@ -1656,7 +1676,7 @@
       "docs_path": "/api-reference/work-item-pages/list-work-item-pages",
       "method": "GET",
       "mutation": false,
-      "operation_sha256": "d1a9e807bed7daf01ad6b1b61d8d68a3135803ad8ef2f92ef05ba8af5455a3f1",
+      "operation_sha256": "2850f79e1dae5d1eb5a54d81ac0a20f0aab4213069590fa1853cb42fccbc478c",
       "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/work-items/{work_item_id}/pages/",
       "schema_hash": "e72c571b56cb003e88fd0c4769e1fc55dec2239b73afd65d2d1b7e3e1e5f2c61"
     },
@@ -1665,7 +1685,7 @@
       "docs_path": "/api-reference/work-item-pages/get-work-item-page-detail",
       "method": "GET",
       "mutation": false,
-      "operation_sha256": "45fb95a145484d3582aa6c3cd236c1f730b5801c06c43f3f89ec04246fd14344",
+      "operation_sha256": "bcede861d53c2ec1c6574669582a8858f7a85b148fb533695cc924b80da2ca4c",
       "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/work-items/{work_item_id}/pages/{page_id}/",
       "schema_hash": "09acde4fcec7c122676fbc37a36d98b83df73ffa01c698b42840c21aec497624"
     },
@@ -1674,7 +1694,7 @@
       "docs_path": "/api-reference/issue-types/values/get-property-value-detail",
       "method": "GET",
       "mutation": false,
-      "operation_sha256": "514a58b9602ddf169d441f971af0c914d80b5146d9f58209cea18535f018f1ff",
+      "operation_sha256": "24f76300eac72fa72b8c0dd174d43923783b1a8718874d4fd99c5c2f49ef5c1c",
       "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/work-items/{work_item_id}/work-item-properties/{property_id}/values/",
       "schema_hash": "b86fbe378a2027e8f2307df13d16e15cbef68b3e69d6574fd4d9332c77c927aa"
     },
@@ -1683,7 +1703,7 @@
       "docs_path": "/api-reference/issue-types/values/list-property-values",
       "method": "GET",
       "mutation": false,
-      "operation_sha256": "98e53b5be8801595e00a57057e7980dcebffeffd0d6b593ad8db42c889c40018",
+      "operation_sha256": "53fa4c90ff74c4d37d827bd48f9b2a25081e625b48506a70143aaed40614a82c",
       "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/work-items/{work_item_id}/work-item-properties/{property_id}/values/",
       "schema_hash": "b86fbe378a2027e8f2307df13d16e15cbef68b3e69d6574fd4d9332c77c927aa"
     },
@@ -1692,7 +1712,7 @@
       "docs_path": "/api-reference/worklogs/get-worklogs-for-issue",
       "method": "GET",
       "mutation": false,
-      "operation_sha256": "ad18fc3e840451acdbce695324473adea6b3d11e3c8cdfa3122cf49d51419565",
+      "operation_sha256": "26e5e45e066b8dceb67e42a9016c93f0de498b52c90f2cb1ca3250f5c56b41a3",
       "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/work-items/{work_item_id}/worklogs/",
       "schema_hash": "54eec4fc4481cd289c8cf30d04d6ab7e3c2f1a20a0bc077cb0342a6e90fd0add"
     },
@@ -1701,7 +1721,7 @@
       "docs_path": "/api-reference/project/get-project-detail",
       "method": "GET",
       "mutation": false,
-      "operation_sha256": "b74aa2a10c64e43f73a5d42fa47455f545c76bcbe1acff6670d206d7a3adc469",
+      "operation_sha256": "3da8d2bc7f4b01e6fc39471a83caa379886dbc63b8ca4565393db3e403591e23",
       "path": "/api/v1/workspaces/{workspace_slug}/projects/{resource_id}/",
       "schema_hash": "96005e9748cc8892eaef97d1a90be52a197f5f6838db7e4e9af82f6a410b8ef4"
     },
@@ -1710,7 +1730,7 @@
       "docs_path": "/api-reference/sticky/list-stickies",
       "method": "GET",
       "mutation": false,
-      "operation_sha256": "2ca86b6f0b447750aae93086e70eb8e5873da3f0cb44dffea9052ec35ee771f3",
+      "operation_sha256": "d81c8cebfa69a26241586161279bc5317228fb189f56eb5999e010d991734f53",
       "path": "/api/v1/workspaces/{workspace_slug}/stickies/",
       "schema_hash": "fd0de8a6a16d9b560f96b2b184c36e9288573e800a73bd76a19a1a581e93847a"
     },
@@ -1719,7 +1739,7 @@
       "docs_path": "/api-reference/sticky/get-sticky-detail",
       "method": "GET",
       "mutation": false,
-      "operation_sha256": "f4b23479c55261f6f178c08e3c43f138f452829f6da7d82f19a8704ed633c589",
+      "operation_sha256": "a1d4f2ddd1f1ed3cdb4ca3ec6e872e6edc5cc83a17b4f5314e92c76991a9bdd1",
       "path": "/api/v1/workspaces/{workspace_slug}/stickies/{resource_id}/",
       "schema_hash": "9c4a409059f2d7f4e65985bdd4899e9929561c09398007c6a1637fcc9314af8a"
     },
@@ -1728,7 +1748,7 @@
       "docs_path": "/api-reference/teamspace/list-teamspaces",
       "method": "GET",
       "mutation": false,
-      "operation_sha256": "ce5112a67bd35e17e0b4765cdb98a53db1d8320eeb428597130335cd3c290bcd",
+      "operation_sha256": "bfc69e1568863ed7493142257d7f4818d133aa264e90e99e690778fd75e45bc6",
       "path": "/api/v1/workspaces/{workspace_slug}/teamspaces/",
       "schema_hash": "d763aab32b4e618df8e9127fad7656fe0130e08e0057163b8bb8792a8ac58132"
     },
@@ -1737,7 +1757,7 @@
       "docs_path": "/api-reference/teamspace/get-teamspace-detail",
       "method": "GET",
       "mutation": false,
-      "operation_sha256": "c90e6a3c256fb2c647d4370751e9b8a087f89d0beb873b161b14514dead94ad3",
+      "operation_sha256": "78956b50f6d7b2a2772d3ac793412e887c3ec2b8a66601e757b60fa6a904cf3b",
       "path": "/api/v1/workspaces/{workspace_slug}/teamspaces/{resource_id}/",
       "schema_hash": "a9bcac1f3d11a6f2317e0db579e6112c55f341b47e3b4f4445ee88a27197ab9c"
     },
@@ -1746,7 +1766,7 @@
       "docs_path": "/api-reference/teamspace/list-teamspace-members",
       "method": "GET",
       "mutation": false,
-      "operation_sha256": "ce51bef42390f16112487750970c40b39baa5074e5feda61c9aca0e4936af6a6",
+      "operation_sha256": "25d1bf85e94cc2071b2f5551013878aca935ddcaed86753612ea3b5553e53c7b",
       "path": "/api/v1/workspaces/{workspace_slug}/teamspaces/{teamspace_id}/members/",
       "schema_hash": "3b87b0bbfba5f21c6766bc59582478713179e560ede544a22677830404dffc6e"
     },
@@ -1755,7 +1775,7 @@
       "docs_path": "/api-reference/teamspace/list-teamspace-projects",
       "method": "GET",
       "mutation": false,
-      "operation_sha256": "37d317ab79b2fdbf8d054dd053847b7f466ed526997fa9e9d6c82b0674278ad1",
+      "operation_sha256": "08c56a133ef209cad3c7dfbc66eebedbfd823f18ebf000a22ba721c57b34f1c8",
       "path": "/api/v1/workspaces/{workspace_slug}/teamspaces/{teamspace_id}/projects/",
       "schema_hash": "85ee22e8744eb2550f5796f9c8019d5291d9be05b5f3ad81a86c013cba80bfeb"
     },
@@ -1764,7 +1784,7 @@
       "docs_path": "/api-reference/issue/search-issues",
       "method": "GET",
       "mutation": false,
-      "operation_sha256": "e00bc635ad2155f3a29da9bbdba3367170fed5787e7a7499e921d7b1828b3098",
+      "operation_sha256": "fdf02d1bc7e3d0d81e7e2659a6cf7073cecb079d275b0b13de2284b17f9ef30d",
       "path": "/api/v1/workspaces/{workspace_slug}/work-items/search/",
       "schema_hash": "a1cd59cd63d2b5ad8da5ea1a89f97f4d879e0d975313b11813055b10318fcfc6"
     },
@@ -1773,7 +1793,7 @@
       "docs_path": "/api-reference/issue/get-issue-sequence-id",
       "method": "GET",
       "mutation": false,
-      "operation_sha256": "ca382b8e82f6d09a32725bdc900056b4e154479b31c9a0a434cae02cc32d70ac",
+      "operation_sha256": "48fb472e8bea75fa31a8420ab9e4d2a887a0d0d0dbc7996668a31c9be00fa1d4",
       "path": "/api/v1/workspaces/{workspace_slug}/work-items/{project_identifier}-{issue_identifier}/",
       "schema_hash": "310cdb91a9f96c6c70cca827fb313ebd8385f74836aceba3266651fcee5eb030"
     },
@@ -1782,7 +1802,7 @@
       "docs_path": "/api-reference/assets/update-user-asset",
       "method": "PATCH",
       "mutation": true,
-      "operation_sha256": "4d5812bf7dcd3b1541704f8a4b4dd2611406de66b8954094385ec4bc9913f8e0",
+      "operation_sha256": "2f60ed0cfbae0d44186ff6d7a9cfeabc8ee7748c907e2e0744182c29ba1bb647",
       "path": "/api/v1/assets/user-assets/{asset_id}/",
       "schema_hash": "c25d83912c75c976db3a08b2964b2273c2b4e1e84dd3c91aab20ee0298d2a8ee"
     },
@@ -1791,7 +1811,7 @@
       "docs_path": "/api-reference/epics/update-epic",
       "method": "PATCH",
       "mutation": true,
-      "operation_sha256": "fc654f98d5e33f9b81b43825607f23edf859fa1196abb631c34e9efd080a30f2",
+      "operation_sha256": "d17651536470ff8f2c3d9d8ef1f67d20d0a3e136e04f4e10351daa312da82068",
       "path": "/api/v1/workspaces/{slug}/projects/{project_id}/epics/{epic_id}/",
       "schema_hash": "7a5d3767d03194f2d49baf991838d6082731c5d093ca412ba25d5b06e4cfe67e"
     },
@@ -1800,7 +1820,7 @@
       "docs_path": "/api-reference/assets/update-workspace-asset",
       "method": "PATCH",
       "mutation": true,
-      "operation_sha256": "54f7795496036d92f67f95d2cc78742afe7692dec82e06e909330321368949c5",
+      "operation_sha256": "526f9886a5937120ecda318d703540180221e186cb386daa553d4a8feb6b653f",
       "path": "/api/v1/workspaces/{workspace_slug}/assets/{asset_id}/",
       "schema_hash": "05fdda12b32faeda3660ae6ebaddb41dab6bf412ea15c142a404a7bb607c78ca"
     },
@@ -1809,7 +1829,7 @@
       "docs_path": "/api-reference/customer/update-customer-property-detail",
       "method": "PATCH",
       "mutation": true,
-      "operation_sha256": "0e6f2ca852492fbd56836f5973f3f8f4521df7feb652413f2562a2e57f0375bf",
+      "operation_sha256": "db140df85786edd3c52286280f738c8abccb9c91c3fcc6332525b3da3454e5fd",
       "path": "/api/v1/workspaces/{workspace_slug}/customer-properties/{property_id}/",
       "schema_hash": "1d2efcf53f8fb6bf2b0ee7f242c9a69b0da4449c021879e613a90d76e56675cc"
     },
@@ -1818,7 +1838,7 @@
       "docs_path": "/api-reference/customer/update-customer-property-value",
       "method": "PATCH",
       "mutation": true,
-      "operation_sha256": "9a0659a9810c77443be2ba49b032b884bfbe82578d3a2b07c708c6657b25df25",
+      "operation_sha256": "95cb0ff8378fc5cf756ff3308cc4ec63139a8e37efc3548d2f9570c052d143ad",
       "path": "/api/v1/workspaces/{workspace_slug}/customers/{customer_id}/property-values/{property_id}/",
       "schema_hash": "28c7e01b10cd3f8545d515046e9e40f4135fab35c403b16c239db213aa7e78e9"
     },
@@ -1827,7 +1847,7 @@
       "docs_path": "/api-reference/customer/update-customer-request-detail",
       "method": "PATCH",
       "mutation": true,
-      "operation_sha256": "5623b266eb65311436064b4c521571586f284a8c0fe3ca3e06115bdc1ae5b58c",
+      "operation_sha256": "c1b8690b6c269de5a377b1cb376640b49fd55d59d90e21caf53e746c22704a28",
       "path": "/api/v1/workspaces/{workspace_slug}/customers/{customer_id}/requests/{resource_id}/",
       "schema_hash": "ed1325c9e0786b9f1502c35b4dad3f9fec2bf7f448221f45a29c8f8d7ba53635"
     },
@@ -1836,7 +1856,7 @@
       "docs_path": "/api-reference/customer/update-customer-detail",
       "method": "PATCH",
       "mutation": true,
-      "operation_sha256": "73ef15323125159b24d8b52f2afbdeb0ed53ce5e5a591b066bfa129a997da640",
+      "operation_sha256": "abd8e4a6d8b01be926e1a85ef873d7e600f8413c1b669aa5d66b22e82652334a",
       "path": "/api/v1/workspaces/{workspace_slug}/customers/{resource_id}/",
       "schema_hash": "11e883fa9cdce5286ccc1a97fdde7cd4a878ef012b06ef68dfff1179fffab9a9"
     },
@@ -1845,7 +1865,7 @@
       "docs_path": "/api-reference/workspace-features/update-workspace-features",
       "method": "PATCH",
       "mutation": true,
-      "operation_sha256": "78a458f037317006a968171c99afb8d75d58fdd487f0dca3f97ec3622a4ef8b3",
+      "operation_sha256": "455aae752cc4729f62adbeeb01878e50dbfbc4914140d2caf206e4a59218478c",
       "path": "/api/v1/workspaces/{workspace_slug}/features/",
       "schema_hash": "042dd1f1ab8a0ac3a9a93c480347070667766a304b5d3994f3b712b3dfa80426"
     },
@@ -1854,7 +1874,7 @@
       "docs_path": "/api-reference/idp-group-sync/update-group-sync-config",
       "method": "PATCH",
       "mutation": true,
-      "operation_sha256": "41efc849ebb65e6dc12f8ac7598284fd4863c626e9de4fb1bd8d88d34101e315",
+      "operation_sha256": "7d45f20237a1b446f8124f17f8f6bc1338034f5a600bdb353fe063a78cebf525",
       "path": "/api/v1/workspaces/{workspace_slug}/group-sync/config/",
       "schema_hash": "6e215def31e2e867e8552845ded85913c1eca12ffcd405d8095a1b662102370b"
     },
@@ -1863,7 +1883,7 @@
       "docs_path": "/api-reference/idp-group-sync/update-project-mapping",
       "method": "PATCH",
       "mutation": true,
-      "operation_sha256": "c8496719f060a5ec2f966d81dc8eb91ba077861f28f330e4ac395cbcd98d2464",
+      "operation_sha256": "97bbee9792c93349514c8d3e912c89efd1c6e0561ec989b027bd762a59b02f83",
       "path": "/api/v1/workspaces/{workspace_slug}/group-sync/project-mappings/{mapping_id}/",
       "schema_hash": "07b947e6a91b8232c6307602f1239ff569f866dd9605391ff13d8180ce2a5175"
     },
@@ -1872,7 +1892,7 @@
       "docs_path": "/api-reference/idp-group-sync/update-workspace-mapping",
       "method": "PATCH",
       "mutation": true,
-      "operation_sha256": "3795fdb16b2f1f6cc2187e48ba06bf102e90b057836ac7e4b4af0fca0d61d745",
+      "operation_sha256": "cb671ef036874e63cde38a810d64190373ea89d0d59d6af270c848ebfac6927a",
       "path": "/api/v1/workspaces/{workspace_slug}/group-sync/workspace-mappings/{mapping_id}/",
       "schema_hash": "399b63c343b6cdf366ff2b810145988be9e4b61e08414399752f38d9273cf596"
     },
@@ -1881,7 +1901,7 @@
       "docs_path": "/api-reference/initiative/update-initiative-label-detail",
       "method": "PATCH",
       "mutation": true,
-      "operation_sha256": "ac4f018834490a12ae03eed6db6f59b7e32b7b235016c46da91cc00cad143a89",
+      "operation_sha256": "c6b2ef4f5fdf974024e1a8ed8eaa3eadb8caecefc0289689fe89064d484e8710",
       "path": "/api/v1/workspaces/{workspace_slug}/initiatives/labels/{label_id}/",
       "schema_hash": "879e6773942eef93d40d8bc6e209564e8a593b72389eb952c1b5bd86ced68f36"
     },
@@ -1890,7 +1910,7 @@
       "docs_path": "/api-reference/initiative/update-initiative-detail",
       "method": "PATCH",
       "mutation": true,
-      "operation_sha256": "b22779f466446ffc347551a29d837423fa95122a4b309f2469fbb8239dab141c",
+      "operation_sha256": "dadc2e5396fd93f0d82131c8e9a94d531cfff4c8f5a04b6263ad647b83a9165e",
       "path": "/api/v1/workspaces/{workspace_slug}/initiatives/{initiative_id}/",
       "schema_hash": "51d70aed4d1dc12d9a917ba14b0940f73e167715c3c9f22091fd5485a5a2161a"
     },
@@ -1899,7 +1919,7 @@
       "docs_path": "/api-reference/workspace-invitations/update-workspace-invitation",
       "method": "PATCH",
       "mutation": true,
-      "operation_sha256": "90c2d3edaebb76774e65222eeb9485591067d4490dc021127cf229708d7a8e80",
+      "operation_sha256": "dea71e81ebb7dffa6799fb9d11b08a6f7e8ee74a86f9930bdc16a639048d2926",
       "path": "/api/v1/workspaces/{workspace_slug}/invitations/{invitation_id}/",
       "schema_hash": "2ce4364e6d618fb308f7942f8e4f760c23cf8d38b20624b4106e4d6c6626a19d"
     },
@@ -1908,7 +1928,7 @@
       "docs_path": "/api-reference/project-labels/update-project-label-detail",
       "method": "PATCH",
       "mutation": true,
-      "operation_sha256": "bfb5d4f33098258deae422d20be4cbad947919a2b5bcd60d7d84203623943063",
+      "operation_sha256": "0be589eaa4ffa5b92de407f3da0a7356ae231e527ed68df3e8986fd995f8c7db",
       "path": "/api/v1/workspaces/{workspace_slug}/project-labels/{label_id}/",
       "schema_hash": "22c91dcc6e509c18c66a7e23e16742485bf0a025259b5fed3edbd60da8cd1119"
     },
@@ -1917,7 +1937,7 @@
       "docs_path": "/api-reference/cycle/update-cycle-detail",
       "method": "PATCH",
       "mutation": true,
-      "operation_sha256": "a1b5e5b3ec996bdbc0f2a4356a3eed1da0651d59a6399748ffc2f314d885c402",
+      "operation_sha256": "6ec2807eef89f9884527c97435b2c112ecdf40e61dccb2d269e17e6f7968d9b7",
       "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/cycles/{resource_id}/",
       "schema_hash": "8c5a2d8ec51c35579d0b0612b5f8a5c69c0c05d7944f77042c213523b6d64eed"
     },
@@ -1926,7 +1946,7 @@
       "docs_path": "/api-reference/estimate/update-estimate",
       "method": "PATCH",
       "mutation": true,
-      "operation_sha256": "4563f1415d9e775eac9b86f3d73789b676b77bf368b3d903ef8d3ae913eb565d",
+      "operation_sha256": "5f58cc8523249ffdbea037f6c6e90b6e45b2f1592ffabdd753a6b78e40af1a03",
       "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/estimates/",
       "schema_hash": "a02013a064230f8c028905a5e748e002b7ff407947bbf4d0283704b3d3491a57"
     },
@@ -1935,7 +1955,7 @@
       "docs_path": "/api-reference/estimate/update-estimate-point",
       "method": "PATCH",
       "mutation": true,
-      "operation_sha256": "c76701e8575577cfe1bfaf79b33c59ce9cea5ad0643afdb331a70485f3d8dfae",
+      "operation_sha256": "245bbe6aa77c8697911f8687cd1ee9e41ea1d38ab14c87c83a9c88f0a6748489",
       "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/estimates/{estimate_id}/estimate-points/{estimate_point_id}/",
       "schema_hash": "102140f4e446f5a0e9d03d8e9abaa55b1a638a5f40e655d77468d1f1f63e4a06"
     },
@@ -1944,7 +1964,7 @@
       "docs_path": "/api-reference/project-features/update-project-features",
       "method": "PATCH",
       "mutation": true,
-      "operation_sha256": "fc4d9f2178ae8f5b51545dc77075b31bfc186647820ea3a5fe28eb23e27da1a6",
+      "operation_sha256": "7eb6406b554b3e9e72f932879dcf3370875dd50c06b11e5535d4e216fbf042c1",
       "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/features/",
       "schema_hash": "747f0115772617c4c56d9727f6d0079d77c0a8c16f0f314f9e8e52be6b3ae6ff"
     },
@@ -1953,7 +1973,7 @@
       "docs_path": "/api-reference/intake-issue/update-intake-issue-detail",
       "method": "PATCH",
       "mutation": true,
-      "operation_sha256": "7ecff9032d6da8f738a0ce76e6ba735defda18025d7cf363ae4f0b6e0a4476eb",
+      "operation_sha256": "af40266f5807ed9fb094bde1b79b4da667b1b75ac04cee274560247d182dd62a",
       "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/intake-issues/{work_item_id}/",
       "schema_hash": "1a7fa1902e9598a61646e35367d9b254597c097caac7e9ccd73a4569dd3ea689"
     },
@@ -1962,7 +1982,7 @@
       "docs_path": "/api-reference/label/update-label-detail",
       "method": "PATCH",
       "mutation": true,
-      "operation_sha256": "72c1f198fcf5861ac7003d037104063d00f854c55f88bc1741815ac5428b9d0c",
+      "operation_sha256": "1e209028ae4ffd0adb2a32ae0ed9be0001969de0c1dbc5421c2dd6ad045aed53",
       "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/labels/{label_id}/",
       "schema_hash": "e2086d2268358d1a81c13c8442674baca3893aedb767d45ee045e35e0bdce90a"
     },
@@ -1971,7 +1991,7 @@
       "docs_path": "/api-reference/milestones/update-milestone-detail",
       "method": "PATCH",
       "mutation": true,
-      "operation_sha256": "b0ea50b21c042219b0336283430f9067f0febf3fb623d61d333d45921598790a",
+      "operation_sha256": "8d5e0557087eeaffb13847a5bf7ed33264094e679fe9cee95d54976243965f54",
       "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/milestones/{milestone_id}/",
       "schema_hash": "aa8f3d64e99b841f6a0be939a2b5868f4c257329dfe2fe4df667882724270686"
     },
@@ -1980,7 +2000,7 @@
       "docs_path": "/api-reference/module/update-module-detail",
       "method": "PATCH",
       "mutation": true,
-      "operation_sha256": "25be4dab643c7f14930cb420adb0a856e6663ac22b549605774476c5763a9084",
+      "operation_sha256": "40f06b58a840e936e2ebd7c68a4c8940996af6532126479f12feb119ee956e1c",
       "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/modules/{resource_id}/",
       "schema_hash": "2e8dc11b9cf267d336084ac736fbbf7fe7b9c3d3234853cf04232242039a6937"
     },
@@ -1989,7 +2009,7 @@
       "docs_path": "/api-reference/members/update-project-member",
       "method": "PATCH",
       "mutation": true,
-      "operation_sha256": "11370e213082d3223516c157d6152d12d4b6f2030afe80b44fba5af8a82d79b8",
+      "operation_sha256": "71550ced183ad187ae0827d33d1aac1b85ec712fec700043ed0f752f87b8b2e3",
       "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/project-members/{member_id}/",
       "schema_hash": "fd81e127fa8a26802329a991902caf7a0aef2aec6da60fdcdfa80edd1a2e2d7a"
     },
@@ -1998,7 +2018,7 @@
       "docs_path": "/api-reference/state/update-state-detail",
       "method": "PATCH",
       "mutation": true,
-      "operation_sha256": "d2f5e8f44cedfd90034a3235cc43bcaef23b798f60492c79d741c69a02c70f19",
+      "operation_sha256": "73c19dfbb9396fa25b740b19a2845126be89b8208b00f4458841d73dd0dd0147",
       "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/states/{state_id}/",
       "schema_hash": "8a0b97494f9a0637529380752727e0d58d8bc7086b7687350ef8aab3f939bc26"
     },
@@ -2007,7 +2027,7 @@
       "docs_path": "/api-reference/issue-types/options/update-dropdown-options",
       "method": "PATCH",
       "mutation": true,
-      "operation_sha256": "8b03207b081e686a7d4720b1a099ff97939e109a6a7de4bb29b7ab0a2430abdb",
+      "operation_sha256": "ec6c6caf163c0c08986ac3f3f7aac36d4a8657067bc787df69561bc33a87f795",
       "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/work-item-properties/{property_id}/options/{option_id}/",
       "schema_hash": "8c470d67e8ee22f35e4c21a45df03870b54106312d6f781083f6464d97ece754"
     },
@@ -2016,7 +2036,7 @@
       "docs_path": "/api-reference/issue-types/types/update-issue-types",
       "method": "PATCH",
       "mutation": true,
-      "operation_sha256": "cd0d38d5a67b912811ada1eeab8eb41b53af4167b6d40f5da8a51f83822f0c48",
+      "operation_sha256": "725c548ba4aa3bdced6038415bd31e55f797f1fe57f1712beaa24c36f5a3dd5d",
       "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/work-item-types/{type_id}/",
       "schema_hash": "3564fde823f401d87f73d670c0b85b0eff44a7b7e42a620fb01cdfda6acb6b7f"
     },
@@ -2025,7 +2045,7 @@
       "docs_path": "/api-reference/issue-types/properties/update-property",
       "method": "PATCH",
       "mutation": true,
-      "operation_sha256": "bc3622a70d12f4418136d1e8487837c042aebcf45930d951bcdb9265556e790a",
+      "operation_sha256": "ba76456fcc15f8f704406895d1d19ccad4d47998f70fa01913482837e28e111a",
       "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/work-item-types/{type_id}/work-item-properties/{property_id}/",
       "schema_hash": "b9aac9ee7ee2b8575671dba26fbfdb0123a82836033b2a2daf037faf431accd6"
     },
@@ -2034,7 +2054,7 @@
       "docs_path": "/api-reference/issue/update-issue-detail",
       "method": "PATCH",
       "mutation": true,
-      "operation_sha256": "0a4fddb93957c156f1b35cdcf61b9c4dd8e22141ca152d73de6ecf92e8ef4423",
+      "operation_sha256": "5fd96d9f5f85b396dd156e64303e34aacd370729347be449053efe00b37e122f",
       "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/work-items/{resource_id}/",
       "schema_hash": "36e2abaa5ab728ddc77624c307d1e4dbb56b5831a1dffb30f113eb665ec09933"
     },
@@ -2043,7 +2063,7 @@
       "docs_path": "/api-reference/issue-attachments/complete-upload",
       "method": "PATCH",
       "mutation": true,
-      "operation_sha256": "12e7ba092dc8f88dbedf1603837b2ca799f765ba70b87b49e2c64ed79d4cb469",
+      "operation_sha256": "cbabc0a51941dce521336f40f3387d15e7edd0bf6c87a42451b544f7da81a7a3",
       "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/work-items/{work_item_id}/attachments/{resource_id}/",
       "schema_hash": "bd68e7ed7126fa66baa2dc3db566dfa8ab54b9a9565f8ce545cbac4463c465a2"
     },
@@ -2052,7 +2072,7 @@
       "docs_path": "/api-reference/issue-attachments/update-attachment",
       "method": "PATCH",
       "mutation": true,
-      "operation_sha256": "9c3f895e4132a20182492ff0a8679ca6213c78ff56aafadb86c4ae5f1c20f866",
+      "operation_sha256": "c6036c291a99652eca3c5696363623c78e0c3ee8dbebbf015c2bef3cfeebc61e",
       "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/work-items/{work_item_id}/attachments/{resource_id}/",
       "schema_hash": "bd68e7ed7126fa66baa2dc3db566dfa8ab54b9a9565f8ce545cbac4463c465a2"
     },
@@ -2061,7 +2081,7 @@
       "docs_path": "/api-reference/issue-comment/update-issue-comment-detail",
       "method": "PATCH",
       "mutation": true,
-      "operation_sha256": "df3f7ac2bd19d026014c47ef64bf5b56e6a3454825dd3e307897668a9ec43569",
+      "operation_sha256": "fc7025a7b89e9063768998df81d2f5fccf7b9d8e446174c653ef61e0b5058dcb",
       "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/work-items/{work_item_id}/comments/{resource_id}/",
       "schema_hash": "4506256a8e08629cad10af9d94f1f41e20947c6e61053b7fc0f363a3fe2efe64"
     },
@@ -2070,7 +2090,7 @@
       "docs_path": "/api-reference/link/update-link-detail",
       "method": "PATCH",
       "mutation": true,
-      "operation_sha256": "428a8b61baa0d6fea1fa4dfdb7f22b1f27d13c1d2417b9e0577d8463609b68ab",
+      "operation_sha256": "755841805341ba7f31aba25df7b7b44f1a1970bf370c814520a494b197bf3796",
       "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/work-items/{work_item_id}/links/{resource_id}/",
       "schema_hash": "d145014e50e6210431ffb8c5098280a4915dd5c62701a764b7af41b957b50c29"
     },
@@ -2079,7 +2099,7 @@
       "docs_path": "/api-reference/issue-types/values/update-property-value",
       "method": "PATCH",
       "mutation": true,
-      "operation_sha256": "2b4e5ab5d74df30de305a208e9dbc94fab98827a1b91d0e61224833a90efd3d0",
+      "operation_sha256": "a678d7c602d636a9e52ac186e9b7976f6ea1f88981944ac9d001c934dd898969",
       "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/work-items/{work_item_id}/work-item-properties/{property_id}/values/",
       "schema_hash": "701c4a61516b2e680373f46a8060bd840b437d8b05009b93ed1405b5ac3e47e9"
     },
@@ -2088,7 +2108,7 @@
       "docs_path": "/api-reference/worklogs/update-worklog",
       "method": "PATCH",
       "mutation": true,
-      "operation_sha256": "558e8e57e3a259aae6b1de717c6f1d1684bb5cd8c93cfae0d1561b034e3a63ad",
+      "operation_sha256": "cca4277fd833d92995259304d65264bc2a744c77d52e35d7da51271904a636a4",
       "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/work-items/{work_item_id}/worklogs/{worklog_id}/",
       "schema_hash": "d603cb62323d2f0fda1c6257da078ca8602882d1717beb3756630524e6bd4178"
     },
@@ -2097,7 +2117,7 @@
       "docs_path": "/api-reference/project/update-project-detail",
       "method": "PATCH",
       "mutation": true,
-      "operation_sha256": "c20b1eb27ad38131aeede6c5bc68e3ed02c6c620d08246c6f8d0172302461476",
+      "operation_sha256": "01c2cce18d5fcc98ae3b0d93fb5e4e2ffef5a91e53ca7d737fb14ca0bd931812",
       "path": "/api/v1/workspaces/{workspace_slug}/projects/{resource_id}/",
       "schema_hash": "4dbf8babb3a362b80002172584cde65650947a41abec9e9b8d436c6b3a5a2733"
     },
@@ -2106,7 +2126,7 @@
       "docs_path": "/api-reference/sticky/update-sticky-detail",
       "method": "PATCH",
       "mutation": true,
-      "operation_sha256": "c6311e2bfd81e4022903c16bcf5452fa269f631e6ce355e47f40d287ec515e91",
+      "operation_sha256": "b20cec9d261a189cfb939789d8fcb7a878b953371bc723f545d4c0b6137979db",
       "path": "/api/v1/workspaces/{workspace_slug}/stickies/{resource_id}/",
       "schema_hash": "0b2dd97d3965ed7832e2fd1506b4da984301d6b11ef1922dbb3f0df52fc05f0e"
     },
@@ -2115,7 +2135,7 @@
       "docs_path": "/api-reference/teamspace/update-teamspace-detail",
       "method": "PATCH",
       "mutation": true,
-      "operation_sha256": "90ee5644f0fc6b41429df36e8f1593de7de7a84f190a93dc3cd52f31d4dd2396",
+      "operation_sha256": "935bd41b42689c1670cfcfa4c03bdd72faad73f2a9265aaa549db5ef212adac2",
       "path": "/api/v1/workspaces/{workspace_slug}/teamspaces/{resource_id}/",
       "schema_hash": "ad43e117875e41a9d88b96f784cab5e6b7fee161a4222ec079706e0eee9d754f"
     },
@@ -2124,7 +2144,7 @@
       "docs_path": "/api-reference/assets/create-user-asset-upload",
       "method": "POST",
       "mutation": true,
-      "operation_sha256": "cdf57a4ae452277c89787a337e16ddbe69c9dd160745c550eb4ace07a7c71a04",
+      "operation_sha256": "b107b8739422a7a08cea5fe0ca380f20901acebb7c4c0b8040879ef0f10a15ae",
       "path": "/api/v1/assets/user-assets/",
       "schema_hash": "4cddbce48b7a1ea26d18cfea3d24d34f7f94a3a504b373231f898c00abd81eeb"
     },
@@ -2133,7 +2153,7 @@
       "docs_path": "/api-reference/epics/create-epic",
       "method": "POST",
       "mutation": true,
-      "operation_sha256": "3e472285fa33051a830cbb07b80d42858c0b9fb42fa44b59cdf4fc76e19e6f5b",
+      "operation_sha256": "3f0bb46048b86f0c2bd006d822bbc1a983b29bdcfe8176227b981db906ed114f",
       "path": "/api/v1/workspaces/{slug}/projects/{project_id}/epics/",
       "schema_hash": "ea10ba27a4a39d26337d921d7da709323ba2bfe50e7e5b15c46dbfb694185bad"
     },
@@ -2142,7 +2162,7 @@
       "docs_path": "/api-reference/epics/add-epic-work-items",
       "method": "POST",
       "mutation": true,
-      "operation_sha256": "4ee9119e1d1d86ec5197665d12001aa1877463bb45a8fe6081addb301e75e740",
+      "operation_sha256": "84eb36b23a8a1f380ceb56006b15a3a883aa94ab09be78253da922fc3f09e484",
       "path": "/api/v1/workspaces/{slug}/projects/{project_id}/epics/{epic_id}/issues/",
       "schema_hash": "824603c725965d09abb9696dbaebb2c738fba3829ef0db27acc90a01b4cbf830"
     },
@@ -2151,7 +2171,7 @@
       "docs_path": "/api-reference/assets/create-workspace-asset-upload",
       "method": "POST",
       "mutation": true,
-      "operation_sha256": "ceb1ac2b6097ca42f7b646c457b3a4d1662f819181700531d9285ac6bc9391af",
+      "operation_sha256": "fed201482fd997983da532767a5bfd0e723f971e776551561596fe7ced5df532",
       "path": "/api/v1/workspaces/{workspace_slug}/assets/",
       "schema_hash": "e10e33b19869b3129d9fc9618945b2b3e8450b5818d2eb9c170a209f6da43451"
     },
@@ -2160,7 +2180,7 @@
       "docs_path": "/api-reference/customer/add-customer-property",
       "method": "POST",
       "mutation": true,
-      "operation_sha256": "d1cc52138ea4e226afa1f7b2adbf5654b187b94fb2c90b6009e4fbc32a8b6db2",
+      "operation_sha256": "a791e8c573ea7846107bb3aad1e92178e24c6cfa27c8452ee99b6fc3c419ea0e",
       "path": "/api/v1/workspaces/{workspace_slug}/customer-properties/",
       "schema_hash": "d564f5dd7f1383b467985674193988ecda59347eee5376125ad868e280a49112"
     },
@@ -2169,7 +2189,7 @@
       "docs_path": "/api-reference/customer/add-customer",
       "method": "POST",
       "mutation": true,
-      "operation_sha256": "3b4179d950b792f9f5ad005f728b747b54a7da26b640f05b112122b8c3d6adae",
+      "operation_sha256": "f23b10de4206d7910e69239abcfa3ed8e9b9fc7a45c09eefd078af73baa608f1",
       "path": "/api/v1/workspaces/{workspace_slug}/customers/",
       "schema_hash": "f7c92e3cb8a741b3866a3f2389a5507740e996f4e4e0a0e18781b181372526b5"
     },
@@ -2178,7 +2198,7 @@
       "docs_path": "/api-reference/customer/link-work-items-to-customer",
       "method": "POST",
       "mutation": true,
-      "operation_sha256": "c7677791fe83431fa7092b3b44fa640002cd6c08188e5ac0330973e8f49490a8",
+      "operation_sha256": "e1a65b1b687fd3dc661b6ea5217473a2fca8a6d1b38b89b1f2d2fe7f28634dbc",
       "path": "/api/v1/workspaces/{workspace_slug}/customers/{customer_id}/issues/",
       "schema_hash": "4f0a0625129c6fb93d1efbc596641e2fd79c0aed1737f5090b02e058f80637ca"
     },
@@ -2187,7 +2207,7 @@
       "docs_path": "/api-reference/customer/add-customer-request",
       "method": "POST",
       "mutation": true,
-      "operation_sha256": "8535c86773a22c7044728e58e4a0bf1de31329b6a9bc994d4746ae32d3990c8a",
+      "operation_sha256": "2cf1f60152f9506f31ca2b69409465a9fe8ae7882de6e3bb8b6f39a2a97c1cda",
       "path": "/api/v1/workspaces/{workspace_slug}/customers/{customer_id}/requests/",
       "schema_hash": "51d74421f097ddf5e30ab85550b4bae77b3e669121be30e2c5b11de0b59191ce"
     },
@@ -2196,7 +2216,7 @@
       "docs_path": "/api-reference/idp-group-sync/create-project-mapping",
       "method": "POST",
       "mutation": true,
-      "operation_sha256": "f9a14d551a0d1f93d3451709347e137077fa359bd0d8e624e9b12ded8b5cacd2",
+      "operation_sha256": "ccb8b3fcb21cffc779c7c676d89a62c043f2f8fa7bdb5f2c9f09cfe7bff0c33d",
       "path": "/api/v1/workspaces/{workspace_slug}/group-sync/project-mappings/",
       "schema_hash": "3428207b900f66a4667245a795214e6a25d61d77811336189ce8d6b723c0f3e6"
     },
@@ -2205,7 +2225,7 @@
       "docs_path": "/api-reference/idp-group-sync/create-workspace-mapping",
       "method": "POST",
       "mutation": true,
-      "operation_sha256": "2dee00a904a573ef68bbd45b0d53832a1d7fe3ef70d200ff4244df5d04fe35a0",
+      "operation_sha256": "05b93dce70c1c6934fa3e61a973a9a3b020bf3c7886638009cd83e27445035ee",
       "path": "/api/v1/workspaces/{workspace_slug}/group-sync/workspace-mappings/",
       "schema_hash": "d60121acac8be2f556f818e2fc13f63ba3c74e082350d92d0c34ac403ac6f8f8"
     },
@@ -2214,7 +2234,7 @@
       "docs_path": "/api-reference/initiative/add-initiative",
       "method": "POST",
       "mutation": true,
-      "operation_sha256": "688f51ce905b6145aa87df92f43a76a7ec13f694ade5d9339cc4e12887440abd",
+      "operation_sha256": "2d19422a5ac819cef99e6c165ccae75f88c1034b264df30a93f34ad27929bf05",
       "path": "/api/v1/workspaces/{workspace_slug}/initiatives/",
       "schema_hash": "77ef09dbf257ab112c3751ee0367db099df1a8c30da3f6d48ecbcd51cd5a85ad"
     },
@@ -2223,7 +2243,7 @@
       "docs_path": "/api-reference/initiative/add-initiative-label",
       "method": "POST",
       "mutation": true,
-      "operation_sha256": "42927927638c90684077a444272ee6d5928b5e1cd0f5bb02f92634cb73e3eaab",
+      "operation_sha256": "892ddf9847fdbc5ac092602b5434df9e001883dccdb49f0c4ea0738e1ed3ee06",
       "path": "/api/v1/workspaces/{workspace_slug}/initiatives/labels/",
       "schema_hash": "5b1e838d465c3f9e1342b3cbd5e8dbba1bef427ffd382bb533ffa44caa81cb1e"
     },
@@ -2232,7 +2252,7 @@
       "docs_path": "/api-reference/initiative/add-epics-to-initiative",
       "method": "POST",
       "mutation": true,
-      "operation_sha256": "df3f39ba5c9c425032f17c43f8ad32f919c4a738cf861faeaba6cad7d08100b2",
+      "operation_sha256": "0a4e522901f765c82e1ebeb98915ccbc976cc87749a9759cd789a3292bd1a1dd",
       "path": "/api/v1/workspaces/{workspace_slug}/initiatives/{initiative_id}/epics/",
       "schema_hash": "31d33336d965a40c5587608f244e8bf6fc23256ff2a6e2c8bef3bdc674008c56"
     },
@@ -2241,7 +2261,7 @@
       "docs_path": "/api-reference/initiative/add-labels-to-initiative",
       "method": "POST",
       "mutation": true,
-      "operation_sha256": "e927e8dd2a01b504923dc7c0e15f0ae9d36118feecc854b2ec112636240e2016",
+      "operation_sha256": "b29ac92fe805a73716282407c3c6b060f5b965ed551aac34271dc8867c58a0cb",
       "path": "/api/v1/workspaces/{workspace_slug}/initiatives/{initiative_id}/labels/",
       "schema_hash": "37947c1360c17584c50cd3a2e43906e4c996ad6a925289e2e6291b20dfde4eb4"
     },
@@ -2250,7 +2270,7 @@
       "docs_path": "/api-reference/initiative/add-projects-to-initiative",
       "method": "POST",
       "mutation": true,
-      "operation_sha256": "a1afbbd2cb82b798223ae7e08edf5e71a66fd4fecd5390da484829887274b218",
+      "operation_sha256": "6ba3976b6f792261952369b4ea1712189331f2898c8438caeb65a618265b595b",
       "path": "/api/v1/workspaces/{workspace_slug}/initiatives/{initiative_id}/projects/",
       "schema_hash": "3864bd19fd977c8867e168057cf7542e7a5b9b3c5481c532e4cd95312ef75fb5"
     },
@@ -2259,7 +2279,7 @@
       "docs_path": "/api-reference/workspace-invitations/add-workspace-invitation",
       "method": "POST",
       "mutation": true,
-      "operation_sha256": "06a5d399d18f441d9b28e2c74ce59cf45d9d44d61b6ddeb24b3e4fda9ca5730c",
+      "operation_sha256": "cfc93a4887467867a6f137bf7a67ecfef6be564ecaf770c4c94baae5c2de00b9",
       "path": "/api/v1/workspaces/{workspace_slug}/invitations/",
       "schema_hash": "d5c58ac609297533015b35300f639a901824f38af05b6b6db3cf1416272346d4"
     },
@@ -2268,7 +2288,7 @@
       "docs_path": "/api-reference/members/remove-workspace-member",
       "method": "POST",
       "mutation": true,
-      "operation_sha256": "7666d54dcc009b6a6b2d79e77ed3a45e39137da8c7952f527ab640263adbdcfa",
+      "operation_sha256": "f92ef79510877167866067175df385a3697c0b7132e762daa0133be3b4644bea",
       "path": "/api/v1/workspaces/{workspace_slug}/members/remove/",
       "schema_hash": "ab583cfa1ea383b7e01132ae7415fb31af8d9c50463c578af341ede57c2ddbc4"
     },
@@ -2277,7 +2297,7 @@
       "docs_path": "/api-reference/page/add-workspace-page",
       "method": "POST",
       "mutation": true,
-      "operation_sha256": "c2443e81e2319b0c246dda6b5ed6a6e62a48178e530b42b4d72ac24738a955d4",
+      "operation_sha256": "6418946177f70a989cbe70dc86f0efc27e931a67bb7e431daebca506ce80a0e3",
       "path": "/api/v1/workspaces/{workspace_slug}/pages/",
       "schema_hash": "aee23261165a6ffc351c35a8cba445b8d7eb57d06adfffd706c897194f32806a"
     },
@@ -2286,7 +2306,7 @@
       "docs_path": "/api-reference/project-labels/add-project-label",
       "method": "POST",
       "mutation": true,
-      "operation_sha256": "ec0f7aea51fd5ddebcba4b44072dcc3df28ea8c8dfffe2ef1a11467509742330",
+      "operation_sha256": "8cad0d27deb393160d7326801cb5d6909d067fa504490aeb1928a6b30221361f",
       "path": "/api/v1/workspaces/{workspace_slug}/project-labels/",
       "schema_hash": "13ab765181eb5032c14954ecc2af37eab4cb91838cf6e927e5c1e6eeaae6bb28"
     },
@@ -2295,7 +2315,7 @@
       "docs_path": "/api-reference/project/add-project",
       "method": "POST",
       "mutation": true,
-      "operation_sha256": "1d667d176b5735a34ad9b801f93d6d8409998606919170b6ddf8e84d832e3970",
+      "operation_sha256": "a661a1b8d7af6bd3136e9d4124e43bad21bc294b6909d0f360336fb821a246a8",
       "path": "/api/v1/workspaces/{workspace_slug}/projects/",
       "schema_hash": "b6ad001736b96f429db534bf5a14c5a10adb6c174ef82434267e1f889ca04cb8"
     },
@@ -2304,7 +2324,7 @@
       "docs_path": "/api-reference/project/create-project-with-template",
       "method": "POST",
       "mutation": true,
-      "operation_sha256": "2806cb0aac30951ab1c2ca9fa64d6314a27d26fe048cb8812d2351a89291fa79",
+      "operation_sha256": "75758b41eced2807fa14389b11365e86aa00e72ea53a163ed3cf88f2cdbb4c55",
       "path": "/api/v1/workspaces/{workspace_slug}/projects/templates/use/",
       "schema_hash": "bc8cef787f1e5f54da5327dde9a57cd8e065d92df13909e17605742f6328b499"
     },
@@ -2313,7 +2333,7 @@
       "docs_path": "/api-reference/project/archive-project",
       "method": "POST",
       "mutation": true,
-      "operation_sha256": "b295db05c50b56ed6a20b925bd50bf9d086fcc8c948f633397a234806f208e73",
+      "operation_sha256": "165c53625711f97c8e05c9c2106d6b021ea0975da4dc176239f95e1631ed8b78",
       "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/archive/",
       "schema_hash": "fdadad8296ad53776bb3e2e4ccf40b2a5d43a56eae2a184bfbbb6a33f4146f5a"
     },
@@ -2322,7 +2342,7 @@
       "docs_path": "/api-reference/cycle/add-cycle",
       "method": "POST",
       "mutation": true,
-      "operation_sha256": "5f09b2dbd1956a459821e5ca0b174e240066d975af5bc3746003bd704464ddcb",
+      "operation_sha256": "c41640f28c5c29bc63d3ab6a3ee3ba2b36079588d8a391c9005225c352b51404",
       "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/cycles/",
       "schema_hash": "77d36babbc4c56c8e30f651ca9aa8edc13b7ed060b106c8ce0ab5a0a1fdc9865"
     },
@@ -2331,7 +2351,7 @@
       "docs_path": "/api-reference/cycle/archive-cycle",
       "method": "POST",
       "mutation": true,
-      "operation_sha256": "c1fdb2f58634e7f300f75a1ec38673bb5a87d884117a1db638dd1675c64cd253",
+      "operation_sha256": "3c366cee10ad7599ae10b752190da8e5f6b9df2e3b15c1c7ee5aa29573953b2d",
       "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/cycles/{cycle_id}/archive/",
       "schema_hash": "0450c7317d2bde89c170404253d44d76e743664c244b0fa3a1d7ecc160178f3f"
     },
@@ -2340,7 +2360,7 @@
       "docs_path": "/api-reference/cycle/add-cycle-work-items",
       "method": "POST",
       "mutation": true,
-      "operation_sha256": "b573a6ffe2ca048ea015eb7619bcb399159bc72ddaa55eef77102c60087bedc6",
+      "operation_sha256": "954118e1b0a019978bd971ac6ccec4f151eaf5da3fb823aa9a8a2a8fe8b4f923",
       "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/cycles/{cycle_id}/cycle-issues/",
       "schema_hash": "99f417ec3af0d75c81c3898fc583af60918cbe8f9729dc38b7861e12829637f6"
     },
@@ -2349,7 +2369,7 @@
       "docs_path": "/api-reference/cycle/transfer-cycle-work-items",
       "method": "POST",
       "mutation": true,
-      "operation_sha256": "9332976218f11bd3201803c228b03d6647624617cc61bd0402fada80f2c89939",
+      "operation_sha256": "84eaa83f9bb18052f7abf33eb9b19bebc834d41153a2d7e5f0d32cb9813d9068",
       "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/cycles/{cycle_id}/transfer-issues/",
       "schema_hash": "1785f3229872c0f971c7b26e3c590b265c6486b26ff9757bed259deeb4eadb1f"
     },
@@ -2358,7 +2378,7 @@
       "docs_path": "/api-reference/estimate/add-estimate",
       "method": "POST",
       "mutation": true,
-      "operation_sha256": "9c5903a6096ef304221326c1640223640b6303516501333ae8378afaed0d49ee",
+      "operation_sha256": "b918efa1a3b59a234f8986e3c5bef1831c3047a223db2d68fc0f4dddf88b7066",
       "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/estimates/",
       "schema_hash": "cc668e5d9fdbbb1456eb5c15711e319fa4999b30603e18a22cb586c14b23a06f"
     },
@@ -2367,7 +2387,7 @@
       "docs_path": "/api-reference/estimate/add-estimate-points",
       "method": "POST",
       "mutation": true,
-      "operation_sha256": "d62f0aa071cceb083d4eef775e3fe6d48f81a818f91846decf9a16d860192cbb",
+      "operation_sha256": "7dee32b4de7e50da00d3f5befc240a0fcb2a6a750483e73236400ef076a5448d",
       "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/estimates/{estimate_id}/estimate-points/",
       "schema_hash": "5edd1dadaea0f5684039ed45a21d7b65fb8f68ad58d56a0d1f2c45f942c2b122"
     },
@@ -2376,7 +2396,7 @@
       "docs_path": "/api-reference/intake-issue/add-intake-issue",
       "method": "POST",
       "mutation": true,
-      "operation_sha256": "f972163badd6b8e71915842a1289530b02c4f9658bc3b762978e78102c8d5d5c",
+      "operation_sha256": "945cde946a19a90500f6dcc0c41cca06e05d8b0c3fcea35179c654176b145dab",
       "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/intake-issues/",
       "schema_hash": "8630e161b2d8d73f0f3e3eb1689c89d06882a64209b44f36cf3d43ff3e63326f"
     },
@@ -2385,7 +2405,7 @@
       "docs_path": "/api-reference/label/add-label",
       "method": "POST",
       "mutation": true,
-      "operation_sha256": "1e5e5723f237132b0ff48f187d391ea466bbcffc1440159fb52a8103d2a9ff72",
+      "operation_sha256": "ea88fc47f5f9d80ae8067f0fa2ffee453961739d0ff2a631ff4638cf9948c300",
       "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/labels/",
       "schema_hash": "8f85d9d9a3900908e65477a130fbbe994a8a9ff70104a244079d1e7a51e3c692"
     },
@@ -2394,7 +2414,7 @@
       "docs_path": "/api-reference/milestones/add-milestone",
       "method": "POST",
       "mutation": true,
-      "operation_sha256": "fdc74ae4e934414f95cd373de5213697ef44e1403fb37f34cc8e924d2659d016",
+      "operation_sha256": "c23fffe99325c363cf0e64da259a423a654eacb7b04a6e6d4b74d2ec85a27326",
       "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/milestones/",
       "schema_hash": "6070023700e5a00f0dfce20cdb9357f6b88ad077b31e9bcfe4fdea3aa281298c"
     },
@@ -2403,7 +2423,7 @@
       "docs_path": "/api-reference/module/add-module",
       "method": "POST",
       "mutation": true,
-      "operation_sha256": "7bec37c995a64593c6f1a944af3137165a0f4dde8d6436f4cee05e34a44d8d3e",
+      "operation_sha256": "9a8b236eaec2d045d66a183110cc6843abba0f3e9778a324a0236c900ab259b6",
       "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/modules/",
       "schema_hash": "47f18766ef49417de2a2dc77dbd381a94f2b2d4e9636f45486e50902af03ab89"
     },
@@ -2412,7 +2432,7 @@
       "docs_path": "/api-reference/module/add-module-work-items",
       "method": "POST",
       "mutation": true,
-      "operation_sha256": "bdcfcef93b8a7cac3cdeb2a6dcb5465458aa9f3b445c9cd505af24ef913c55d3",
+      "operation_sha256": "0945d2f9e49b046ec809cc9479473d4a39bf28889353cedabcfd145f4246a88d",
       "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/modules/{module_id}/module-issues/",
       "schema_hash": "035ed157692c84a201891b730fca8ab8dda301d3feee81c8106d5ed75b57a8c5"
     },
@@ -2421,7 +2441,7 @@
       "docs_path": "/api-reference/module/archive-module",
       "method": "POST",
       "mutation": true,
-      "operation_sha256": "5c29e2faa08c9054f9bdaf57672a96a93071b5c510954e327b2f104ab4b55d38",
+      "operation_sha256": "f5bddbb17fd58778c378655a642d8bf2b805047b51de7d4442fbc87d2a3d77e7",
       "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/modules/{resource_id}/archive/",
       "schema_hash": "a419b39baeaa7d440fe7464e3a4e4933762b04c9fa145e6a306dbb9223d58691"
     },
@@ -2430,7 +2450,7 @@
       "docs_path": "/api-reference/page/add-project-page",
       "method": "POST",
       "mutation": true,
-      "operation_sha256": "3b9fdb6ade860f2ce4124a73f4beef27e515552e4398d8984956ece2e6b39146",
+      "operation_sha256": "4a513e5e0600c9952a6f4100472232af5480c07aecd2b56545747657df2d70e3",
       "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/pages/",
       "schema_hash": "a4c69da6730f823882982e10aa87972db10ff093d9f356e86dc249baf4cf4202"
     },
@@ -2439,7 +2459,7 @@
       "docs_path": "/api-reference/members/add-project-member",
       "method": "POST",
       "mutation": true,
-      "operation_sha256": "861aecc9ccb2c9c53daf193126532f4c27677c7609664d736ea0baaee419f7c5",
+      "operation_sha256": "1d1186c9381def5c129bb292e7bb8f7c37f8e784b7ae623d9ce973feedba7529",
       "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/project-members/",
       "schema_hash": "ff38956f643b326e2508d2b7f59726f81e07f18c1cc3f6790f05b1dcddd4f1bd"
     },
@@ -2448,7 +2468,7 @@
       "docs_path": "/api-reference/state/add-state",
       "method": "POST",
       "mutation": true,
-      "operation_sha256": "88422ee2481d1551b44dc31c0a5dc4936ab165d6b6956e1dba85719d5ee1764e",
+      "operation_sha256": "f219f3a6f5e422bc0dbeb670e9d57600bdb30ee67a7790441f0ebde66b25b7fb",
       "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/states/",
       "schema_hash": "ca3d596b2ceea9c6d169421a9b5b2a0475db83966d9ea76feff4099931fb54ef"
     },
@@ -2457,7 +2477,7 @@
       "docs_path": "/api-reference/issue-types/options/add-dropdown-options",
       "method": "POST",
       "mutation": true,
-      "operation_sha256": "0b53a6ecea0e869103e43fbe41feec2e012150a27ffad8539b41e19a12cba97e",
+      "operation_sha256": "136ddf24f30c3fa73e5ff36d3e33f0dfa07cc6a433bfcdfc0e3a2d336c7f70e6",
       "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/work-item-properties/{property_id}/options/",
       "schema_hash": "95e327793d8f9b510e4129debd92bc1710c81cedc140dffd43376c4c05b7dd7a"
     },
@@ -2466,7 +2486,7 @@
       "docs_path": "/api-reference/issue-types/types/add-issue-type",
       "method": "POST",
       "mutation": true,
-      "operation_sha256": "50783bf2f6f8b0e9f7a74f4e0e152a0a9bca9e5239703586d71479a0a58f586c",
+      "operation_sha256": "cf1c6822f5e91d6480bd868ad495a79354efb271d8c9f9aff62ae35fe8d3245b",
       "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/work-item-types/",
       "schema_hash": "1e362fcfef359a6a26f8e230527283c6491eaa59cb751d26138a8083ef78fa5a"
     },
@@ -2475,7 +2495,7 @@
       "docs_path": "/api-reference/issue-types/properties/add-property",
       "method": "POST",
       "mutation": true,
-      "operation_sha256": "b50b4a9a5946b317047567bf9b959c014e4a364120bcfef8be02f6ff2f2a79fa",
+      "operation_sha256": "40a408059a1b049527115dbc2cd2ad909eab426f7144b54e3772aba2e9837b47",
       "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/work-item-types/{type_id}/work-item-properties/",
       "schema_hash": "2e087aada80a62455f3302352f0e0db3e7b659b2bd3d0aba917271d80f855860"
     },
@@ -2484,7 +2504,7 @@
       "docs_path": "/api-reference/issue/add-issue",
       "method": "POST",
       "mutation": true,
-      "operation_sha256": "ef581bfcd755e872e615ff4b818441331f918331495960dd93199848931b408c",
+      "operation_sha256": "b376401ca527cdb33661a503b29578258a5c47cac0ae52e53f5515337b937867",
       "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/work-items/",
       "schema_hash": "bb9483c4d7d6b7238dc40172efe29d1ee0d6650aa0d33f6d3050c6dbfbcc1993"
     },
@@ -2493,7 +2513,7 @@
       "docs_path": "/api-reference/issue-attachments/get-upload-credentials",
       "method": "POST",
       "mutation": true,
-      "operation_sha256": "546fd1612e6dc4173a67987b01b449a96402ec8aea617c7195ba0e738c3f985e",
+      "operation_sha256": "dfbe2bcd837017578bb160db6e17a15ac41b9d87af2a157c06cc4495099c6941",
       "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/work-items/{work_item_id}/attachments/",
       "schema_hash": "af900d5c2a2a4418e0a58bbd56a147091c30ef4884286f9e09897467a7434b64"
     },
@@ -2502,7 +2522,7 @@
       "docs_path": "/api-reference/issue-comment/add-issue-comment",
       "method": "POST",
       "mutation": true,
-      "operation_sha256": "e0ad3d626b1d602c3bbd7bdb47bbd236db5731b88f0242aa56f41aafc68fd5b8",
+      "operation_sha256": "816df3c0d3d80e3d371b6cee7ef39c9d20cf98b80cb544883782c547ae281594",
       "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/work-items/{work_item_id}/comments/",
       "schema_hash": "3c2a4712e0ba07678b9438fbd66d726f2f3b9d8a04e2febf353212b71502cb8b"
     },
@@ -2511,7 +2531,7 @@
       "docs_path": "/api-reference/link/add-link",
       "method": "POST",
       "mutation": true,
-      "operation_sha256": "4f76e4123228a2aa3f7dd0467cbd8af026c95585f3864c9e3b479fa44356973b",
+      "operation_sha256": "6b7fd1cf43f5c342b66c55eb796c324156a24052d2cfd4301941217b8ccc0338",
       "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/work-items/{work_item_id}/links/",
       "schema_hash": "223f58c6ec30b1228ae2b5c299e21c47f2b4465734c793a4b796051e95702d13"
     },
@@ -2520,7 +2540,7 @@
       "docs_path": "/api-reference/work-item-pages/add-work-item-page",
       "method": "POST",
       "mutation": true,
-      "operation_sha256": "ca1010792843dd3b2b820179f7ce87883d817dbc2ca7b601a126a0c2fcf55e32",
+      "operation_sha256": "79b7632363220acd99ba1df9f5a5e8a33ed433937b20c2101db59e0636ecee8a",
       "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/work-items/{work_item_id}/pages/",
       "schema_hash": "4bb4a1f4d9116b57206888ad8771d118dd7406dea19599af8cb157337d60d1db"
     },
@@ -2529,7 +2549,7 @@
       "docs_path": "/api-reference/issue-types/values/add-property-values",
       "method": "POST",
       "mutation": true,
-      "operation_sha256": "24ebb9a9a90cdf3ef7612e739be5c92354b690c1dab1edf37648d820f83e0136",
+      "operation_sha256": "1fdaefc7156fde2e05d22d7eab11b0c3068ec1b896bba1a273f1de7ba809f4aa",
       "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/work-items/{work_item_id}/work-item-properties/{property_id}/values/",
       "schema_hash": "b188ee21db285da57e1c9b2ff6ce2938e3def476a5e07ff745ca73d548c518bb"
     },
@@ -2538,7 +2558,7 @@
       "docs_path": "/api-reference/worklogs/create-worklog",
       "method": "POST",
       "mutation": true,
-      "operation_sha256": "4c29f09e971bb7045bdeeaae2a26d6b0e4310d0877c36b8605b2ad78d4da1cfc",
+      "operation_sha256": "c549b570e245b2570d0acaee2e599c627fc400e872f170eff51c2a25387cfb6d",
       "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/work-items/{work_item_id}/worklogs/",
       "schema_hash": "f42101666f50d870f22b7d27bf0a517ec8a3f94728b5cd367df6be5ecddda71b"
     },
@@ -2547,7 +2567,7 @@
       "docs_path": "/api-reference/sticky/add-sticky",
       "method": "POST",
       "mutation": true,
-      "operation_sha256": "505d7b67a23e16f6ebfb91fa113a458b6d4f775fe1bdeb0cd3f2e94110c2325e",
+      "operation_sha256": "04d4505d1c58e68cd90d9cb54a5ae2b85a209f32dca77f0d1d803380008eef1f",
       "path": "/api/v1/workspaces/{workspace_slug}/stickies/",
       "schema_hash": "0913c83da7c75892c6a98d1090eb343c8cbc48821798ec110cb3d0a336304565"
     },
@@ -2556,7 +2576,7 @@
       "docs_path": "/api-reference/teamspace/add-teamspace",
       "method": "POST",
       "mutation": true,
-      "operation_sha256": "e972edc688077de5a65ed9ae0d469f97947a7352824615d86aa61e9fbf4c6452",
+      "operation_sha256": "a15daca1c099e7e44bddec4487bf20432000f1688a6cf48275c725b241a25006",
       "path": "/api/v1/workspaces/{workspace_slug}/teamspaces/",
       "schema_hash": "4b7c51a8c20ccdd95eb846aeec471963e7a3530e9489333ff6581cb74d9af928"
     },
@@ -2565,7 +2585,7 @@
       "docs_path": "/api-reference/teamspace/add-teamspace-members",
       "method": "POST",
       "mutation": true,
-      "operation_sha256": "45183b50b66919d1dc1ec28168fcd8fac48e07223e9ab252bb9c9837d17b6a56",
+      "operation_sha256": "84d9c84a6be8b85d0bc08e245ee821678e9ff804871212428263186ff15e11b4",
       "path": "/api/v1/workspaces/{workspace_slug}/teamspaces/{teamspace_id}/members/",
       "schema_hash": "b5ee4d09e3f16f52bbd30106481428d01d7b55a2dd3b507e2670c6b08b484115"
     },
@@ -2574,7 +2594,7 @@
       "docs_path": "/api-reference/teamspace/add-projects-to-teamspace",
       "method": "POST",
       "mutation": true,
-      "operation_sha256": "38be2bf99bd6fae22a4fd3bc5f8bae21821fe5f8ad9c783b96798cbd6e6feb76",
+      "operation_sha256": "2f35441401e808234938d861366ae69aa7f65ecd247b144e6abbc384b1505eeb",
       "path": "/api/v1/workspaces/{workspace_slug}/teamspaces/{teamspace_id}/projects/",
       "schema_hash": "7099a067d7bf757a4f5654ed1a18da4bd60ce18865e8313da06c380d05706a14"
     },
@@ -2583,27 +2603,99 @@
       "docs_path": "/api-reference/issue/advanced-search-work-items",
       "method": "POST",
       "mutation": true,
-      "operation_sha256": "eb9cac156a5534d671ff87bf994ca42e15be622243667d6c0aeab454caeda3a4",
+      "operation_sha256": "808ab71492074512eac56fb0b059b0ceff603b836398d663df7ae8078a56bf98",
       "path": "/api/v1/workspaces/{workspace_slug}/work-items/advanced-search/",
       "schema_hash": "4199492fec051ae77338198f867e347c6ad627b8cd8f9aa0af3326bd23192930"
+    },
+    {
+      "action": "inbox_issue__add_inbox_issue",
+      "docs_path": "/api-reference/inbox-issue/add-inbox-issue",
+      "method": "POST",
+      "mutation": true,
+      "operation_sha256": "b8a29452a7ca418257858f9286b247dbb4ef006cf1ce5ddd909ba461f8f8a7c1",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/inbox-issues/",
+      "schema_hash": "e651a521e2e9a5600654a8b2e916641393755a0c722b8f4fde7cb26c5c312b1b"
+    },
+    {
+      "action": "inbox_issue__delete_inbox_issue",
+      "docs_path": "/api-reference/inbox-issue/delete-inbox-issue",
+      "method": "DELETE",
+      "mutation": true,
+      "operation_sha256": "ba636ecaba9bb8b63e1c63ae4f739550ef08a50ae6d81711035508c5a34e7f4b",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/inbox-issues/{issue_id}/",
+      "schema_hash": "c998a703677fde20ee38bc1432b6ee67a9ea90937b4658fc93b83aa16a943fec"
+    },
+    {
+      "action": "inbox_issue__get_inbox_issue_detail",
+      "docs_path": "/api-reference/inbox-issue/get-inbox-issue-detail",
+      "method": "GET",
+      "mutation": false,
+      "operation_sha256": "0d76c34082240cce04a1dd774532bc66f8031494bd7d0cec7b797677567393aa",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/inbox-issues/{issue_id}/",
+      "schema_hash": "4cde1d25f980c56cb4d2cc7e0f09f8707cf8ee4a21a9fc9e85d5d7ab04c11c74"
+    },
+    {
+      "action": "inbox_issue__list_inbox_issues",
+      "docs_path": "/api-reference/inbox-issue/list-inbox-issues",
+      "method": "GET",
+      "mutation": false,
+      "operation_sha256": "993aa3f65827bd6f48162d7458591a07e15f6d3a99901a288bd92ed467927322",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/inbox-issues/",
+      "schema_hash": "e399d03dfb4250d17674dc7fab77ba85388cbe48f3af7b04e48baa4aa3cae86f"
+    },
+    {
+      "action": "inbox_issue__update_inbox_issue_detail",
+      "docs_path": "/api-reference/inbox-issue/update-inbox-issue-detail",
+      "method": "PATCH",
+      "mutation": true,
+      "operation_sha256": "a476d4eeab8cb0b08db20073356335220e9588f873c0b740f3392da9fb816ade",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/inbox-issues/{issue_id}/",
+      "schema_hash": "172a4d7ff5642332f80b744683cf3ba5ac4ad9fa660271da6b9e8294656242c0"
+    },
+    {
+      "action": "work_item_relation__create_work_item_relation",
+      "docs_path": "/api-reference/work-item-relations/create-work-item-relation",
+      "method": "POST",
+      "mutation": true,
+      "operation_sha256": "bb7ac328b67e9a7eed9f56d18507b5abb187b46218f01782eae6c4206ffe54ab",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/work-items/{work_item_id}/relations/",
+      "schema_hash": "594c56cdc0b86207988e396b5eaf6eba064171d265b2fb3ec2348d36be0615d8"
+    },
+    {
+      "action": "work_item_relation__list_work_item_relations",
+      "docs_path": "/api-reference/work-item-relations/list-work-item-relations",
+      "method": "GET",
+      "mutation": false,
+      "operation_sha256": "536b72811f536a56a070d4a01b907c595c3e9cf975a2243d7b4a9aea794bb5ef",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/work-items/{work_item_id}/relations/",
+      "schema_hash": "0900201ca31a85f8c3b087cb1b766631efd1f60c0c79ef85217c1cb49d82a800"
+    },
+    {
+      "action": "work_item_relation__remove_work_item_relation",
+      "docs_path": "/api-reference/work-item-relations/remove-work-item-relation",
+      "method": "POST",
+      "mutation": true,
+      "operation_sha256": "bfa245dab686908b70aef3b855f56ca61e0a95133fb81af573edff4269d719ea",
+      "path": "/api/v1/workspaces/{workspace_slug}/projects/{project_id}/work-items/{work_item_id}/relations/remove/",
+      "schema_hash": "aa0cd33f2fe79216e7f069022264037e10e81af17c03234527cdd5108d53c766"
     }
   ],
   "registry_manifest": {
-    "contract_hash": "9470f5466f3dfc7d32bfcbde72d2a8e7a77045213b6b209772695babbf5671d9",
+    "version": 2,
     "contract_version": 2,
-    "http_operation_count": 223,
+    "contract_hash": "e27498eaecc78f8a4df9dedb407d482c75cf66ff5181cf9ac5aeeb6ca2d1f184",
+    "mutation_count": 139,
+    "operation_count": 233,
+    "http_operation_count": 231,
     "method_counts": {
-      "DELETE": 44,
-      "GET": 91,
-      "PATCH": 38,
-      "POST": 52
-    },
-    "mutation_count": 134,
-    "operation_count": 225,
-    "version": 2
+      "DELETE": 45,
+      "GET": 94,
+      "PATCH": 39,
+      "POST": 55
+    }
   },
   "registry_path": "src/plane_api/operation_registry.json",
-  "registry_sha256": "264a7c9c6eed036551733d7efcb8b510e7c7f7bcf39c7b708cb13e827a7dcb04",
+  "registry_sha256": "f6f6267eb90847db67f94e46562a4fcf5763fb2f1551359dcf4c0c3cabaff7f3",
   "source": {
     "commit": "e5dc6310b80a3a9c8376b9b799319103cc18e28c",
     "relative_root": "docs/api-reference",

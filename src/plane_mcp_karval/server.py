@@ -7,8 +7,11 @@ upstream Plane MCP package.
 
 from __future__ import annotations
 
+import hashlib
+import json
 import os
 from collections.abc import Mapping
+from datetime import datetime, timezone
 from importlib.metadata import version as installed_version
 from pathlib import Path
 from typing import Any, Literal
@@ -134,6 +137,72 @@ def _state_id(item: Mapping[str, Any]) -> str:
     if isinstance(state, Mapping):
         return str(state.get("id") or "").strip()
     return str(state or "").strip()
+
+
+_V3_TRANSITIONS = {
+    "ADMIT": {("backlog", "ready")},
+    "START": {("ready", "in_progress")},
+    "REVIEW": {("in_progress", "review")},
+    "FINISH": {("review", "done")},
+    "CANCEL": {
+        ("backlog", "cancelled"),
+        ("ready", "cancelled"),
+        ("in_progress", "cancelled"),
+        ("review", "cancelled"),
+    },
+    "PROGRESS": {("in_progress", "in_progress")},
+    "BLOCKED": {("in_progress", "in_progress")},
+}
+_V3_OPERATOR_AUTHORIZATION_BASIS = "explicit_human_operator_authorization"
+
+
+def _canonical_json(value: Mapping[str, Any]) -> str:
+    return json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+
+
+def _validate_v3_operator_comment(comment: Mapping[str, Any]) -> tuple[str, bool]:
+    if comment.get("contract_version") != 3:
+        raise ValueError("v3 lifecycle comment must declare contract_version=3")
+    phase = str(comment.get("phase") or "").strip().upper()
+    if phase not in _V3_TRANSITIONS:
+        raise ValueError("v3 lifecycle phase is unknown")
+    state_before = str(comment.get("state_before") or "").strip()
+    state_after = str(comment.get("state_after") or "").strip()
+    if (state_before, state_after) not in _V3_TRANSITIONS[phase]:
+        raise ValueError(f"invalid v3 lifecycle transition {phase}: {state_before} -> {state_after}")
+    if phase == "BLOCKED":
+        required = ("blockers", "impact", "owner", "unblock_condition")
+        if any(not comment.get(field) for field in required):
+            raise ValueError("v3 BLOCKED requires blockers, impact, owner, and unblock_condition")
+    return phase, phase in {"PROGRESS", "BLOCKED"}
+
+
+def _operator_receipt(
+    *, workspace_slug: str, project_id: str, work_item_id: str,
+    expected_state_id: str, expected_updated_at: str, target_state_id: str,
+    phase: str, idempotency_key: str, annotation: bool,
+) -> dict[str, Any]:
+    receipt: dict[str, Any] = {
+        "version": 3,
+        "contract": "plane-lifecycle-v3",
+        "event_kind": "annotation" if annotation else "state_transition",
+        "operator_tool": "plane_operator_lifecycle_transition",
+        "authorization_basis": _V3_OPERATOR_AUTHORIZATION_BASIS,
+        "authorization_scope": "one_work_item_one_operation",
+        "workspace_slug": workspace_slug,
+        "project_id": project_id,
+        "work_item_id": work_item_id,
+        "phase": phase,
+        "expected_source_state_id": expected_state_id,
+        "expected_source_revision": expected_updated_at,
+        "target_state_id": target_state_id,
+        "idempotency_key": idempotency_key,
+        "attempts": 1,
+        "provider_atomicity": False,
+        "issued_at": datetime.now(timezone.utc).isoformat(),
+    }
+    receipt["receipt_fingerprint"] = hashlib.sha256(_canonical_json(receipt).encode()).hexdigest()
+    return receipt
 
 
 def _catalog_payload(
@@ -387,6 +456,158 @@ def create_server() -> FastMCP:
             "status": "state_verified" if state_receipt is not None else "comment_verified",
             "state": state_receipt,
             "comment": comment_receipt,
+        }
+
+    @mcp.tool(
+        annotations=ToolAnnotations(
+            readOnlyHint=False,
+            destructiveHint=True,
+            idempotentHint=False,
+            openWorldHint=True,
+        )
+    )
+    def plane_operator_lifecycle_transition(
+        workspace_slug: str,
+        project_id: str,
+        work_item_id: str,
+        expected_current_state_id: str,
+        expected_updated_at: str,
+        target_state_id: str,
+        comment: dict[str, Any],
+        approved_live_mutation: bool,
+        approved_non_atomic_operator_transition: bool,
+        authorization_basis: str,
+        authorized_workspace_slug: str,
+        authorized_project_id: str,
+        authorized_work_item_id: str,
+        idempotency_key: str,
+        attempts: int = 1,
+        contract_version: int | None = None,
+    ) -> dict[str, Any]:
+        """Execute one caller-authorized Plane lifecycle v3 event.
+
+        The trusted stdio host owns human approval. This tool binds that approval
+        to one target, enforces the canonical v3 phase/state pair and optimistic
+        preconditions, then performs the non-atomic state/comment sequence once.
+        Partial outcomes are returned for read-only reconciliation; they are
+        never automatically retried or compensated.
+        """
+        if contract_version != 3:
+            raise PermissionError("new lifecycle transitions require contract_version=3")
+        if approved_live_mutation is not True:
+            raise PermissionError("explicit live mutation approval is required")
+        if approved_non_atomic_operator_transition is not True:
+            raise PermissionError("explicit approval of the non-atomic operator transition is required")
+        if authorization_basis != _V3_OPERATOR_AUTHORIZATION_BASIS:
+            raise PermissionError(
+                "authorization_basis must be explicit_human_operator_authorization"
+            )
+        if attempts != 1:
+            raise ValueError("exactly one operator transition attempt is allowed")
+        if not 16 <= len(str(idempotency_key or "").strip()) <= 190:
+            raise ValueError("operator transition idempotency_key must contain 16 to 190 characters")
+        if workspace_slug != str(authorized_workspace_slug or "").strip():
+            raise PermissionError("authorized workspace does not match target")
+        if project_id != str(authorized_project_id or "").strip():
+            raise PermissionError("authorized project does not match target")
+        if work_item_id != str(authorized_work_item_id or "").strip():
+            raise PermissionError("authorized work item does not match target")
+        if not all(str(value or "").strip() for value in (
+            workspace_slug, project_id, work_item_id, expected_current_state_id,
+            expected_updated_at, target_state_id,
+        )):
+            raise ValueError("target and expected state/revision fields are required")
+        if not isinstance(comment, Mapping):
+            raise ValueError("comment must be a v3 lifecycle object")
+
+        phase, annotation = _validate_v3_operator_comment(comment)
+        if annotation != (expected_current_state_id == target_state_id):
+            raise ValueError("v3 annotation requires identical state IDs; transition requires distinct state IDs")
+
+        client = _client()
+        before = client.get_work_item(workspace_slug, project_id, work_item_id)
+        if not isinstance(before, Mapping) or str(before.get("id") or "") != work_item_id:
+            raise RuntimeError("Plane lifecycle pre-read returned an invalid work item")
+        actual_state = _state_id(before)
+        actual_updated_at = str(before.get("updated_at") or "")
+        if actual_state != expected_current_state_id:
+            return {
+                "status": "precondition_failed", "reason": "state",
+                "actual_state_id": actual_state, "actual_updated_at": actual_updated_at,
+                "mutation_applied": False,
+            }
+        if actual_updated_at != expected_updated_at:
+            return {
+                "status": "precondition_failed", "reason": "updated_at",
+                "actual_state_id": actual_state, "actual_updated_at": actual_updated_at,
+                "mutation_applied": False,
+            }
+
+        receipt = _operator_receipt(
+            workspace_slug=workspace_slug, project_id=project_id, work_item_id=work_item_id,
+            expected_state_id=expected_current_state_id, expected_updated_at=expected_updated_at,
+            target_state_id=target_state_id, phase=phase, idempotency_key=idempotency_key,
+            annotation=annotation,
+        )
+        state_receipt: dict[str, Any] | None = None
+        if not annotation:
+            state_receipt = _mutation_receipt(
+                operation="issue__update_issue_detail", method="PATCH",
+                path_params={"workspace_slug": workspace_slug, "project_id": project_id, "resource_id": work_item_id},
+                payload={"state": target_state_id},
+                idempotency_key=_derived_idempotency_key(idempotency_key, "state"), attempts=1,
+            )
+            if state_receipt.get("readback_verified") is not True:
+                return {
+                    "status": "state_outcome_ambiguous", "contract_version": 3,
+                    "receipt": receipt, "state": state_receipt, "comment": None,
+                    "state_mutation_applied": state_receipt.get("mutation_applied") is True,
+                    "state_readback_verified": False, "comment_readback_verified": False,
+                    "manual_reconciliation_required": True,
+                }
+
+        comment_payload = dict(comment)
+        comment_payload.pop("contract_version", None)
+        comment_receipt = _mutation_receipt(
+            operation="issue_comment__add_issue_comment", method="POST",
+            path_params={"workspace_slug": workspace_slug, "project_id": project_id, "work_item_id": work_item_id},
+            payload={
+                "comment_html": render_comment(comment_payload, output_format="html"),
+                "external_source": "plane-mcp-karval:v3",
+                "external_id": receipt["receipt_fingerprint"],
+            },
+            idempotency_key=_derived_idempotency_key(idempotency_key, "comment"), attempts=1,
+        )
+        if comment_receipt.get("readback_verified") is not True:
+            return {
+                "status": "target_confirmed_comment_pending", "contract_version": 3,
+                "receipt": receipt, "state": state_receipt, "comment": comment_receipt,
+                "state_mutation_applied": not annotation,
+                "state_readback_verified": True,
+                "comment_readback_verified": False,
+                "manual_reconciliation_required": True,
+            }
+
+        final = client.get_work_item(workspace_slug, project_id, work_item_id)
+        final_state = _state_id(final) if isinstance(final, Mapping) else ""
+        if final_state != target_state_id:
+            return {
+                "status": "final_state_readback_failed", "contract_version": 3,
+                "receipt": receipt, "state": state_receipt, "comment": comment_receipt,
+                "state_mutation_applied": not annotation,
+                "state_readback_verified": False,
+                "comment_readback_verified": True,
+                "manual_reconciliation_required": True,
+            }
+        return {
+            "status": "verified_annotation" if annotation else "verified_non_atomic_operator_transition",
+            "contract_version": 3, "provider_atomicity": False,
+            "receipt": receipt, "state": state_receipt, "comment": comment_receipt,
+            "state_mutation_applied": not annotation,
+            "state_readback_verified": True,
+            "comment_readback_verified": True,
+            "manual_reconciliation_required": False,
+            "final_updated_at": str(final.get("updated_at") or ""),
         }
 
     @mcp.tool(

@@ -1,10 +1,9 @@
 ---
 name: plane-mcp-operations
-description: Use when operating Plane through plane-mcp-karval. Discover tools, read current state, create/update/comment, transition Backlog to Ready, reconcile writes, or troubleshoot MCP client drift without legacy consent gates.
+description: Use when operating Plane through plane-mcp-karval. Discover tools, read current state, create/update/comment, run simple or operator-bound v3 lifecycle transitions, reconcile writes, or troubleshoot MCP client drift.
 license: MIT
-compatibility: MCP client configured with plane-mcp-karval 0.3.1 or newer; live operations require trusted local stdio and configured Plane credentials.
 metadata:
-  version: "0.3.2"
+  version: "0.3.4"
 ---
 
 # Plane MCP Operations
@@ -15,13 +14,15 @@ Operate the shared `plane-mcp-karval` MCP in Hermes, Codex, OpenDesign or anothe
 configured MCP client. This skill owns tool mechanics, not organizational policy.
 It does not require Hermes-native connectors, profile files or task-stack scripts.
 Use the actual tool names/schema advertised by the connected client; prefixes vary.
+The operator-bound lifecycle route requires plane-mcp-karval 0.3.3 or newer;
+live operations require trusted local stdio and configured Plane credentials.
 
 ## Fast path
 
 1. Inspect connected tools. Require `plane_mutation_action`,
-   `plane_lifecycle_transition`, `plane_add_comment` and `plane_reconcile_mutation`
-   for the corresponding task. If the client still advertises only legacy operator
-   transitions or demands elicitation, reconnect before declaring capability absent.
+   `plane_lifecycle_transition`, `plane_operator_lifecycle_transition`,
+   `plane_add_comment` and `plane_reconcile_mutation` for the corresponding task.
+   Reconnect after an upgrade before declaring a newly added capability absent.
 2. Before claiming current Plane state, read/search through the configured governed
    Plane MCP/connector. Discover the exact workspace, project, item and state IDs.
    A prior conversation, skill example or release note is not a current snapshot.
@@ -45,9 +46,13 @@ Use `plane_lifecycle_transition` with `target_state_id` and a fresh
 State PATCH through this MCP is supported, not a bypass. Raw HTTP is not needed.
 These operations are non-atomic: pre-read is not compare-and-set, and state plus
 comment can partially succeed. Inspect nested receipts; do not auto-compensate.
-Do not leave an otherwise eligible item in Backlog merely because an obsolete
-`plane_operator_lifecycle_transition` is absent. A real policy/readiness failure
-still blocks advancement and must be identified separately from tool availability.
+For ordinary trusted-stdio state changes, the simple routes above remain valid.
+When the governing client requires contract v3, use
+`plane_operator_lifecycle_transition`: it binds explicit approval to one target,
+requires canonical phase/state roles, fresh state and revision preconditions,
+`attempts=1`, and explicit acceptance of Plane's non-atomic state/comment sequence.
+The host owns human authorization; the MCP validates and records its bounded
+technical representation without opening a second elicitation ceremony.
 
 ## Comments and evidence
 

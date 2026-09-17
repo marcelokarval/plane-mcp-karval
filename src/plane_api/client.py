@@ -1126,7 +1126,7 @@ class PlaneClient:
             rows_seen += len(_rows(body) or [])
             if rows_seen > max_rows:
                 raise RuntimeError("Plane mutation readback pagination exceeded row budget")
-            if _readback_contains_targets(body, targets, specification):
+            if _readback_contains_targets(body, targets, specification, payload=payload):
                 if specification.get("strategy") == "detail_state":
                     _validate_detail_effects(body, payload, specification)
                 return current
@@ -1195,7 +1195,7 @@ class PlaneClient:
             rows_seen += len(_rows(body) or [])
             if rows_seen > max_rows:
                 raise RuntimeError("Plane mutation absence readback exceeded row budget")
-            if _readback_contains_targets(body, targets, specification):
+            if _readback_contains_targets(body, targets, specification, payload=None):
                 raise PlaneReadbackValidationError(
                     "Plane mutation deletion readback shows the target is still present"
                 )
@@ -2525,6 +2525,9 @@ def _validate_response_shape(
             isinstance(body, Mapping) and isinstance(body.get("results"), list)
         ):
             raise PlaneResponseValidationError(f"Plane {context} response shape is not {shape}")
+    elif shape == "relation_map":
+        if not isinstance(body, Mapping):
+            raise PlaneResponseValidationError(f"Plane {context} response shape is not relation_map")
     elif shape is not None and not isinstance(body, (Mapping, list)):
         raise PlaneResponseValidationError(f"Plane {context} response shape is invalid")
 
@@ -2571,6 +2574,10 @@ def _validate_absence_collection_envelope(
     schema.  It still requires a resolvable collection and its documented
     pagination continuation signal so the caller can exhaust every page.
     """
+    if specification.get("response_shape") == "relation_map":
+        if not isinstance(body, Mapping) or not all(isinstance(value, list) for value in body.values()):
+            raise PlaneResponseValidationError(f"Plane {context} response shape is not a relation map")
+        return
     if isinstance(body, list):
         return
     if not isinstance(body, Mapping) or not isinstance(body.get("results"), list):
@@ -2733,7 +2740,7 @@ def _validate_postcondition_bindings(
 
 
 def _is_collection_shape(shape: Any) -> bool:
-    return shape in {"collection", "relation_membership"}
+    return shape in {"collection", "relation_membership", "relation_map"}
 
 
 def _rows(response_body: Any) -> list[Any] | None:
@@ -2805,6 +2812,8 @@ def _readback_contains_targets(
     body: Any,
     targets: set[str],
     specification: Mapping[str, Any],
+    *,
+    payload: Mapping[str, Any] | None = None,
 ) -> bool:
     targets = {str(target).strip() for target in targets if str(target).strip()}
     if not targets:
@@ -2812,6 +2821,23 @@ def _readback_contains_targets(
     shape = specification.get("response_shape")
     matcher = specification.get("matcher") or {}
     field = str(matcher.get("field") or "id")
+    if shape == "relation_map":
+        if not isinstance(body, Mapping):
+            raise PlaneReadbackValidationError("Plane relation-map readback is not an object")
+        relation_type = None
+        if (specification.get("membership") or {}).get("relation_type_source") == "payload":
+            relation_type = str((payload or {}).get("relation_type") or "").strip()
+        groups = [body.get(relation_type)] if relation_type else list(body.values())
+        found = {
+            str(identifier).strip()
+            for group in groups
+            if isinstance(group, list)
+            for identifier in group
+            if str(identifier).strip()
+        }
+        if specification.get("membership", {}).get("target_presence") == "present":
+            return targets <= found
+        return bool(targets & found)
     if shape in {"collection", "relation_membership"}:
         rows = _rows(body)
         if rows is None:

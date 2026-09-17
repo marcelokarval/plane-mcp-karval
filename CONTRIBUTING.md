@@ -4,7 +4,7 @@ Every change, including documentation and configuration, requires an issue first
 
 1. Open an issue describing the problem, scope, non-goals, acceptance criteria and verification. Never include secrets, customer data, private receipts or local operational paths.
 2. Obtain maintainer agreement on scope before implementation. Work on a dedicated branch, keep the diff bounded and preserve technical safety controls.
-3. Reproduce defects with a regression test. Run `uv sync --frozen`, `uv run --frozen pytest -q`, `uv lock --check`, and `git diff --check`. Use fake providers: CI must never mutate a live Plane workspace.
+3. Reproduce defects with a regression test. Run `uv sync --frozen`, `uv run --frozen python -m pytest -q`, `uv lock --check`, and `git diff --check`. Use fake providers: CI must never mutate a live Plane workspace.
 4. Open a PR linking the existing issue, documenting implementation, tests, risks and rollback. No issue means no merge. Public contributions use a GitHub issue in this repository. Maintainer work may originate in a private tracker: a maintainer must verify the real issue and apply `issue-verified`; do not publish private identifiers or URLs.
 5. Resolve review discussions and pass current checks. Review and merge are maintainer responsibilities; self-authored claims of approval are not reviews.
 6. Release only from a merged immutable commit; build and test the package in isolation, scan its contents, and publish checksums.

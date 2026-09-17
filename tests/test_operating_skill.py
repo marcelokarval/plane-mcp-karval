@@ -26,7 +26,7 @@ def test_skill_structure_and_resource_links():
     text = (SKILL / "SKILL.md").read_text()
     metadata = yaml.safe_load(text.split("---", 2)[1])
     assert metadata["name"] == SKILL.name
-    assert metadata["metadata"]["version"] == "0.3.2"
+    assert metadata["metadata"]["version"] == "0.3.4"
     assert len(metadata["description"]) <= 1024
     assert len(text.splitlines()) < 220
     for link in re.findall(r"\]\((references/[^)]+)\)", text):
@@ -39,12 +39,15 @@ def test_skill_tools_and_transition_arguments_match_public_mcp():
         async with Client(create_server()) as client:
             return {tool.name: tool.inputSchema for tool in await client.list_tools()}
     schemas = asyncio.run(check())
-    for name in ("plane_mutation_action", "plane_lifecycle_transition", "plane_add_comment",
+    for name in ("plane_mutation_action", "plane_lifecycle_transition", "plane_operator_lifecycle_transition", "plane_add_comment",
                  "plane_reconcile_mutation", "plane_capture_state_catalog", "plane_add_lifecycle_comment"):
         assert name in schemas
         assert name in (SKILL / "SKILL.md").read_text() + (SKILL / "references/recipes.md").read_text()
     transition = schemas["plane_lifecycle_transition"]["properties"]
     assert {"target_state_id", "expected_state_id", "expected_updated_at", "idempotency_key"} <= transition.keys()
+    operator = schemas["plane_operator_lifecycle_transition"]["properties"]
+    assert {"contract_version", "authorization_basis", "authorized_work_item_id",
+            "approved_non_atomic_operator_transition"} <= operator.keys()
     required = set(schemas["plane_mutation_action"].get("required", []))
     assert not required.intersection({"authorization_receipt", "approved_live_mutation", "issue_readiness"})
 

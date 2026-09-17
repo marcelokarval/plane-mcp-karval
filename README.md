@@ -2,12 +2,14 @@
 
 ## Operação rápida
 
-### Skill operacional — 0.3.2
+### Skill operacional — 0.3.4
 
-Roadmap desta versão: [plugins de políticas por harness](ROADMAP.md).
-Proposta para scripts Hermes, OpenDesign e deepseek-harnss; ainda não implementados.
+Roadmap da linha atual e das próximas versões: [ROADMAP.md](ROADMAP.md).
 
-A versão 0.3.2 adiciona `skills/plane-mcp-operations/`, também incluída no wheel.
+A versão 0.3.4 adiciona Inbox Issues, relações entre work items, readback de
+mapas de relação e gates de paridade/release. Ela preserva a transição de
+lifecycle v3 para operadores e
+`skills/plane-mcp-operations/`, também incluída no wheel.
 Ela documenta o MCP atual: descoberta, leitura fresca, mutações, ADMIT/estado,
 comentários, idempotência, readback e recuperação, sem impor gates do conector legado.
 Não altera o protocolo de operações da 0.3.1.
@@ -47,10 +49,10 @@ owned HTTP client.
 
 ## Coverage
 
-- 225 documented Plane actions.
-- 223 unique HTTP operations.
-- 91 GET reads.
-- 134 registered POST/PATCH/DELETE mutations. Catalog coverage is not a claim
+- 233 documented Plane actions.
+- 231 unique HTTP operations.
+- 94 GET reads.
+- 139 registered POST/PATCH/DELETE mutations. Catalog coverage is not a claim
   that every operation has been exercised against a production Plane instance.
 
 The MCP intentionally exposes a compact tool surface:
@@ -70,6 +72,9 @@ The MCP intentionally exposes a compact tool surface:
   lifecycle packet.
 - `plane_lifecycle_transition` - optional state/comment convenience workflow
   with before-read, per-step results, and no automatic compensation.
+- `plane_operator_lifecycle_transition` - contract-v3 state transition or
+  annotation bound to explicit caller approval, exact target, fresh state/revision,
+  canonical phase roles, one attempt, server receipt, and partial-outcome reporting.
 - `plane_validate_title_contract` and `plane_normalize_title` - enforce the
   canonical title/icon contract before create or title mutation.
 - `plane_mutation_action` - execute a registered mutation for the trusted local

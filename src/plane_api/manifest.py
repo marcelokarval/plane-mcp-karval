@@ -70,8 +70,9 @@ def validate_persisted_manifest(
         raise ValueError("registry manifest contains duplicate operation actions")
     if len(contract_actions) != len(set(contract_actions)):
         raise ValueError("registry manifest contains duplicate mutation contract actions")
-    if set(contract_actions) != mutation_actions or len(contract_actions) != 134:
-        raise ValueError("registry mutation contract action set does not match the 134 mutation operations")
+    mutation_count = len(mutation_operations)
+    if set(contract_actions) != mutation_actions or len(contract_actions) != mutation_count:
+        raise ValueError("registry mutation contract action set does not match the mutation operations")
     terminals = {"verified", "verified_absence", "provider_acknowledged"}
     strategies = {"detail_state", "membership_state", "provider_ack"}
     for contract in contracts:
@@ -156,16 +157,16 @@ def validate_persisted_manifest(
     inventory = registry.get("mutation_inventory")
     if not isinstance(inventory, Mapping):
         raise ValueError("registry mutation inventory is missing")
-    if inventory.get("denominator") != 134 or inventory.get("supported_count") != 134 or inventory.get("unsupported_count") != 0:
-        raise ValueError("registry mutation inventory counts are not all-134 live")
+    if inventory.get("denominator") != mutation_count or inventory.get("supported_count") != mutation_count or inventory.get("unsupported_count") != 0:
+        raise ValueError("registry mutation inventory counts do not match live mutations")
     if set(inventory.get("supported_actions") or ()) != mutation_actions or inventory.get("unsupported_actions") != []:
         raise ValueError("registry mutation inventory action sets do not match")
-    if inventory.get("contract_policy_counts") != {"allow": 134, "deny": 0}:
+    if inventory.get("contract_policy_counts") != {"allow": mutation_count, "deny": 0}:
         raise ValueError("registry mutation policy counts do not match")
-    if sum((inventory.get("terminal_counts") or {}).values()) != 134 or sum((inventory.get("strategy_counts") or {}).values()) != 134:
-        raise ValueError("registry persisted computed counts do not sum to 134")
+    if sum((inventory.get("terminal_counts") or {}).values()) != mutation_count or sum((inventory.get("strategy_counts") or {}).values()) != mutation_count:
+        raise ValueError("registry persisted computed counts do not sum to the mutation denominator")
     computed = source_contract.get("computed_counts")
-    if not isinstance(computed, Mapping) or computed.get("policy") != inventory.get("contract_policy_counts") or computed.get("terminal") != inventory.get("terminal_counts") or computed.get("strategy") != inventory.get("strategy_counts") or computed.get("sum") != 134:
+    if not isinstance(computed, Mapping) or computed.get("policy") != inventory.get("contract_policy_counts") or computed.get("terminal") != inventory.get("terminal_counts") or computed.get("strategy") != inventory.get("strategy_counts") or computed.get("sum") != mutation_count:
         raise ValueError("persisted computed contract counts do not match registry")
     counts = source_contract.get("counts")
     if not isinstance(counts, Mapping):

@@ -1,182 +1,144 @@
-# Roadmap 0.3.2 — plugins de políticas por harness
+# Roadmap do Plane MCP Karval
 
-Status: proposta de implementação; nenhum loader ou plugin descrito aqui está
-implementado ou ativado por este documento.
+Status: roadmap versionado para a linha `v0.3.4` e as próximas evoluções.
 
-Este roadmap integra a documentação da 0.3.2. Não publica uma nova release nem
-promete que todo o roadmap já pertence ao pacote executável dessa versão.
+A tag `v0.3.3` permanece imutável. O controle de planejamento, issues,
+review e release deste repositório é o GitHub; o projeto Hermes no Plane não é
+usado como tracker deste MCP.
 
-## Objetivo
+## Estado da v0.3.4
 
-Manter o Plane MCP simples, compartilhável e independente de harness. Regras
-específicas de Hermes, OpenDesign, deepseek-harnss e futuros clientes ficam em
-plugins locais, implementados como scripts com contrato versionado.
+A `v0.3.4` amplia o contrato comum sem criar uma nova camada de plugins ou um
+broker. O objetivo é aumentar cobertura documentada mantendo o dispatcher,
+ledger, idempotência, tentativa única, readback e reconciliação existentes.
 
-A skill `plane-mcp-operations` ensina o contrato comum. Cada plugin pode trazer
-uma referência curta com suas regras próprias, sem replicar a skill inteira.
+Entregas:
 
-## Estado atual e fronteira
+- cinco operações de Inbox Issues;
+- três operações de relações entre work items;
+- 233 ações documentadas, 231 operações HTTP e 139 mutações governadas;
+- shape de resposta `relation_map` com as oito categorias oficiais;
+- readback de presença/ausência para relações;
+- readback de detalhe para atualização de Inbox Issue;
+- verificador de paridade do contrato;
+- gate de consistência de pacote, skill, registry e release notes;
+- diagnóstico offline sem chamadas ao provider;
+- testes de matriz para cada operação e mutação.
 
-- `src/plane_mcp_karval/server.py` expõe as ferramentas e coordena chamadas.
-- `src/plane_api/client.py` executa o contrato técnico Plane, ledger e readback.
-- `src/plane_mcp_karval/cli.py` inicia o transporte e carrega o ambiente.
-- A skill portátil já distingue política organizacional de capacidade MCP.
-- Os novos diretórios, hooks e configurações abaixo são alvos de implementação,
-  não APIs existentes. Não começar por reescrever o cliente ou criar outro MCP.
+Fora do escopo: upload de anexos, plugins por harness e broker compartilhado.
 
-## Arquitetura alvo
+## v0.4.x — capacidades que exigem fronteira nova
 
-```text
-cliente MCP do harness
-  → processo Plane MCP configurado pelo operador
-  → plugin local selecionado para esse harness
-  → validação técnica + reserva de idempotência + Plane API
-  → readback + recibo persistido
-  → observação pós-resultado pelo plugin
-  → resposta MCP
-```
+### v0.4.0 — anexos seguros e capability profiles
 
-### Núcleo comum: não delegar aos plugins
+A primeira versão 0.4 deve tratar upload como uma capacidade dedicada, não como
+mais uma chamada genérica de `plane_mutation_action`.
 
-- Autenticação Plane e custódia das credenciais.
-- Catálogo, schema, bindings de alvo, HTTP e paginação.
-- Idempotência, tentativa única, ledger e reconciliação sem replay.
-- Readback e distinção entre efeito aplicado, verificado, parcial e desconhecido.
-- Transporte e superfície MCP estável; plugin não registra ferramentas arbitrárias.
-- Redação segura de erros e proteção de dados.
+Entregas propostas:
 
-### Plugins: regras e contexto do harness
+1. `plane_upload_issue_attachment` com contrato próprio.
+2. Allowlist de MIME, limite de tamanho e limite de tempo.
+3. Entrada por arquivo temporário controlado ou bytes explicitamente limitados;
+   nunca aceitar URL arbitrária do modelo como fonte implícita.
+4. Proteção contra path traversal, symlink e exposição do conteúdo no ledger.
+5. Fluxo de credencial temporária, upload, complete e readback do attachment.
+6. Reconciliador de upload ambíguo sem replay automático.
+7. Testes fake para sucesso, timeout, upload parcial, objeto órfão e rejeição.
+8. Capability profiles explícitos:
+   - `read_only`;
+   - `standard_mutation`;
+   - `lifecycle_operator`;
+   - `attachments`;
+   - `destructive`.
+9. Catálogo que informa capacidades disponíveis sem expor credenciais ou
+   conceder autorização adicional ao modelo.
 
-- Pré-condições organizacionais de execução e transição de estado.
-- Convenções de evidência, sessão, projeto de trabalho e comentários.
-- Metadados públicos permitidos para proveniência e auditoria.
-- Validação específica de contexto fornecido pelo host.
+Não incluir em 0.4.0: marketplace de plugins, download remoto, sandbox
+presumido ou mudança automática de capability profile.
 
-Não transferir regras genéricas de Plane para um plugin chamado Hermes. A presença
-de um plugin não autentica o harness, e um nome de cliente informado pelo modelo
-não comprova identidade ou autorização.
+### v0.4.x — plugins por harness, em ondas separadas
 
-## Contrato mínimo de plugin v1 — proposto
+Depois do contrato de anexos, implementar plugins somente quando houver regra
+específica comprovada para um harness. A ordem recomendada é:
 
-### Seleção e carregamento
+- P1: manifesto/I/O/hooks versionados;
+- P2: loader e runner fake, com modos `off`, `observe` e `enforce`;
+- P3: plugin Hermes;
+- P4: plugin OpenDesign;
+- P5: outros harnesses apenas com contrato próprio;
+- P6: canário, promoção e rollback.
 
-- Um plugin ativo por processo MCP no MVP; sem encadeamento/precedência entre vários.
-- Seleção explícita na configuração local/launcher do operador. Não aceitar script,
-  caminho, comando ou plugin escolhido por argumentos de uma ferramenta MCP.
-- Manifesto local com `id`, `version`, `contract_version`, `entrypoint`, hooks,
-  timeout, limite de saída e modo `off|observe|enforce`.
-- Resolver entrypoint dentro da raiz autorizada do plugin; rejeitar traversal e
-  symlink que escape dela. Invocar uma lista de argumentos, nunca `shell=True`.
-- Sem download, instalação automática, descoberta de código em diretório de projeto
-  ou hot reload durante uma operação. Mudança requer nova instância do processo.
-- Registrar versão/hash do plugin carregado. Escolha de modo só pelo operador.
+O núcleo continua dono de autenticação, catálogo, schemas, HTTP, idempotência,
+ledger, readback, redaction e transporte MCP. O plugin só avalia contexto e
+política do harness. Ele não faz HTTP, não repete mutações, não limpa ledger,
+não escolhe credenciais e não fabrica autorização humana.
 
-### Execução
+Critérios para qualquer plugin:
 
-Scripts subprocessados com JSON em stdin e exatamente um JSON em stdout.
-Stderr é diagnóstico local limitado e sanitizado, nunca resposta bruta ao modelo.
-Contrato independente de linguagem; implementação de referência em Python, sem
-introduzir npm, servidor auxiliar ou framework de plugins para o MVP.
+- seleção somente pela configuração do operador;
+- caminho autorizado, sem traversal nem `shell=True`;
+- timeout e limite de saída validados no startup;
+- entrada/saída JSON versionada e sem segredos;
+- `enforce` fail-closed antes do I/O;
+- `observe` explicitamente não bloqueante;
+- hash/versão registrados na evidência;
+- prova positiva, negativa e de contexto ausente;
+- rollback para `off` comprovado.
 
-Entrada: versão do contrato, hook, operation_id, operação, alvo, campos mínimos do
-payload necessários à regra e contexto permitido do host. Não enviar credenciais,
-ambiente inteiro, logs, histórico bruto, hidden reasoning ou banco de sessões.
+## v0.5.x — runtime compartilhado e escala operacional
 
-Saída de pré-validação: `decision=allow|deny`, códigos de motivo e metadados
-permitidos. `allow` significa apenas aprovação pela política do plugin; não é
-consentimento humano, credencial, nem dispensa validações do núcleo.
+### Broker Plane MCP compartilhado
 
-Sem reescrita silenciosa de workspace, projeto, item, estado, payload ou chave
-idempotente. Se uma regra exige outro conteúdo, devolve orientação e bloqueia a
-solicitação atual; o host apresenta uma nova intenção antes da escrita.
-
-### Hooks iniciais
-
-1. `before_operation`: valida política antes de reserva e I/O da operação. Pode
-   receber snapshot previamente obtido pelo núcleo quando a regra o exigir;
-   o plugin não faz sua própria chamada Plane. Leituras também podem ser negadas.
-2. `after_readback`: recebe recibo sanitizado já persistido; pode produzir
-   diagnóstico/metadados, não mudar o resultado factual nem escrever no Plane.
-
-Operações offline de descoberta não devem depender de acesso ao provider ou de
-um plugin saudável. Decidir no contrato a distinção entre catálogo offline e
-leituras de dados antes de implementar o hook.
-
-Não criar hook que execute HTTP, publique mensagens, repita mutações, limpe
-ledger ou faça rollback. Necessidades de efeitos externos são escopo futuro,
-não uma permissão implícita do plugin.
-
-### Falhas, confiança e idempotência
-
-- `off`: não executa plugin e preserva o comportamento MCP atual.
-- `observe`: avalia e registra diagnóstico sem aplicar decisão; não é enforcement.
-- `enforce`: plugin ausente, inválido, timeout ou decisão deny bloqueiam ANTES da
-  escrita. Sem fallback silencioso para off/observe. Limites validados no startup.
-- Falha pós-readback não converte uma escrita aplicada em "não executada"; devolver
-  recibo verdadeiro com warning separado. Nunca repetir a operação para sanar hook.
-- Fixar identidade/versão/hash do plugin no contexto da operação e na evidência
-  do ledger, com compatibilidade de leitura dos registros antigos.
-- Retry/reconciliação de operação existente não cria nova escrita nem aplica
-  retroativamente política nova ao efeito antigo. Registrar a proveniência original
-  e a configuração da nova observação separadamente.
-- Subprocesso NÃO é sandbox. Plugins são código local confiável e revisado, executado
-  com privilégios do usuário. Ambiente mínimo e ausência de token não impedem acesso
-  a arquivos/rede do usuário. Isolamento OS real exige fase própria e prova.
-
-## Estrutura proposta
+O objetivo é reduzir a multiplicação de processos stdio observada quando o
+OpenCode cria uma instância por contexto:
 
 ```text
-src/plane_mcp_karval/plugins/   # contrato, loader, runner e validação
-plugins/
-  hermes/                     # manifesto, script e regras Hermes
-  opendesign/                 # manifesto, script e regras OpenDesign
-  deepseek-harnss/             # nome fornecido pelo operador; confirmar ID técnico
-skills/plane-mcp-operations/references/plugins.md
-tests/                        # usar a árvore tests/ existente para a suíte
+Hermes / Codex / OpenCode
+          ↓
+cliente MCP local ou proxy
+          ↓
+broker Plane MCP compartilhado
+          ↓
+Plane API
 ```
 
-Não criar pastas vazias como suposta implementação. A grafia `deepseek-harnss`
-é preservada do pedido; não assumir que é o identificador real da instalação.
-Confirmar o contrato do harness antes de congelar seu manifesto.
+Entregas propostas:
 
-## Plano de execução
+- broker local com autenticação entre clientes e broker;
+- multiplexação de requests sem misturar sessões ou perfis;
+- ledger e observabilidade centralizados, preservando isolamento lógico;
+- limites de concorrência, backpressure e shutdown gracioso;
+- health/readiness e métricas de processos, memória e latência;
+- compatibilidade stdio durante migração;
+- canário por cliente antes da promoção;
+- rollback imediato para launchers versionados individuais.
 
-| Etapa | Entrega | Aceite |
-| --- | --- | --- |
-| P1 — contrato | Schema de manifesto/I/O, pontos de hook e classificação das regras atuais | Exemplos válidos/inválidos testados; regra classificada como núcleo ou harness; zero gate legado transplantado sem justificativa |
-| P2 — infraestrutura mínima | Loader e runner com plugin fake, modos, timeout e limites | Sem plugin mantém contrato atual; enforce bloqueia antes de I/O; observe não bloqueia; sem seleção por caller |
-| P3 — Hermes | Script com regras realmente específicas, descobertas nos consumidores atuais | Positivo/negativo de contexto e prontidão; autorização vem do host, nunca receipt fabricado; sem dependência obrigatória para outros harnesses |
-| P4 — OpenDesign | Script de contexto de execução/projeto e proveniência permitida | Apenas metadados comprovados; sem assumir sessão Hermes, projetos ou modelos a partir de rótulos de UI |
-| P5 — deepseek-harnss | Confirmar identidade e adaptar contexto nativo do harness | Sem imitar metadados Hermes/OpenDesign; desconhecido fica explícito; casos positivos/negativos próprios |
-| P6 — integração e promoção | Skill, guia de instalação, canário por harness e rollback | Mesma API MCP; plugin/mode/hash observáveis; sem efeitos extras; backup e retorno à configuração anterior comprovados |
+A otimização não pode alterar o contrato de autorização, os escopos dos
+clientes, o idempotency key, o readback nem a proveniência da operação.
 
-Ordem: P1 → P2 → P3; P4 e P5 usam o contrato estabilizado; P6 encerra a entrega.
-Não adicionar Codex ou outro harness por simetria: encaixar um novo plugin quando
-suas regras específicas forem identificadas e a implementação for solicitada.
+### Operação e evolução da linha 0.5
 
-## Matriz mínima de prova
+- capability denominator verificável por cliente/runtime;
+- diagnóstico de drift entre launcher, pacote, skill e contrato;
+- observabilidade de chamadas, readbacks, estados desconhecidos e
+  reconciliações sem conteúdo sensível;
+- matriz de compatibilidade por versão de cliente;
+- benchmark comparando processos individuais contra broker;
+- teste de falha do broker, reconexão e preservação de sessões;
+- runbook de promoção, rollback e quarentena.
 
-- Contrato MCP existente e suíte sem plugin continuam passando.
-- Manifesto incompatível, plugin faltante, JSON inválido, saída excessiva, timeout,
-  processo com exit não zero e caminho fora da raiz: falha limitada e previsível.
-- Request do modelo não troca plugin, modo, caminho ou contexto confiável.
-- Token e campos privados não entram no stdin/ambiente herdado/saída do plugin.
-- Deny/enforce não envia requisição de escrita nem consome uma tentativa provider.
-- Observe e off não são apresentados como enforcement.
-- Falha pós-escrita preserva recibo, idempotência e possibilidade de reconciliação.
-- Plugin não sobrescreve alvo, readback, timestamps históricos ou consentimento.
-- Troca de versão do plugin não causa replay de operação nem invalida evidência antiga.
-- Cada harness tem prova positiva, negativa e de contexto ausente.
-- Canário live somente após autorização de alvo/ações; testes fake primeiro.
+## Sequenciamento e controle
 
-## Decisão e limites
+Cada problema deve ser uma issue independente no GitHub, com critérios de
+aceite e prova próprios. A sequência de release deve ser:
 
-Alternativas consideradas: if/else por harness no núcleo é mais rápido inicialmente,
-mas acopla regras e repete os bloqueios antigos; imports Python in-process são
-menores, mas acoplam linguagem/dependências e falhas ao servidor. Scripts locais
-com I/O versionado são o compromisso escolhido: simples de distribuir, testáveis
-e independentes de linguagem, ao custo de subprocesso e contrato explícito.
+1. issue funcional ou de qualidade;
+2. implementação e testes focalizados;
+3. revisão do diff e invalidação da prova anterior;
+4. suíte completa e gate de contrato;
+5. build/instalação isolada;
+6. tag imutável e readback remoto;
+7. atualização da skill somente pelo instalador oficial.
 
-MVP não inclui marketplace, plugins remotos, instalação por prompt, múltiplos
-plugins encadeados, sandbox presumido ou uma nova camada de consentimento.
-O objetivo é separar política específica sem tornar o MCP um framework de harness.
+Nenhuma fase 0.4 ou 0.5 deve ser descrita como implementada antes de possuir
+código, testes, artefato e verificação correspondentes.
