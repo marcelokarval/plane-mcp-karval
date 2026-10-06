@@ -337,7 +337,8 @@ def create_server() -> FastMCP:
             "payload_shape": _payload_shape(payload),
             "request_schema": op.request_schema,
             "provider_configuration": "unavailable_without_a_configured_client",
-            "execution": "trusted_local_stdio_single_attempt_no_automatic_retry",
+            "execution": "trusted_local_stdio_single_logical_operation_bounded_safe_transport_retry",
+            "recovery": "read_only_no_uncertain_write_replay",
             "docs_path": op.docs_path,
             "docs_url": f"https://developers.plane.so{op.docs_path}",
         }
@@ -838,7 +839,8 @@ def create_server() -> FastMCP:
         """Execute one registry mutation for the trusted local stdio caller.
 
         State PATCH has normal non-atomic provider semantics: there is no CAS,
-        automatic compensation, or automatic retry.
+        automatic compensation, or replay of uncertain writes. Safe not-sent
+        transport retries are bounded within one logical operation.
         """
 
         op = get_operation(operation)
@@ -853,6 +855,31 @@ def create_server() -> FastMCP:
             attempts=attempts,
             idempotency_key=idempotency_key,
         )
+
+    @mcp.tool(
+        annotations=ToolAnnotations(readOnlyHint=False, destructiveHint=True,
+                                    idempotentHint=False, openWorldHint=False)
+    )
+    def plane_authorize_mutation_reattempt(
+        operation: str,
+        path_params: dict[str, Any],
+        payload: dict[str, Any] | None,
+        idempotency_key: str,
+        operator_acknowledged_duplicate_risk: bool,
+        reason: str,
+        query: dict[str, Any] | None = None,
+    ) -> dict[str, Any]:
+        """Authorize one linked local reattempt after fresh complete absent correlation.
+
+        No provider write occurs here. This is an explicit operator risk decision,
+        not proof that the earlier attempt was unsent. The next same-key mutation
+        consumes the authorization; read-only reconciliation never consumes it.
+        """
+        from plane_api.resilience import authorize_reattempt
+        return authorize_reattempt(_client(), operation, path_params=_clean_mapping(path_params),
+            payload=_clean_mapping(payload), query=_clean_mapping(query), idempotency_key=idempotency_key,
+            ledger_path=_ledger_path(), operator_acknowledged_duplicate_risk=operator_acknowledged_duplicate_risk,
+            reason=reason)
 
     @mcp.tool(
         annotations=ToolAnnotations(

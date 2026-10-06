@@ -13,7 +13,14 @@ from pathlib import Path
 from typing import Any, Mapping, Sequence
 from urllib.error import HTTPError, URLError
 from urllib.parse import quote, urlencode, urljoin, urlsplit, urlunsplit
-from urllib.request import Request, urlopen
+from urllib.request import Request, urlopen, build_opener, HTTPRedirectHandler
+
+
+class _NoMutationRedirect(HTTPRedirectHandler):
+    """A redirected mutation is not evidence that the original write was unsent."""
+
+    def redirect_request(self, req, fp, code, msg, headers, newurl):
+        return None
 
 from .registry import get_mutation_contract, get_operation, list_operations
 from .manifest import CONTRACT_HASH, CONTRACT_VERSION
@@ -153,7 +160,8 @@ class PlaneClient:
         operation = get_operation(action)
         if operation.mutation:
             raise PermissionError("Generic live Plane mutations are blocked; request an operation descriptor")
-        return self._request("GET", _expand_path(operation.path, path_params or {}), query=query)
+        from .resilience import read
+        return read(self, _expand_path(operation.path, path_params or {}), query=query)
 
     def preflight_mutation(
         self,
@@ -257,7 +265,12 @@ class PlaneClient:
         attempts: int = 1,
         ledger_path: str | Path,
     ) -> dict[str, Any]:
-        """Execute one trusted-local mutation without a synthetic approval receipt."""
+        """Execute or safely recover one durable trusted-local operation."""
+        from .resilience import execute
+        outcome = execute(self, action, path_params=path_params, query=query, payload=payload,
+                          idempotency_key=idempotency_key, attempts=attempts, ledger_path=ledger_path)
+        if outcome is not None:
+            return outcome
         return self.execute_mutation_action(
             action,
             path_params=path_params,
@@ -281,6 +294,11 @@ class PlaneClient:
         ledger_path: str | Path,
     ) -> dict[str, Any]:
         """Refresh a failed readback without replaying its provider write."""
+        from .resilience import execute
+        outcome = execute(self, action, path_params=path_params, query=query, payload=payload,
+                          idempotency_key=idempotency_key, attempts=attempts, ledger_path=ledger_path, recover=True)
+        if outcome is not None:
+            return outcome
         operation = get_operation(action)
         params, body = dict(path_params or {}), dict(payload or {})
         preflight = self.preflight_native_mutation(
@@ -1796,9 +1814,11 @@ class PlaneClient:
             raise ValueError("unsupported Plane HTTP method")
         url = _build_url(self.config.base_url, path, None if self._transport and hasattr(self._transport, "request") else query)
         headers = {"Accept": "application/json", "User-Agent": "hermes-plane-api/1.0", **self.headers()}
+        response_acquired = False
         try:
             if self._transport is not None and hasattr(self._transport, "request"):
                 response = self._transport.request(method, url, headers=headers, params=query or {}, json_body=payload, timeout=self.config.timeout)
+                response_acquired = True
                 status = _response_status(response)
                 if status is not None and status >= 400:
                     if allow_not_found and status == 404:
@@ -1807,7 +1827,13 @@ class PlaneClient:
                 return response if with_metadata else _response_body(response)
             body = None if payload is None else json.dumps(dict(payload)).encode("utf-8")
             request = Request(url, data=body, headers={**headers, **({"Content-Type": "application/json"} if body is not None else {})}, method=method)
-            response = self._transport(request, self.config.timeout) if self._transport is not None else urlopen(request, timeout=self.config.timeout)  # noqa: S310
+            if self._transport is not None:
+                response = self._transport(request, self.config.timeout)
+            elif method == "GET":
+                response = urlopen(request, timeout=self.config.timeout)  # noqa: S310
+            else:
+                response = build_opener(_NoMutationRedirect()).open(request, timeout=self.config.timeout)
+            response_acquired = True
             body = _decode(response)
             if with_metadata:
                 return {"status_code": response.getcode(), "body": body}
@@ -1820,15 +1846,25 @@ class PlaneClient:
                 http_status=exc.code,
                 transport_class="http",
                 deterministic=_deterministic_write_rejection(phase, exc.code),
-                detail=_sanitize_http_error_detail(exc),
+                detail={**_sanitize_http_error_detail(exc), **_retry_after_metadata(exc.headers)},
             ) from exc
-        except URLError as exc:
+        except (URLError, OSError) as exc:
+            import errno
+            import socket
+            reason = exc.reason if isinstance(exc, URLError) else exc
+            code = getattr(reason, "errno", None)
+            boundary_proven = (not response_acquired and (self._transport is None
+                               or getattr(self._transport, "__hermes_test_fake_transport__", False) is True))
+            not_sent = boundary_proven and ((isinstance(reason, socket.gaierror) and code == socket.EAI_AGAIN)
+                        or isinstance(reason, ConnectionRefusedError) and code == errno.ECONNREFUSED)
             raise PlaneProviderRequestError(
                 phase=phase,
                 http_status=None,
                 transport_class="network",
                 deterministic=False,
-                detail={"message": "provider request could not be completed"},
+                detail={"message": "provider request could not be completed",
+                        "errno": code if isinstance(code, int) else None,
+                        "delivery": "not_sent" if not_sent else "uncertain"},
             ) from exc
 
 
@@ -2171,6 +2207,21 @@ def _bounded_error_envelope(value: Any) -> dict[str, Any]:
     return dict(detail) if len(encoded) <= _ERROR_DETAIL_MAX_BYTES else {"message": "provider rejected request"}
 
 
+def _retry_after_metadata(headers: Any) -> dict[str, Any]:
+    """Finite provider not-before delay, never raw headers or shortened waits."""
+    from email.utils import parsedate_to_datetime
+    import math
+    value = str(headers.get("Retry-After", ""))[:128] if hasattr(headers, "get") else ""
+    try:
+        delay = float(value)
+    except ValueError:
+        try:
+            delay = (parsedate_to_datetime(value) - datetime.now(timezone.utc)).total_seconds()
+        except (ValueError, TypeError, OverflowError):
+            return {}
+    return {"retry_after_seconds": max(0.0, delay)} if math.isfinite(delay) else {}
+
+
 def _provider_error_from_response(response: Any, *, phase: str) -> PlaneProviderRequestError:
     status = _response_status(response)
     body = _response_body(response)
@@ -2179,11 +2230,12 @@ def _provider_error_from_response(response: Any, *, phase: str) -> PlaneProvider
         http_status=status,
         transport_class="http",
         deterministic=_deterministic_write_rejection(phase, status),
-        detail=(
+        detail={**(
             _bounded_error_envelope(body)
             if isinstance(body, (Mapping, list))
             else {"message": "provider rejected request"}
-        ),
+        ), **_retry_after_metadata(getattr(response, "headers", None)
+            or (response.get("headers") if isinstance(response, Mapping) else None))},
     )
 
 

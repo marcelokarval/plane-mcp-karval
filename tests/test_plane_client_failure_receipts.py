@@ -934,7 +934,7 @@ def test_native_mutation_uses_real_client_transport_and_preserves_one_shot_guard
 
     duplicate = client.execute_native_mutation_action(ACTION, **kwargs)
     assert duplicate["duplicate"] is True
-    assert len(transport.calls) == 3  # readback only; no second POST
+    assert len(transport.calls) == 2  # completed operation returns durable proof; no transport
 
     with pytest.raises(ValueError, match="different mutation"):
         client.execute_native_mutation_action(
