@@ -36,6 +36,26 @@ live operations require trusted local stdio and configured Plane credentials.
    `readback_verified`; report partial/unknown outcomes honestly. Never repeat an
    ambiguous write, mint a new key to force it, or clear the ledger.
 
+## Resilient native receipts (repository candidate)
+
+`attempts=1` denotes one logical invocation. Bounded transport retries are limited
+ to proven pre-send transient DNS/refusal or safe GET failures. Preserve the same
+key/request for `not_sent_retryable`; never mint a key to replay UNKNOWN.
+`in_progress` means wait for the owner. `outcome_unknown`, `recovery_required`,
+failed readback or expired lease require read-only `plane_reconcile_mutation`.
+Correlation recovery completes all pages, matches exact external ID/source and
+keeps zero/incomplete/conflicting evidence pending. A recovered create proves
+attribution/existence; inspect separate desired-state evidence for content.
+
+`plane_authorize_mutation_reattempt` is an explicit local-only operator risk
+resolution, not an ordinary mutation prerequisite. It requires a fresh complete
+absent correlation scan, no active lease, exact bindings, duplicate-risk
+acknowledgment and a reason; it appends one linked authorization without a provider
+write. Only a subsequent identical native invocation consumes it. Never infer
+non-delivery from absence. Completed repeat receipts are durable historical proof,
+not fresh current Plane state. No installed/runtime promotion is implied by this
+candidate documentation. Full design: repository `docs/resilient-mutations.md`.
+
 ## State changes, including ADMIT
 
 `ADMIT` is a policy meaning (Backlog → Ready), not a mandatory tool name or a

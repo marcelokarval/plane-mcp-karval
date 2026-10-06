@@ -89,5 +89,5 @@ def test_stdio_create_state_duplicate_delete(tmp_path):
         http.shutdown()
         http.server_close()
         worker.join(timeout=5)
-    assert [method for method, _ in calls] == ['POST', 'GET', 'PATCH', 'GET', 'GET', 'DELETE', 'GET']
+    assert [method for method, _ in calls] == ['POST', 'GET', 'PATCH', 'GET', 'DELETE', 'GET']
     assert not current

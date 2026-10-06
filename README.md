@@ -126,11 +126,22 @@ authenticate arbitrary remote callers. No same-process plugin isolation or
 Hermes gateway dependency is claimed. Do not expose live tools through an
 unauthenticated network transport.
 
-The client validates registry-bound data and requires exactly one write attempt.
-It persists a reservation before provider I/O and does not blindly replay an
-ambiguous write. Reusing a key with different request data is rejected.
-Readback distinguishes an applied operation from a verified effect; provider
-acknowledgement-only contracts are not represented as stronger proof.
+The client validates registry-bound data and requires `attempts=1`: one logical
+operation invocation with at most three bounded safe transport attempts. New
+native receipts have stable provider/request-bound operation identities, durable
+leases/fences and sanitized history. Proven pre-send transient DNS/refusal may
+resume under the same key; uncertain writes are never automatically replayed.
+Readback distinguishes applied writes from verified effects. Completed repeats
+return stored completion evidence, not fresh current Plane state.
+
+[Native resilient mutation/recovery design](docs/resilient-mutations.md) documents
+status handling, correlation, throttling, legacy preservation and crash boundaries.
+Issue/comment creates receive stable external correlation when absent. Read-only
+reconciliation performs complete bounded exact lookup; missing/incomplete evidence
+cannot authorize a resend. `plane_authorize_mutation_reattempt` is a separate
+local-only explicit operator duplicate-risk decision after fresh complete absent
+correlation; it preserves the original ambiguous attempt and grants one linked
+same-key retry. It is never available over the offline HTTP transport.
 
 An issue update may include `state`. Plane PATCH has ordinary non-atomic
 semantics: a preceding GET is not compare-and-set, and the server does not
@@ -147,8 +158,9 @@ and receipts produced after deployment; it is not a rollback of Plane data.
 
 Legacy client APIs may retain their old receipt contracts for compatibility;
 they do not make the simple public MCP interface manufacture authorizations.
-`plane_reconcile_mutation` never replays a write: it only refreshes a failed
-readback. An inconclusive observation remains inconclusive.
+`plane_reconcile_mutation` never replays a write: it refreshes validated-ACK
+readback or attempts exact read-only create correlation recovery. An inconclusive
+observation remains inconclusive.
 
 ## Run
 
