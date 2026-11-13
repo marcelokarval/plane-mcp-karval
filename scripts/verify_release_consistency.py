@@ -42,7 +42,7 @@ def check(expected_version: str) -> dict[str, Any]:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--version", default="0.3.4")
+    parser.add_argument("--version", default="0.3.5")
     args = parser.parse_args()
     try:
         result = check(args.version)

@@ -2,7 +2,7 @@
 
 ## Operação rápida
 
-### Skill operacional — 0.3.4
+### Skill operacional — 0.3.5
 
 Roadmap da linha atual e das próximas versões: [ROADMAP.md](ROADMAP.md).
 
@@ -162,6 +162,20 @@ they do not make the simple public MCP interface manufacture authorizations.
 readback or attempts exact read-only create correlation recovery. An inconclusive
 observation remains inconclusive.
 
+## Request preparation and validation
+
+For `issue__add_issue` only, unset (`null`) `start_date`, `target_date` and
+`estimate_point` are omitted from the provider body. Other fields and PATCH
+operations retain strict schema validation; null must not be stripped from an
+update because it can mean an explicit clear. Original caller payloads remain
+unchanged and remain the input to the durable request fingerprint, so changing
+nulls to omitted fields under an already-used key does not bypass collision checks.
+
+Type errors identify request/response context, nested field path, expected type
+and received type, without printing supplied values. A preflight validation
+failure occurs before the provider write and before ledger reservation; it must
+not be described as a lost POST response.
+
 ## Run
 
 ### Candidate HTTP transport (offline only)
@@ -181,7 +195,13 @@ using the operational stdio MCP.
 The `stdio` transport invocation is unchanged; the 0.3.1 public mutation schema
 is intentionally simplified, so clients must refresh their tool catalog.
 HTTP-specific arguments are rejected for stdio. The checked-in `uv.lock`
-freezes FastMCP at 2.14.7. No container is required. Installation alone does not
+freezes FastMCP at 4.1.7 and MCP at 2.3.0. These upstream releases implement
+`server/discover` (2026-07-28) and retain the legacy `initialize` handshake.
+Do not patch protocol-version constants in an installed SDK. The offline HTTP
+allowlist is unchanged. OpenCode pooling additionally requires a verified client
+configuration (`pool: true`) and a launcher with a fixed canonical working
+directory; a source update alone does not prove pooling in an existing session.
+No container is required. Installation alone does not
 migrate credentials, launchers or runtime state.
 
 ```sh

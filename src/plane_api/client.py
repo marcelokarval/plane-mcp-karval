@@ -7,7 +7,7 @@ import json
 import os
 import re
 from datetime import datetime, timezone
-from contextlib import contextmanager
+from contextlib import contextmanager, suppress
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Mapping, Sequence
@@ -217,7 +217,8 @@ class PlaneClient:
         key = str(idempotency_key or "").strip()
         if not 16 <= len(key) <= 200:
             raise ValueError("idempotency_key must contain 16 to 200 characters")
-        params, body = dict(path_params or {}), dict(payload or {})
+        params = dict(path_params or {})
+        body = _prepare_mutation_body(action, payload)
         if not _request_body_available(operation) and body:
             raise ValueError("registry operation does not permit a request body")
         if set(body) & set(params):
@@ -410,6 +411,7 @@ class PlaneClient:
         )
         key_hash = preflight["key_hash"]
         fingerprint = _fingerprint(action, "", "", None, {"path_params": params, "query": dict(query or {}), "payload": body})
+        body = _prepare_mutation_body(action, body)
         store = _require_ledger_path(ledger_path)
         # Phase 1: atomically reserve the key before provider I/O.
         with _locked_ledger(store) as ledger:
@@ -999,6 +1001,17 @@ class PlaneClient:
                 "readback_expected_status": detail_operation.response_schema.get("status"),
                 "response_shape": detail_operation.response_schema.get("shape"),
                 "strategy": "detail_state",
+                # The registry's create contract proves membership and declares
+                # no effects. Our exact-id detail proof must additionally check
+                # every caller field actually sent after CREATE preparation.
+                # Keep generated correlation separate and original fingerprints
+                # unchanged; omitted unset scheduling fields are not effects.
+                "effects": {
+                    **(specification.get("effects") or {}),
+                    "payload_fields": sorted(
+                        _prepare_mutation_body(operation.action, payload)
+                    ),
+                },
             }
         if not get_action:
             if operation.method == "DELETE":
@@ -1090,7 +1103,15 @@ class PlaneClient:
         )
         if str(body.get("id") or "") != str(params.get("resource_id") or ""):
             raise PlaneReadbackValidationError("module update readback identity mismatch")
-        mismatches = [field for field, expected in payload.items() if body.get(field) != expected]
+        from .readback import effect_matches
+
+        mismatches = [
+            field for field, expected in payload.items()
+            if not effect_matches(
+                body, field, expected,
+                allow_html_envelope=detail_action == "issue__get_issue_detail",
+            )
+        ]
         if mismatches:
             raise PlaneReadbackValidationError(
                 "module update readback effect mismatch: " + ", ".join(sorted(mismatches))
@@ -1146,7 +1167,10 @@ class PlaneClient:
                 raise RuntimeError("Plane mutation readback pagination exceeded row budget")
             if _readback_contains_targets(body, targets, specification, payload=payload):
                 if specification.get("strategy") == "detail_state":
-                    _validate_detail_effects(body, payload, specification)
+                    _validate_detail_effects(
+                        body, payload, specification,
+                        allow_html_envelope=get_operation.action == "issue__get_issue_detail",
+                    )
                 return current
             if _is_collection_shape(specification.get("response_shape")) and _has_next_page(body, specification):
                 cursor = _next_cursor(body, specification)
@@ -1795,7 +1819,12 @@ class PlaneClient:
             )
             return _decode(response)
         except HTTPError as exc:
-            raise RuntimeError(f"Plane governed mutation failed with HTTP {exc.code}") from exc
+            try:
+                raise RuntimeError(f"Plane governed mutation failed with HTTP {exc.code}") from exc
+            finally:
+                # Cleanup I/O must not replace the provider failure.
+                with suppress(OSError):
+                    exc.close()
         except URLError as exc:
             raise RuntimeError("Plane governed mutation failed") from exc
 
@@ -1839,15 +1868,20 @@ class PlaneClient:
                 return {"status_code": response.getcode(), "body": body}
             return body
         except HTTPError as exc:
-            if allow_not_found and exc.code == 404:
-                return {"status_code": 404}
-            raise PlaneProviderRequestError(
-                phase=phase,
-                http_status=exc.code,
-                transport_class="http",
-                deterministic=_deterministic_write_rejection(phase, exc.code),
-                detail={**_sanitize_http_error_detail(exc), **_retry_after_metadata(exc.headers)},
-            ) from exc
+            try:
+                if allow_not_found and exc.code == 404:
+                    return {"status_code": 404}
+                raise PlaneProviderRequestError(
+                    phase=phase,
+                    http_status=exc.code,
+                    transport_class="http",
+                    deterministic=_deterministic_write_rejection(phase, exc.code),
+                    detail={**_sanitize_http_error_detail(exc), **_retry_after_metadata(exc.headers)},
+                ) from exc
+            finally:
+                # Preserve the primary error or allowed-404 result on close I/O failure.
+                with suppress(OSError):
+                    exc.close()
         except (URLError, OSError) as exc:
             import errno
             import socket
@@ -2047,10 +2081,12 @@ def _verify_readback(
         raise RuntimeError("Plane mutation readback returned an invalid response")
     if str(readback.get("id") or "") != provider_id:
         raise RuntimeError("Plane mutation readback did not match the provider id")
+    from .readback import effect_matches
+
     mismatched = sorted(
         key
-        for key in set(payload) & _READBACK_SCALARS
-        if key in readback and readback.get(key) != payload.get(key)
+        for key in set(payload) & (_READBACK_SCALARS | {"description_html"})
+        if not effect_matches(readback, key, payload[key], allow_html_envelope=True)
     )
     if mismatched:
         raise RuntimeError(
@@ -2093,10 +2129,13 @@ def _verify_comment_readback(
         raise RuntimeError("Plane comment readback returned an invalid response")
     if str(readback.get("id") or "") != comment_id:
         raise RuntimeError("Plane comment readback did not match the provider id")
+    from .readback import effect_matches
+
     mismatched = sorted(
         key
         for key in _COMMENT_FIELDS
-        if key in payload and key in readback and readback.get(key) != payload.get(key)
+        if key in payload
+        and not effect_matches(readback, key, payload[key], allow_html_envelope=True)
     )
     if mismatched:
         raise RuntimeError(
@@ -2447,7 +2486,32 @@ def _schema_required(response_schema: Mapping[str, Any] | None) -> list[str]:
     return [str(value) for value in (json_schema.get("required") or [])]
 
 
-def _validate_json_schema(value: Any, schema: Mapping[str, Any], *, context: str) -> None:
+def _prepare_mutation_body(action: str, payload: Mapping[str, Any] | None) -> dict[str, Any]:
+    """Omit unset scheduling fields on issue CREATE only; PATCH null is not omission.
+
+    Caller data and ledger fingerprints remain unchanged. No required field or
+    arbitrary optional field is silently dropped.
+    """
+    body = dict(payload or {})
+    if action == "issue__add_issue":
+        for field in ("start_date", "target_date", "estimate_point"):
+            if field in body and body[field] is None:
+                del body[field]
+    return body
+
+
+def _json_type_error(value: Any, schema: Mapping[str, Any], context: str,
+                     field_path: str) -> PlaneResponseValidationError:
+    actual = ("null" if value is None else "boolean" if isinstance(value, bool)
+              else "string" if isinstance(value, str) else "integer" if isinstance(value, int)
+              else "number" if isinstance(value, float) else "object" if isinstance(value, Mapping)
+              else "array" if isinstance(value, list) else "unsupported")
+    expected = schema.get("type", "declared schema")
+    return PlaneResponseValidationError(
+        f"Plane {context} JSON field {field_path} has invalid type; expected {expected}, received {actual}")
+
+
+def _validate_json_schema(value: Any, schema: Mapping[str, Any], *, context: str, field_path: str = "$") -> None:
     # ``null`` is valid only when the declared schema explicitly includes it.
     # Required-field presence and value nullability are separate guarantees:
     # a required non-nullable field must reject both an omitted key and JSON
@@ -2464,7 +2528,7 @@ def _validate_json_schema(value: Any, schema: Mapping[str, Any], *, context: str
             for option in any_of
         ):
             return
-        raise PlaneResponseValidationError(f"Plane {context} response JSON field has invalid type")
+        raise _json_type_error(value, schema, context, field_path)
     schema_type = schema.get("type")
     if isinstance(schema_type, (list, tuple, set)):
         for candidate in schema_type:
@@ -2472,17 +2536,15 @@ def _validate_json_schema(value: Any, schema: Mapping[str, Any], *, context: str
                 continue
             try:
                 _validate_json_schema(
-                    value, {**schema, "type": candidate}, context=context
+                    value, {**schema, "type": candidate}, context=context, field_path=field_path
                 )
                 return
             except PlaneResponseValidationError:
                 continue
-        raise PlaneResponseValidationError(
-            f"Plane {context} response JSON field has invalid type"
-        )
+        raise _json_type_error(value, schema, context, field_path)
     if schema_type == "object":
         if not isinstance(value, Mapping):
-            raise PlaneResponseValidationError(f"Plane {context} response JSON shape is not object")
+            raise _json_type_error(value, schema, context, field_path)
         properties = schema.get("properties") or {}
         missing = [
             field
@@ -2491,7 +2553,7 @@ def _validate_json_schema(value: Any, schema: Mapping[str, Any], *, context: str
         ]
         if missing:
             raise PlaneResponseValidationError(
-                f"Plane {context} response is missing documented fields: {', '.join(map(str, missing))}"
+                f"Plane {context} JSON object {field_path} is missing documented fields: {', '.join(map(str, missing))}"
             )
         for field, field_schema in properties.items():
             alias = _schema_alias(value, str(field))
@@ -2499,23 +2561,23 @@ def _validate_json_schema(value: Any, schema: Mapping[str, Any], *, context: str
                 _validate_json_schema(
                     value[field] if field in value else value[alias],
                     field_schema,
-                    context=context,
+                    context=context, field_path=f"{field_path}.{field}",
                 )
     elif schema_type == "array":
         if not isinstance(value, list):
-            raise PlaneResponseValidationError(f"Plane {context} response JSON shape is not array")
+            raise _json_type_error(value, schema, context, field_path)
         item_schema = schema.get("items")
         if isinstance(item_schema, Mapping):
-            for item in value:
-                _validate_json_schema(item, item_schema, context=context)
+            for index, item in enumerate(value):
+                _validate_json_schema(item, item_schema, context=context, field_path=f"{field_path}[{index}]")
     elif schema_type == "string" and not isinstance(value, str):
-        raise PlaneResponseValidationError(f"Plane {context} response JSON field has invalid type")
+        raise _json_type_error(value, schema, context, field_path)
     elif schema_type == "integer" and (not isinstance(value, int) or isinstance(value, bool)):
-        raise PlaneResponseValidationError(f"Plane {context} response JSON field has invalid type")
+        raise _json_type_error(value, schema, context, field_path)
     elif schema_type == "number" and (not isinstance(value, (int, float)) or isinstance(value, bool)):
-        raise PlaneResponseValidationError(f"Plane {context} response JSON field has invalid type")
+        raise _json_type_error(value, schema, context, field_path)
     elif schema_type == "boolean" and not isinstance(value, bool):
-        raise PlaneResponseValidationError(f"Plane {context} response JSON field has invalid type")
+        raise _json_type_error(value, schema, context, field_path)
 
 
 def _schema_alias(value: Mapping[str, Any], field: str) -> str | None:
@@ -2915,6 +2977,8 @@ def _validate_detail_effects(
     body: Any,
     payload: Mapping[str, Any],
     specification: Mapping[str, Any],
+    *,
+    allow_html_envelope: bool = False,
 ) -> None:
     if not isinstance(body, Mapping):
         raise PlaneReadbackValidationError("Plane detail readback cannot verify effects")
@@ -2922,9 +2986,12 @@ def _validate_detail_effects(
     missing = sorted(field for field in declared if field in payload and field not in body)
     if missing:
         raise PlaneReadbackValidationError(f"Plane detail readback is missing effect fields: {', '.join(missing)}")
+    from .readback import effect_matches
+
     mismatched = sorted(
         field for field in declared
-        if field in payload and (field not in body or body.get(field) != payload.get(field))
+        if field in payload
+        and not effect_matches(body, field, payload[field], allow_html_envelope=allow_html_envelope)
     )
     if mismatched:
         raise PlaneReadbackValidationError(f"Plane detail readback effect mismatch: {', '.join(mismatched)}")

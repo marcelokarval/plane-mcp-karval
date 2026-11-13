@@ -36,7 +36,7 @@ async def verify(args: argparse.Namespace) -> dict:
         missing = sorted(required - by_name.keys())
         if missing:
             raise RuntimeError(f"Missing public functions: {missing}")
-        mutation_schema = by_name["plane_mutation_action"].inputSchema
+        mutation_schema = by_name["plane_mutation_action"].input_schema
         redundant = {"approved_live_mutation", "authorization_receipt", "issue_readiness"}
         if redundant & set(mutation_schema.get("required", [])):
             raise RuntimeError("Mutation still requires redundant approval/preparation artifacts")

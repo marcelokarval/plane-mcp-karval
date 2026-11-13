@@ -97,11 +97,11 @@ def test_v034_diagnostics_are_offline_and_version_aligned() -> None:
     assert result["provider_calls"] == 0
     assert result["live_mutations"] == 0
     assert result["secret_values_emitted"] is False
-    assert result["package_version"] == "0.3.4"
-    assert result["skill_version"] == "0.3.4"
+    assert result["package_version"] == "0.3.5"
+    assert result["skill_version"] == "0.3.5"
 
 
 def test_v034_release_gate_passes() -> None:
-    result = check("0.3.4")
+    result = check("0.3.5")
     assert result["status"] == "PASS"
     assert result["errors"] == []

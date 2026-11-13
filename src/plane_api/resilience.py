@@ -173,7 +173,7 @@ def execute(client, action, *, path_params=None, query=None, payload=None, idemp
                                  {"path_params": params, "query": dict(query or {}), "payload": original})
     provider = c._provider_instance_hash(client.config)
     operation_id = hashlib.sha256(f"{provider}:{key}:{fingerprint}".encode()).hexdigest()
-    body = dict(original)
+    body = c._prepare_mutation_body(action, original)
     if action in CORRELATED_CREATES and not body.get("external_id"):
         body["external_id"] = "plane-mcp:" + operation_id
         if not body.get("external_source"):
