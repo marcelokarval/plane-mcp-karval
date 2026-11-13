@@ -25,13 +25,13 @@ OFFLINE_TOOL_ALLOWLIST: Final[frozenset[str]] = frozenset(
 
 
 def _public_tools(server: FastMCP) -> dict[str, object]:
-    get_tools = getattr(server, "get_tools", None)
-    remove_tool = getattr(server, "remove_tool", None)
-    if not callable(get_tools) or not inspect.iscoroutinefunction(get_tools):
-        raise RuntimeError("FastMCP public async get_tools API is required")
+    list_tools = getattr(server, "list_tools", None)
+    remove_tool = getattr(server.local_provider, "remove_tool", None)
+    if not callable(list_tools) or not inspect.iscoroutinefunction(list_tools):
+        raise RuntimeError("FastMCP public async list_tools API is required")
     if not callable(remove_tool):
         raise RuntimeError("FastMCP public remove_tool API is required")
-    return asyncio.run(get_tools())
+    return {tool.name: tool for tool in asyncio.run(list_tools())}
 
 
 def create_offline_server() -> FastMCP:
@@ -42,7 +42,7 @@ def create_offline_server() -> FastMCP:
 
     for name in tools:
         if name not in OFFLINE_TOOL_ALLOWLIST:
-            server.remove_tool(name)
+            server.local_provider.remove_tool(name)
 
     retained = _public_tools(server)
     missing = OFFLINE_TOOL_ALLOWLIST - retained.keys()
@@ -51,7 +51,7 @@ def create_offline_server() -> FastMCP:
 
     for name in OFFLINE_TOOL_ALLOWLIST:
         annotations = getattr(retained[name], "annotations", None)
-        if getattr(annotations, "readOnlyHint", None) is not True:
+        if getattr(annotations, "read_only_hint", None) is not True:
             raise RuntimeError(f"offline tool {name!r} must have readOnlyHint=True")
 
     return server

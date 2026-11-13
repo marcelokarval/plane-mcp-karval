@@ -21,16 +21,16 @@ ALLOWLIST = {
 def test_offline_server_retains_exact_provider_free_allowlist():
     server = transport_policy.create_offline_server()
 
-    tools = asyncio.run(server.get_tools())
+    tools = {tool.name: tool for tool in asyncio.run(server.list_tools())}
 
     assert set(tools) == ALLOWLIST
-    assert all(tool.annotations.readOnlyHint is True for tool in tools.values())
+    assert all(tool.annotations.read_only_hint is True for tool in tools.values())
 
 
 def test_offline_server_denies_mutation_read_and_reconciliation_tools():
     server = transport_policy.create_offline_server()
 
-    names = set(asyncio.run(server.get_tools()))
+    names = {tool.name for tool in asyncio.run(server.list_tools())}
 
     assert "plane_read_action" not in names
     assert "plane_mutation_action" not in names
@@ -53,7 +53,7 @@ def test_future_read_only_tool_is_removed_when_not_allowlisted(monkeypatch):
 
     server = transport_policy.create_offline_server()
 
-    assert set(asyncio.run(server.get_tools())) == ALLOWLIST
+    assert {tool.name for tool in asyncio.run(server.list_tools())} == ALLOWLIST
 
 
 def test_contradictory_retained_annotation_fails_closed(monkeypatch):
@@ -61,8 +61,8 @@ def test_contradictory_retained_annotation_fails_closed(monkeypatch):
 
     def create_server_with_contradiction():
         server = original_create_server()
-        tools = asyncio.run(server.get_tools())
-        tools["plane_catalog"].annotations.readOnlyHint = False
+        tools = {tool.name: tool for tool in asyncio.run(server.list_tools())}
+        tools["plane_catalog"].annotations.read_only_hint = False
         return server
 
     monkeypatch.setattr(transport_policy, "create_server", create_server_with_contradiction)
@@ -77,7 +77,7 @@ def test_catalog_call_does_not_construct_a_plane_client(monkeypatch):
     monkeypatch.setattr(server_module, "_client", lambda: pytest.fail("client used"))
 
     server = transport_policy.create_offline_server()
-    tools = asyncio.run(server.get_tools())
+    tools = {tool.name: tool for tool in asyncio.run(server.list_tools())}
 
     result = asyncio.run(tools["plane_catalog"].run({}))
 

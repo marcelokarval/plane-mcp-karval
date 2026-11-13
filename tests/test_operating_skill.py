@@ -26,7 +26,7 @@ def test_skill_structure_and_resource_links():
     text = (SKILL / "SKILL.md").read_text()
     metadata = yaml.safe_load(text.split("---", 2)[1])
     assert metadata["name"] == SKILL.name
-    assert metadata["metadata"]["version"] == "0.3.4"
+    assert metadata["metadata"]["version"] == "0.3.5"
     assert len(metadata["description"]) <= 1024
     assert len(text.splitlines()) < 220
     for link in re.findall(r"\]\((references/[^)]+)\)", text):
@@ -37,7 +37,7 @@ def test_skill_structure_and_resource_links():
 def test_skill_tools_and_transition_arguments_match_public_mcp():
     async def check():
         async with Client(create_server()) as client:
-            return {tool.name: tool.inputSchema for tool in await client.list_tools()}
+            return {tool.name: tool.input_schema for tool in await client.list_tools()}
     schemas = asyncio.run(check())
     for name in ("plane_mutation_action", "plane_lifecycle_transition", "plane_operator_lifecycle_transition", "plane_add_comment",
                  "plane_reconcile_mutation", "plane_capture_state_catalog", "plane_add_lifecycle_comment"):
