@@ -188,6 +188,7 @@ def test_optional_lifecycle_transition_uses_simple_native_mutation(monkeypatch, 
 
 
 def test_simple_comment_does_not_require_a_lifecycle_contract(monkeypatch, tmp_path: Path) -> None:
+    from test_prepared_mutation import bind_test_call
     fake = FakeSimpleClient()
     monkeypatch.setattr(server_module, "_client", lambda: fake)
     monkeypatch.setenv("PLANE_MUTATION_LEDGER", str(tmp_path / "ledger.json"))
@@ -196,13 +197,13 @@ def test_simple_comment_does_not_require_a_lifecycle_contract(monkeypatch, tmp_p
         async with Client(create_server()) as client:
             result = await client.call_tool(
                 "plane_add_comment",
-                {
+                bind_test_call(monkeypatch, tmp_path, "plane_add_comment", {
                     "workspace_slug": "karval",
                     "project_id": "project-1",
                     "work_item_id": "issue-1",
                     "comment_html": "<p>Normal comment.</p>",
                     "idempotency_key": "simple-comment-00001",
-                },
+                }),
             )
             assert result.data["readback_verified"] is True
 

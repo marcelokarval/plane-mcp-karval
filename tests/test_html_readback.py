@@ -139,6 +139,7 @@ def test_native_patch_rejects_changed_or_missing_html(tmp_path, observed):
 
 def test_public_mcp_patch_uses_envelope_proof_without_replay(monkeypatch, tmp_path):
     import asyncio
+    from test_prepared_mutation import bind_test_call
     from fastmcp import Client
     from plane_mcp_karval import server
 
@@ -152,7 +153,7 @@ def test_public_mcp_patch_uses_envelope_proof_without_replay(monkeypatch, tmp_pa
 
     async def exercise():
         async with Client(server.create_server()) as client:
-            first = (await client.call_tool("plane_mutation_action", args)).data
+            first = (await client.call_tool("plane_mutation_action", bind_test_call(monkeypatch, tmp_path, "plane_mutation_action", args))).data
             assert first["readback_verified"] is True
             result = (await client.call_tool("plane_reconcile_mutation", args)).data
             assert result["readback_verified"] is True
