@@ -32,6 +32,7 @@ from plane_api import (
     list_operations,
 )
 from plane_api.client import migrate_legacy_ledgers
+from plane_mcp_karval.prepared_mutation import load_prepared, reject_unbound_html
 from plane_mcp_karval.plane_title_icons import (
     ICON_CONTRACT_VERSION,
     PRESENTATION_CONTRACT_VERSION,
@@ -160,6 +161,24 @@ def _canonical_json(value: Mapping[str, Any]) -> str:
     return json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
 
 
+def _bound_comment(operation: str, target: dict[str, Any], key: str, field: str,
+                   inline: Any, filename: str | None, digest: str | None) -> Any:
+    if filename is None or digest is None:
+        raise ValueError("Comment requires prepared_file and prepared_sha256 for this lifecycle tool")
+    prepared = load_prepared(filename, digest)
+    expected = {"operation": operation, "path_params": target, "query": None,
+                "idempotency_key": key}
+    if any(_canonical_json({"v": prepared[k]}) != _canonical_json({"v": v}) for k, v in expected.items()):
+        raise ValueError("Prepared comment binding mismatch")
+    payload = prepared["payload"]
+    if not isinstance(payload, dict) or set(payload) != {field}:
+        raise ValueError("Invalid prepared comment structure")
+    value = payload[field]
+    if inline is not None and _canonical_json({"v": value}) != _canonical_json({"v": inline}):
+        raise ValueError("Prepared comment binding mismatch")
+    return value
+
+
 def _validate_v3_operator_comment(comment: Mapping[str, Any]) -> tuple[str, bool]:
     if comment.get("contract_version") != 3:
         raise ValueError("v3 lifecycle comment must declare contract_version=3")
@@ -272,6 +291,8 @@ def create_server() -> FastMCP:
             "plane_read_action for registered GET actions. Use "
             "plane_mutation_action with a caller-supplied idempotency key for "
             "one registry mutation. Descriptors and semantic helpers are optional. "
+            "Any description_html or comment_html mutation requires a prepared file "
+            "and SHA256; comment and lifecycle tools require their own bound envelope. "
             "Local stdio is the caller authority boundary; this server does not "
             "manufacture human approval."
         ),
@@ -407,16 +428,22 @@ def create_server() -> FastMCP:
         expected_updated_at: str | None = None,
         comment: dict[str, Any] | None = None,
         attempts: int = 1,
+        prepared_file: str | None = None,
+        prepared_sha256: str | None = None,
     ) -> dict[str, Any]:
         """Optionally change state and add a comment with explicit partial results.
 
         This is a convenience workflow. Generic state PATCH and comments remain
         independently available through the registry dispatcher.
+        A comment requires its own bound prepared envelope; state-only does not.
         """
+        if comment is not None or prepared_file is not None or prepared_sha256 is not None:
+            comment = _bound_comment("plane_lifecycle_transition", {"workspace_slug": workspace_slug, "project_id": project_id, "work_item_id": work_item_id, "target_state_id": target_state_id, "expected_state_id": expected_state_id, "expected_updated_at": expected_updated_at}, idempotency_key, "comment", comment, prepared_file, prepared_sha256)
         if attempts != 1:
             raise ValueError("exactly one lifecycle attempt is allowed")
         if not str(target_state_id or "").strip() and comment is None:
             raise ValueError("target_state_id or comment is required")
+        comment_html = render_comment(comment, output_format="html") if comment is not None else None
         client = _client()
         before = client.get_work_item(workspace_slug, project_id, work_item_id)
         if not isinstance(before, Mapping):
@@ -447,7 +474,7 @@ def create_server() -> FastMCP:
                 operation="issue_comment__add_issue_comment",
                 method="POST",
                 path_params={"workspace_slug": workspace_slug, "project_id": project_id, "work_item_id": work_item_id},
-                payload={"comment_html": render_comment(comment, output_format="html"), "external_source": "plane-mcp-karval"},
+                payload={"comment_html": comment_html, "external_source": "plane-mcp-karval"},
                 idempotency_key=_derived_idempotency_key(idempotency_key, "comment"),
                 attempts=attempts,
             )
@@ -474,7 +501,6 @@ def create_server() -> FastMCP:
         expected_current_state_id: str,
         expected_updated_at: str,
         target_state_id: str,
-        comment: dict[str, Any],
         approved_live_mutation: bool,
         approved_non_atomic_operator_transition: bool,
         authorization_basis: str,
@@ -482,8 +508,11 @@ def create_server() -> FastMCP:
         authorized_project_id: str,
         authorized_work_item_id: str,
         idempotency_key: str,
+        comment: dict[str, Any] | None = None,
         attempts: int = 1,
         contract_version: int | None = None,
+        prepared_file: str | None = None,
+        prepared_sha256: str | None = None,
     ) -> dict[str, Any]:
         """Execute one caller-authorized Plane lifecycle v3 event.
 
@@ -492,6 +521,7 @@ def create_server() -> FastMCP:
         preconditions, then performs the non-atomic state/comment sequence once.
         Partial outcomes are returned for read-only reconciliation; they are
         never automatically retried or compensated.
+        The comment must come from a bound prepared envelope. Its hash is not approval.
         """
         if contract_version != 3:
             raise PermissionError("new lifecycle transitions require contract_version=3")
@@ -518,12 +548,16 @@ def create_server() -> FastMCP:
             expected_updated_at, target_state_id,
         )):
             raise ValueError("target and expected state/revision fields are required")
+        comment = _bound_comment("plane_operator_lifecycle_transition", {"workspace_slug": workspace_slug, "project_id": project_id, "work_item_id": work_item_id, "expected_current_state_id": expected_current_state_id, "expected_updated_at": expected_updated_at, "target_state_id": target_state_id}, idempotency_key, "comment", comment, prepared_file, prepared_sha256)
         if not isinstance(comment, Mapping):
             raise ValueError("comment must be a v3 lifecycle object")
 
         phase, annotation = _validate_v3_operator_comment(comment)
         if annotation != (expected_current_state_id == target_state_id):
             raise ValueError("v3 annotation requires identical state IDs; transition requires distinct state IDs")
+        comment_payload = dict(comment)
+        comment_payload.pop("contract_version", None)
+        comment_html = render_comment(comment_payload, output_format="html")
 
         client = _client()
         before = client.get_work_item(workspace_slug, project_id, work_item_id)
@@ -567,13 +601,11 @@ def create_server() -> FastMCP:
                     "manual_reconciliation_required": True,
                 }
 
-        comment_payload = dict(comment)
-        comment_payload.pop("contract_version", None)
         comment_receipt = _mutation_receipt(
             operation="issue_comment__add_issue_comment", method="POST",
             path_params={"workspace_slug": workspace_slug, "project_id": project_id, "work_item_id": work_item_id},
             payload={
-                "comment_html": render_comment(comment_payload, output_format="html"),
+                "comment_html": comment_html,
                 "external_source": "plane-mcp-karval:v3",
                 "external_id": receipt["receipt_fingerprint"],
             },
@@ -686,14 +718,17 @@ def create_server() -> FastMCP:
         workspace_slug: str,
         project_id: str,
         work_item_id: str,
-        comment_html: str,
         idempotency_key: str,
+        comment_html: str | None = None,
         attempts: int = 1,
         external_source: str = "plane-mcp-karval",
         external_id: str | None = None,
+        prepared_file: str | None = None,
+        prepared_sha256: str | None = None,
     ) -> dict[str, Any]:
-        """Append one ordinary HTML comment with idempotency and provider readback."""
-        if not str(comment_html or "").strip():
+        """Append one HTML comment from a bound prepared envelope with readback."""
+        comment_html = _bound_comment("plane_add_comment", {"workspace_slug": workspace_slug, "project_id": project_id, "work_item_id": work_item_id, "external_source": external_source, "external_id": external_id}, idempotency_key, "comment_html", comment_html, prepared_file, prepared_sha256)
+        if not isinstance(comment_html, str) or not comment_html.strip():
             raise ValueError("comment_html is required")
         return _mutation_receipt(
             operation="issue_comment__add_issue_comment",
@@ -715,16 +750,19 @@ def create_server() -> FastMCP:
     def plane_add_lifecycle_comment(
         project_id: str,
         work_item_id: str,
-        comment: dict[str, Any],
         idempotency_key: str,
+        comment: dict[str, Any] | None = None,
         attempts: int = 1,
         workspace_slug: str | None = None,
         external_source: str = "plane-mcp-karval",
         external_id: str | None = None,
+        prepared_file: str | None = None,
+        prepared_sha256: str | None = None,
     ) -> dict[str, Any]:
-        """Render and persist one governed lifecycle comment with provider readback."""
+        """Render and persist a lifecycle comment from a bound prepared envelope."""
 
         workspace = _workspace(workspace_slug)
+        comment = _bound_comment("plane_add_lifecycle_comment", {"workspace_slug": workspace, "project_id": project_id, "work_item_id": work_item_id, "external_source": external_source, "external_id": external_id}, idempotency_key, "comment", comment, prepared_file, prepared_sha256)
         body = render_comment(comment, output_format="html")
         return _mutation_receipt(
             operation="issue_comment__add_issue_comment",
@@ -831,18 +869,30 @@ def create_server() -> FastMCP:
     def plane_mutation_action(
         operation: str,
         path_params: dict[str, Any],
-        payload: dict[str, Any] | None,
         idempotency_key: str,
+        payload: dict[str, Any] | None = None,
         attempts: int = 1,
         query: dict[str, Any] | None = None,
+        prepared_file: str | None = None,
+        prepared_sha256: str | None = None,
     ) -> dict[str, Any]:
         """Execute one registry mutation for the trusted local stdio caller.
 
         State PATCH has normal non-atomic provider semantics: there is no CAS,
         automatic compensation, or replay of uncertain writes. Safe not-sent
         transport retries are bounded within one logical operation.
+        Every description_html/comment_html field requires a bound prepared file.
         """
 
+        if prepared_file is not None or prepared_sha256 is not None:
+            if prepared_file is None or prepared_sha256 is None:
+                raise ValueError("Both prepared_file and prepared_sha256 are required")
+            prepared = load_prepared(prepared_file, prepared_sha256)
+            if prepared["operation"] != operation or _canonical_json({"v": prepared["path_params"]}) != _canonical_json({"v": path_params}) or _canonical_json({"v": prepared["query"]}) != _canonical_json({"v": query}) or prepared["idempotency_key"] != idempotency_key or (payload is not None and _canonical_json({"v": prepared["payload"]}) != _canonical_json({"v": payload})):
+                raise ValueError("Prepared operation binding mismatch")
+            payload = prepared["payload"]
+        else:
+            reject_unbound_html(payload)
         op = get_operation(operation)
         if op.method not in {"POST", "PATCH", "DELETE"} or not op.mutation:
             raise PermissionError("plane_mutation_action accepts only registered mutation operations")

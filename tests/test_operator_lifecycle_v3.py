@@ -9,6 +9,7 @@ from fastmcp.exceptions import ToolError
 
 import plane_mcp_karval.server as server_module
 from plane_mcp_karval.server import create_server
+from test_prepared_mutation import bind_test_call
 
 
 def run(coro):
@@ -102,7 +103,7 @@ def test_operator_tool_is_registered_and_executes_bound_transition(monkeypatch, 
         async with Client(create_server()) as client:
             names = {tool.name for tool in await client.list_tools()}
             assert "plane_operator_lifecycle_transition" in names
-            result = await client.call_tool("plane_operator_lifecycle_transition", operator_call())
+            result = await client.call_tool("plane_operator_lifecycle_transition", bind_test_call(monkeypatch, tmp_path, "plane_operator_lifecycle_transition", operator_call()))
             assert result.data["status"] == "verified_non_atomic_operator_transition"
             assert result.data["contract_version"] == 3
             assert result.data["receipt"]["receipt_fingerprint"]
@@ -150,7 +151,7 @@ def test_operator_tool_reports_precondition_conflict_without_write(monkeypatch, 
         async with Client(create_server()) as client:
             result = await client.call_tool(
                 "plane_operator_lifecycle_transition",
-                operator_call(expected_current_state_id="other-state"),
+                bind_test_call(monkeypatch, tmp_path, "plane_operator_lifecycle_transition", operator_call(expected_current_state_id="other-state")),
             )
             assert result.data == {
                 "status": "precondition_failed",
@@ -171,7 +172,7 @@ def test_operator_tool_exposes_comment_pending_after_verified_state(monkeypatch,
 
     async def check() -> None:
         async with Client(create_server()) as client:
-            result = await client.call_tool("plane_operator_lifecycle_transition", operator_call())
+            result = await client.call_tool("plane_operator_lifecycle_transition", bind_test_call(monkeypatch, tmp_path, "plane_operator_lifecycle_transition", operator_call()))
             assert result.data["status"] == "target_confirmed_comment_pending"
             assert result.data["state_mutation_applied"] is True
             assert result.data["comment_readback_verified"] is False
@@ -192,11 +193,11 @@ def test_operator_progress_is_comment_only_annotation(monkeypatch, tmp_path) -> 
         async with Client(create_server()) as client:
             result = await client.call_tool(
                 "plane_operator_lifecycle_transition",
-                operator_call(
+                bind_test_call(monkeypatch, tmp_path, "plane_operator_lifecycle_transition", operator_call(
                     expected_current_state_id="in-progress-state",
                     target_state_id="in-progress-state",
                     comment=comment,
-                ),
+                )),
             )
             assert result.data["status"] == "verified_annotation"
             assert result.data["state_mutation_applied"] is False

@@ -462,6 +462,7 @@ def test_reconciliation_tool_is_narrow_and_forwards_only_its_governed_receipt(mo
 
 
 def test_lifecycle_comment_tool_renders_and_forwards_governed_comment(monkeypatch, tmp_path: Path) -> None:
+    from test_prepared_mutation import bind_test_call
     fake = FakePlaneClient()
     monkeypatch.setenv("PLANE_WORKSPACE_SLUG", "karval")
     monkeypatch.setenv("PLANE_MUTATION_LEDGER", str(tmp_path / "ledger.json"))
@@ -499,7 +500,8 @@ def test_lifecycle_comment_tool_renders_and_forwards_governed_comment(monkeypatc
         async with Client(create_server()) as client:
             result = await client.call_tool(
                 "plane_add_lifecycle_comment",
-                {
+                bind_test_call(monkeypatch, tmp_path, "plane_add_lifecycle_comment", {
+                    "workspace_slug": "karval",
                     "project_id": "project-1",
                     "work_item_id": "issue-1",
                     "comment": comment,
@@ -507,7 +509,7 @@ def test_lifecycle_comment_tool_renders_and_forwards_governed_comment(monkeypatc
                     "attempts": 1,
                     "external_source": "codex",
                     "external_id": "HERMES-plane-mcp-gates-20260806:finish:1",
-                },
+                }),
             )
             assert result.data["mutation_applied"] is True
             assert result.data["readback_verified"] is True

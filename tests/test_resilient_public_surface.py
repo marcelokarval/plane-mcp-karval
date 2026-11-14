@@ -12,6 +12,7 @@ from plane_api.registry import get_operation
 from plane_api import resilience
 from plane_mcp_karval import server
 from test_plane_client_failure_receipts import FakeResponse, ISSUE
+from test_prepared_mutation import bind_test_call
 
 
 @pytest.mark.parametrize("failure", ["dns", "lost", "response_dns"])
@@ -68,6 +69,8 @@ def test_native_recovery_through_public_mcp_tools(monkeypatch, tmp_path, failure
             "idempotency_key": "public-recovery-stable-key"}
     shortcut = {"workspace_slug": "workspace", "project_id": "project", "work_item_id": "issue-1", "comment_html": payload.get("comment_html"),
                 "idempotency_key": args["idempotency_key"]}
+    if kind == "comment":
+        shortcut = bind_test_call(monkeypatch, tmp_path, "plane_add_comment", shortcut)
 
     async def exercise():
         async with Client(server.create_server()) as client:

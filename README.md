@@ -113,6 +113,42 @@ descriptor, or receipt payloads.
 
 ## Local MCP mutation contract (0.3.1)
 
+### Prepared operation integrity (source candidate)
+
+For every submitted `description_html` or `comment_html` field, including empty,
+null, nested, or invalidly typed values, use
+`plane_mutation_action` with `prepared_file` and `prepared_sha256`. Create a
+UTF-8 JSON file in `.prepared-mutations/` under the MCP process working
+directory, with exactly `operation`, `path_params`, `query`, `payload`, and
+`idempotency_key`. Supply the basename (letters, digits, `_`, `-`, `.json`)
+and the lowercase SHA-256 of the exact file bytes. Maximum size is 8 MiB.
+Pass matching operation, path, query and key to the tool; omit payload to avoid
+transcribing it. If supplied, inline payload must match. A digest proves byte
+integrity, not authorization or correctness. Protect the prepared directory
+and delete sensitive files according to your own retention policy.
+
+Comment and lifecycle tools also accept `prepared_file` and `prepared_sha256`;
+their JSON envelope uses the same five fields, with `operation` equal to the tool
+name and `query` null. `payload` contains exactly `comment` (lifecycle tools) or
+`comment_html` (ordinary comment). `path_params` binds:
+
+- `plane_add_comment` and `plane_add_lifecycle_comment`: `workspace_slug`,
+  `project_id`, `work_item_id`, `external_source`, `external_id`.
+- `plane_lifecycle_transition`: `workspace_slug`, `project_id`, `work_item_id`,
+  `target_state_id`, `expected_state_id`, `expected_updated_at` (use null for
+  omitted optional fields). A state-only call needs no file.
+- `plane_operator_lifecycle_transition`: `workspace_slug`, `project_id`,
+  `work_item_id`, `expected_current_state_id`, `expected_updated_at`,
+  `target_state_id`. Supply approval and contract fields separately as usual.
+
+Inline comment can be omitted or must match the prepared value. A lifecycle
+transition comprises separate operations and must not be represented as atomic;
+generic mutations do not reproduce v3 authorization, preconditions or receipts.
+Historical read-only
+reconciliation remains available. This source contract does not establish that
+an installed server or another client has adopted it. Direct external Plane APIs
+and other MCP servers are outside this enforcement boundary.
+
 The trusted local MCP client supplies the operation, path parameters, payload
 and an idempotency key. The server does not ask for `ctx.elicit`, a second
 human confirmation, `approved_live_mutation`, a fabricated approval receipt,
